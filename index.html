@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0A0A0A">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="EAGLE CONVERGENCE '25 — 3rd Year Convention of ARISE CONFERENCE. SPAC Church. Discover your path in God and purpose in life.">
+    <meta name="keywords" content="Eagle Convergence, SPAC Church, Arise Conference, Ibadan, Youth Convention, Pastor Yomi Okewunmi, Prophet Samuel Adegboyega">
+    
+    <title>EAGLE CONVERGENCE '25 | SPAC Church</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============ 2050 RESET & APP SHELL ============ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #D4AF37;
+            --gold-deep: #B8960C;
+            --gold-light: #F5E6A3;
+            --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 40%, #B8960C 100%);
+            --gold-gradient-reverse: linear-gradient(135deg, #B8960C 0%, #F5E6A3 40%, #D4AF37 100%);
+            --gold-radial: radial-gradient(ellipse at center, rgba(212,175,55,0.3) 0%, rgba(212,175,55,0) 70%);
+            --bg: #FFFFFF;
+            --surface: #FAFAFA;
+            --text: #1A1A1A;
+            --text-secondary: #5A5A5A;
+            --shadow-gold: 0 4px 30px rgba(212, 175, 55, 0.2);
+            --shadow-card: 0 2px 20px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+            --radius: 20px;
+            --radius-sm: 12px;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #0A0A0A;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            background: var(--bg);
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+            box-shadow: 0 0 80px rgba(212, 175, 55, 0.3);
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                max-width: 100%;
+                box-shadow: none;
+            }
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 30px;
+                background: radial-gradient(ellipse at center, #1a1a1a 0%, #0A0A0A 100%);
+            }
+            .app-container {
+                border-radius: 28px;
+                min-height: calc(100vh - 60px);
+                max-height: 95vh;
+            }
+        }
+
+        /* ============ SCROLLBAR STYLING ============ */
+        .app-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .app-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .app-container::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        /* ============ HERO SECTION ============ */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 650px;
+            max-height: 900px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #0A0A0A;
+        }
+
+        .hero-video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.55;
+            z-index: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                rgba(10,10,10,0.7) 0%,
+                rgba(10,10,10,0.5) 30%,
+                rgba(10,10,10,0.6) 70%,
+                rgba(10,10,10,0.9) 100%
+            );
+            z-index: 2;
+        }
+
+        .hero-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .hero-particles .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: floatUp 8s infinite ease-in;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            30% { opacity: 1; }
+            70% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            padding: 30px;
+        }
+
+        .hero-logo {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            object-fit: contain;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 8px;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            animation: fadeInDown 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.6rem;
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: 2px;
+            color: #FFFFFF;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .hero-title .line-one {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: var(--gold);
+        }
+
+        .hero-title .line-two {
+            display: block;
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        .hero-title .year {
+            display: inline-block;
+            font-size: 2rem;
+            font-weight: 900;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-subtitle {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.75);
+            letter-spacing: 1px;
+            animation: fadeInUp 1s ease-out 0.7s both;
+        }
+
+        .hero-subtitle strong {
+            color: var(--gold-light);
+            font-weight: 700;
+        }
+
+        .hero-cta {
+            margin-top: 10px;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .btn-gold {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 36px;
+            background: var(--gold-gradient);
+            color: #0A0A0A;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-gold::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-gold:hover::before {
+            left: 100%;
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-gold.pulse {
+            animation: btnPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes btnPulse {
+            0%, 100% { box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3); }
+            50% { box-shadow: 0 8px 50px rgba(212, 175, 55, 0.6); }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: fadeInUp 1s ease-out 1.2s both;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 45px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.3; height: 45px; }
+            50% { opacity: 1; height: 55px; }
+        }
+
+        /* ============ SECTION STYLES ============ */
+        .section {
+            padding: 50px 26px;
+            position: relative;
+        }
+
+        .section-dark {
+            background: var(--surface);
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold-deep);
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .section-title.gold {
+            color: var(--gold-deep);
+        }
+
+        .section-body {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .section-divider {
+            width: 50px;
+            height: 3px;
+            background: var(--gold-gradient);
+            border-radius: 10px;
+            margin: 15px 0 25px;
+        }
+        .section-divider.center {
+            margin: 15px auto 25px;
+        }
+
+        /* ============ VIDEO EMBED ============ */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            margin: 20px 0;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .video-wrapper iframe,
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            object-fit: cover;
+        }
+
+        /* ============ SCHEDULE CARDS ============ */
+        .schedule-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .schedule-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: var(--radius-sm);
+            padding: 22px 20px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow-card);
+        }
+
+        .schedule-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--gold-gradient);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .schedule-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(212, 175, 55, 0.2);
+        }
+
+        .schedule-day {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .schedule-date {
+            font-size: 0.78rem;
+            color: var(--gold-deep);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .schedule-sessions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .session-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            background: var(--surface);
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .session-tag .time {
+            color: var(--gold-deep);
+            font-weight: 700;
+        }
+
+        .highlight-tag {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--gold-deep);
+            font-weight: 700;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        /* ============ EXPECT CARDS ============ */
+        .expect-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .expect-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: var(--radius-sm);
+            padding: 20px 15px;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow-card);
+        }
+
+        .expect-card:hover {
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .expect-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .expect-card h4 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .expect-card p {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* ============ GALLERY ============ */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--surface);
+            border: 1px solid rgba(0,0,0,0.06);
+            transition: var(--transition);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.08);
+        }
+
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(212,175,55,0.3), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+
+        .gallery-item.wide {
+            grid-column: span 2;
+            aspect-ratio: 2/1;
+        }
+
+        /* ============ SPEAKER ============ */
+        .speaker-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 30px 20px;
+            background: #FFFFFF;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+        }
+
+        .speaker-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--gold);
+            box-shadow: var(--shadow-gold);
+            margin-bottom: 15px;
+        }
+
+        .speaker-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .speaker-role {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--gold-deep);
+            margin-bottom: 4px;
+        }
+
+        .speaker-sub {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        /* ============ DONATION ============ */
+        .donation-box {
+            background: linear-gradient(135deg, #FAFAFA, #FFFFFF);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: var(--radius);
+            padding: 30px 22px;
+            text-align: center;
+            box-shadow: var(--shadow-gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .donation-box::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: var(--gold-radial);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .donation-box h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .account-details {
+            display: none;
+            margin-top: 15px;
+            padding: 18px;
+            background: #FFFFFF;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(0,0,0,0.08);
+            text-align: left;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .account-details.show {
+            display: block;
+        }
+
+        .account-details p {
+            font-size: 0.85rem;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .account-details strong {
+            color: var(--gold-deep);
+            font-weight: 700;
+        }
+
+        /* ============ CONTACT ============ */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: #FFFFFF;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .contact-icon {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .contact-item div p {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        .contact-item div p strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* ============ FOOTER ============ */
+        .footer {
+            background: #FFFFFF;
+            padding: 35px 26px 40px;
+            text-align: center;
+            position: relative;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .footer-logo {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: contain;
+            margin-bottom: 12px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            padding: 5px;
+        }
+
+        .footer-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: 2px;
+        }
+
+        .footer-subtitle {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .footer-divider {
+            width: 30px;
+            height: 1px;
+            background: var(--gold);
+            margin: 15px auto;
+            opacity: 0.5;
+        }
+
+        .footer-copy {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        /* ============ LIGHTBOX ============ */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: var(--radius-sm);
+            object-fit: contain;
+        }
+
+        /* ============ COUNTDOWN ============ */
+        .countdown-bar {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+
+        .countdown-item {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            min-width: 55px;
+            text-align: center;
+        }
+
+        .countdown-item .number {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .countdown-item .label {
+            font-size: 0.55rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" id="app">
+
+        <!-- ==================== HERO ==================== -->
+        <section class="hero" id="hero">
+            <!-- Replace this with your actual video -->
+            <video class="hero-video-bg" autoplay loop muted playsinline poster="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='480' height='800'><rect fill='%230A0A0A' width='480' height='800'/></svg>">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-clouds-over-a-mountain-4088-large.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay"></div>
+
+            <!-- Gold particles -->
+            <div class="hero-particles" id="particles"></div>
+
+            <div class="hero-content">
+                <!-- SPAC Logo placeholder -->
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='75'%3E%3Ccircle cx='37.5' cy='37.5' r='35' fill='none' stroke='%23D4AF37' stroke-width='2'/%3E%3Ctext x='37.5' y='43' text-anchor='middle' font-size='16' fill='%23D4AF37' font-weight='bold'%3ESPAC%3C/text%3E%3C/svg%3E" 
+                     alt="SPAC Church" class="hero-logo">
+
+                <div class="hero-badge">3rd Year Convention</div>
+
+                <h1 class="hero-title">
+                    <span class="line-one">EAGLE</span>
+                    <span class="line-two">CONVERGENCE</span>
+                    <span class="year">'25</span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    The Convention of <strong>ARISE CONFERENCE</strong><br>
+                    <em>"They that wait upon the Lord shall renew their strength;<br>they shall mount up with wings as eagles."</em> — Isaiah 40:31
+                </p>
+
+                <!-- Countdown -->
+                <div class="countdown-bar" id="countdown">
+                    <div class="countdown-item">
+                        <div class="number" id="cd-days">--</div>
+                        <div class="label">Days</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="number" id="cd-hours">--</div>
+                        <div class="label">Hours</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="number" id="cd-minutes">--</div>
+                        <div class="label">Mins</div>
+                    </div>
+                </div>
+
+                <div class="hero-cta">
+                    <a href="register.html" class="btn-gold pulse">
+                        ✦ Register Now — It's Free ✦
+                    </a>
+                </div>
+            </div>
+
+            <div class="scroll-indicator">
+                <span>Scroll</span>
+                <div class="scroll-line"></div>
+            </div>
+        </section>
+
+        <!-- ==================== ABOUT ==================== -->
+        <section class="section" id="about">
+            <span class="section-label">About The Program</span>
+            <div class="section-divider"></div>
+            <h2 class="section-title">What Is Eagle Convergence?</h2>
+            <p class="section-body">
+                <strong>EAGLE CONVERGENCE</strong> is the annual convention of the <strong>ARISE CONFERENCE</strong> — the flagship monthly first-Saturday program of SPAC Church. Now in its <strong>3rd year</strong>, Eagle Convergence has become a prophetic gathering point for young people across the nation.
+            </p>
+            <p class="section-body">
+                It is a spirit-filled atmosphere where youth <strong>discover their path in God, their purpose in life, and their place in destiny.</strong> Attendees are exposed to the real-world demands of career, business, and leadership, while being immersed in deep spiritual capacity building.
+            </p>
+            <p class="section-body">
+                Whether you are a student, a graduate, an entrepreneur, or simply seeking direction — Eagle Convergence is designed to <strong>equip, empower, and elevate</strong> you into the fullness of God's plan for your life.
+            </p>
+
+            <!-- Highlight video placeholder -->
+            <div class="video-wrapper">
+                <video poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='270'%3E%3Crect fill='%231A1A1A' width='480' height='270'/%3E%3Ctext x='240' y='140' text-anchor='middle' fill='%23D4AF37' font-size='14'%3EHighlight Reel%3C/text%3E%3C/svg%3E" controls preload="metadata">
+                    <source src="#" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+
+        <!-- ==================== SCHEDULE ==================== -->
+        <section class="section section-dark" id="schedule">
+            <span class="section-label">Program Schedule</span>
+            <div class="section-divider"></div>
+            <h2 class="section-title">Three Days of <span class="gold">Divine Encounter</span></h2>
+
+            <div class="schedule-cards">
+                <div class="schedule-card">
+                    <div class="schedule-date">Day 1</div>
+                    <div class="schedule-day">Thursday, 4th June 2026</div>
+                    <div class="schedule-sessions">
+                        <span class="session-tag"><span class="time">5:00 PM</span> Evening Session</span>
+                    </div>
+                </div>
+
+                <div class="schedule-card">
+                    <div class="schedule-date">Day 2</div>
+                    <div class="schedule-day">Friday, 5th June 2026</div>
+                    <div class="schedule-sessions">
+                        <span class="session-tag"><span class="time">12:00 PM</span> First Session</span>
+                        <span class="session-tag"><span class="time">5:00 PM</span> Evening Session</span>
+                    </div>
+                </div>
+
+                <div class="schedule-card">
+                    <div class="schedule-date">Day 3</div>
+                    <div class="schedule-day">Saturday, 6th June 2026</div>
+                    <div class="schedule-sessions">
+                        <span class="session-tag"><span class="time">9:00 AM</span> First Session</span>
+                        <span class="session-tag highlight-tag"><span class="time">1:00 PM</span> Business & Career Summit</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== WHAT TO EXPECT ==================== -->
+        <section class="section" id="expect">
+            <span class="section-label">Experience</span>
+            <div class="section-divider"></div>
+            <h2 class="section-title">What To <span class="gold">Expect</span></h2>
+
+            <div class="expect-grid">
+                <div class="expect-card">
+                    <div class="expect-icon">🔥</div>
+                    <h4>Spirit-Filled Atmosphere</h4>
+                    <p>Deep worship, prophetic impartation, and the tangible presence of God.</p>
+                </div>
+                <div class="expect-card">
+                    <div class="expect-icon">🎯</div>
+                    <h4>Purpose Discovery</h4>
+                    <p>Clarity on your path in life, career, and divine assignment.</p>
+                </div>
+                <div class="expect-card">
+                    <div class="expect-icon">💼</div>
+                    <h4>Career & Business Summit</h4>
+                    <p>Real-world exposure, mentorship, and practical skills for the marketplace.</p>
+                </div>
+                <div class="expect-card">
+                    <div class="expect-icon">🦅</div>
+                    <h4>Spiritual Capacity</h4>
+                    <p>Build the inner strength to soar above life's challenges like an eagle.</p>
+                </div>
+                <div class="expect-card">
+                    <div class="expect-icon">🤝</div>
+                    <h4>Kingdom Network</h4>
+                    <p>Connect with like-minded youth passionate about God and purpose.</p>
+                </div>
+                <div class="expect-card">
+                    <div class="expect-icon">✨</div>
+                    <h4>Divine Encounter</h4>
+                    <p>Life-transforming moments with God that shift your trajectory forever.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== GALLERY ==================== -->
+        <section class="section section-dark" id="gallery">
+            <span class="section-label">Moments</span>
+            <div class="section-divider"></div>
+            <h2 class="section-title">Gallery</h2>
+            <p class="section-body">
+                Glimpses from previous <strong>ARISE CONFERENCE</strong> and <strong>Eagle Convergence</strong> gatherings.
+            </p>
+
+            <div class="gallery-grid">
+                <div class="gallery-item wide">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect fill='%23D4AF37' opacity='0.1' width='400' height='200'/%3E%3Ctext x='200' y='105' text-anchor='middle' fill='%23D4AF37' font-size='12'%3EPhoto 1%3C/text%3E%3C/svg%3E" alt="Eagle Convergence Moment" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23D4AF37' opacity='0.1' width='200' height='200'/%3E%3Ctext x='100' y='105' text-anchor='middle' fill='%23D4AF37' font-size='10'%3EPhoto 2%3C/text%3E%3C/svg%3E" alt="Eagle Convergence Moment" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23D4AF37' opacity='0.1' width='200' height='200'/%3E%3Ctext x='100' y='105' text-anchor='middle' fill='%23D4AF37' font-size='10'%3EPhoto 3%3C/text%3E%3C/svg%3E" alt="Eagle Convergence Moment" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23D4AF37' opacity='0.1' width='200' height='200'/%3E%3Ctext x='100' y='105' text-anchor='middle' fill='%23D4AF37' font-size='10'%3EPhoto 4%3C/text%3E%3C/svg%3E" alt="Eagle Convergence Moment" loading="lazy">
+                </div>
+                <div class="gallery-item wide">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect fill='%23D4AF37' opacity='0.1' width='400' height='200'/%3E%3Ctext x='200' y='105' text-anchor='middle' fill='%23D4AF37' font-size='12'%3EPhoto 5%3C/text%3E%3C/svg%3E" alt="Eagle Convergence Moment" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23D4AF37' opacity='0.1' width='200' height='200'/%3E%3Ctext x='100' y='105' text-anchor='middle' fill='%23D4AF37' font-size='10'%3EPhoto 6%3C/text%3E%3C/svg%3E" alt="Eagle Convergence Moment" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23D4AF37' opacity='0.1' width='200' height='200'/%3E%3Ctext x='100' y='105' text-anchor='middle' fill='%23D4AF37' font-size='10'%3EPhoto 7%3C/text%3E%3C/svg%3E" alt="Eagle Convergence Moment" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SPEAKERS ==================== -->
+        <section class="section" id="speakers">
+            <span class="section-label">Leadership</span>
+            <div class="section-divider"></div>
+            <h2 class="section-title">Our <span class="gold">Spiritual Fathers</span></h2>
+
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <!-- Host -->
+                <div class="speaker-card">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110'%3E%3Ccircle cx='55' cy='55' r='52' fill='%23D4AF37' opacity='0.15'/%3E%3Ctext x='55' y='60' text-anchor='middle' fill='%23D4AF37' font-size='11'%3EPastor%3C/text%3E%3C/svg%3E" 
+                         alt="Pastor Yomi Okewunmi" class="speaker-avatar">
+                    <span class="speaker-role">Host</span>
+                    <h3>Pastor Yomi Okewunmi</h3>
+                    <p class="speaker-sub">Convener, ARISE CONFERENCE</p>
+                </div>
+
+                <!-- Founder -->
+                <div class="speaker-card">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110'%3E%3Ccircle cx='55' cy='55' r='52' fill='%23D4AF37' opacity='0.15'/%3E%3Ctext x='55' y='60' text-anchor='middle' fill='%23D4AF37' font-size='10'%3EProphet%3C/text%3E%3C/svg%3E" 
+                         alt="Prophet Samuel Adegboyega" class="speaker-avatar">
+                    <span class="speaker-role">Founder</span>
+                    <h3>Prophet Samuel Adegboyega</h3>
+                    <p class="speaker-sub">Founder, SPAC Church Worldwide</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== DONATION ==================== -->
+        <section class="section section-dark" id="donate">
+            <span class="section-label">Partner With Us</span>
+            <div class="section-divider"></div>
+            <h2 class="section-title">Make a <span class="gold">Donation</span></h2>
+            <p class="section-body">
+                Support the vision of Eagle Convergence and ARISE CONFERENCE. Your seed helps us reach more young people with the message of purpose and destiny.
+            </p>
+
+            <div class="donation-box">
+                <h3>🕊️ Sow a Seed</h3>
+                <button class="btn-gold" onclick="toggleAccount()" id="donateBtn">
+                    View Account Details
+                </button>
+
+                <div class="account-details" id="accountDetails">
+                    <p><strong>Bank:</strong> Access Bank</p>
+                    <p><strong>Account Number:</strong> 182885508442</p>
+                    <p><strong>Account Name:</strong> SPAC (ARISE CONFERENCE)</p>
+                    <p style="margin-top: 10px; font-size: 0.8rem; color: var(--text-secondary);">
+                        Thank you for your generous support. God bless you.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CONTACT ==================== -->
+        <section class="section" id="contact">
+            <span class="section-label">Get In Touch</span>
+            <div class="section-divider"></div>
+            <h2 class="section-title">Contact & <span class="gold">Location</span></h2>
+
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-icon">📍</div>
+                    <div>
+                        <p><strong>Venue Address</strong></p>
+                        <p>2-6, Church Street, Poly Road,<br>Sango, Ibadan</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">📞</div>
+                    <div>
+                        <p><strong>Phone / WhatsApp</strong></p>
+                        <p>08169172686</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">📅</div>
+                    <div>
+                        <p><strong>Dates</strong></p>
+                        <p>4th – 6th June, 2026</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FOOTER ==================== -->
+        <footer class="footer">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='55' height='55'%3E%3Ccircle cx='27.5' cy='27.5' r='25' fill='none' stroke='%23D4AF37' stroke-width='2'/%3E%3Ctext x='27.5' y='33' text-anchor='middle' font-size='12' fill='%23D4AF37' font-weight='bold'%3ESPAC%3C/text%3E%3C/svg%3E" 
+                 alt="SPAC Church" class="footer-logo">
+            <div class="footer-title">EAGLE CONVERGENCE '25</div>
+            <div class="footer-subtitle">3rd Convention of ARISE CONFERENCE</div>
+            <div class="footer-divider"></div>
+            <div class="footer-copy">
+                &copy; 2026 SPAC Church. All rights reserved.<br>
+                Prophet Samuel Adegboyega — Founder, SPAC Church Worldwide
+            </div>
+        </footer>
+
+        <!-- Lightbox -->
+        <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+            <img src="" alt="Lightbox" id="lightboxImg">
+        </div>
+
+    </div>
+
+    <script>
+        // ============ GOLD PARTICLES GENERATOR ============
+        (function() {
+            const container = document.getElementById('particles');
+            if (!container) return;
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (6 + Math.random() * 10) + 's';
+                particle.style.width = (1 + Math.random() * 4) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        })();
+
+        // ============ COUNTDOWN ============
+        (function() {
+            const targetDate = new Date('2026-06-04T17:00:00+01:00'); // WAT
+            function updateCountdown() {
+                const now = new Date();
+                const diff = targetDate - now;
+
+                if (diff <= 0) {
+                    document.getElementById('cd-days').textContent = '00';
+                    document.getElementById('cd-hours').textContent = '00';
+                    document.getElementById('cd-minutes').textContent = '00';
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+                document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+                document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('cd-minutes').textContent = String(minutes).padStart(2, '0');
+            }
+            updateCountdown();
+            setInterval(updateCountdown, 60000);
+        })();
+
+        // ============ DONATION TOGGLE ============
+        function toggleAccount() {
+            const details = document.getElementById('accountDetails');
+            const btn = document.getElementById('donateBtn');
+            if (details.classList.contains('show')) {
+                details.classList.remove('show');
+                btn.textContent = 'View Account Details';
+            } else {
+                details.classList.add('show');
+                btn.textContent = 'Hide Account Details';
+            }
+        }
+
+        // ============ LIGHTBOX ============
+        document.querySelectorAll('.gallery-item img').forEach(img => {
+            img.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const lightbox = document.getElementById('lightbox');
+                const lightboxImg = document.getElementById('lightboxImg');
+                lightbox.classList.add('active');
+                lightboxImg.src = this.src;
+                lightboxImg.alt = this.alt;
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // ============ SCROLL REVEAL ANIMATION ============
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.schedule-card, .expect-card, .speaker-card, .contact-item, .donation-box').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            observer.observe(el);
+        });
+
+        // Trigger initial reveal for visible elements
+        setTimeout(() => {
+            document.querySelectorAll('.schedule-card, .expect-card, .speaker-card, .contact-item, .donation-box').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight) {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }
+            });
+        }, 300);
+
+        console.log('%c🦅 EAGLE CONVERGENCE \'25 %c| %cSPAC Church %c| %cBuilt with excellence',
+            'color: #D4AF37; font-size: 1.2em; font-weight: bold;',
+            '',
+            'color: #D4AF37; font-weight: bold;',
+            '',
+            'color: #aaa; font-size: 0.8em;');
+    </script>
+
+</body>
+</html>
