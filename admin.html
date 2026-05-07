@@ -14,127 +14,112 @@
     
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
         :root {
             --gold: #D4AF37; --gold-deep: #B8960C; --gold-light: #F5E6A3;
             --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 40%, #B8960C 100%);
             --bg: #FFFFFF; --surface: #FAFAFA; --text: #1A1A1A; --text-secondary: #5A5A5A;
             --success: #2E7D32; --error: #D32F2F; --warning: #E67E22;
-            --shadow-gold: 0 4px 30px rgba(212,175,55,0.2);
-            --radius: 16px; --radius-sm: 10px;
-            --transition: 0.3s ease;
+            --radius: 16px; --radius-sm: 10px; --transition: 0.3s ease;
         }
-
         html { font-size: 16px; -webkit-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; }
         body { font-family: 'Inter', system-ui, sans-serif; background: #0A0A0A; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 0; color: var(--text); }
-
         .app-container { width: 100%; max-width: 500px; min-height: 100vh; background: var(--bg); position: relative; overflow-x: hidden; overflow-y: auto; box-shadow: 0 0 80px rgba(212,175,55,0.3); }
         @media (min-width: 768px) { body { padding: 30px; } .app-container { border-radius: 28px; min-height: calc(100vh - 60px); max-height: 95vh; } }
-
         .app-container::-webkit-scrollbar { width: 4px; }
         .app-container::-webkit-scrollbar-track { background: transparent; }
         .app-container::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
-        /* LOGIN SCREEN */
-        .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px; text-align: center; background: #0A0A0A; }
-        .login-screen .logo { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 900; font-family: 'Playfair Display', serif; font-size: 1.2rem; }
-        .login-screen h2 { font-family: 'Playfair Display', serif; color: #FFF; font-size: 1.3rem; margin-bottom: 4px; }
-        .login-screen .subtitle { color: var(--gold); font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; }
-        .login-screen p { color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-bottom: 6px; }
-
-        .login-form { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 12px; }
-        .login-form input { width: 100%; padding: 14px 16px; border-radius: var(--radius-sm); border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #FFF; font-size: 0.9rem; font-family: 'Inter', sans-serif; outline: none; transition: var(--transition); }
-        .login-form input::placeholder { color: rgba(255,255,255,0.3); }
-        .login-form input:focus { border-color: var(--gold); background: rgba(255,255,255,0.08); }
-        .login-error { color: var(--error); font-size: 0.75rem; display: none; text-align: left; }
-        .login-error.show { display: block; }
-
-        .btn-login-email { width: 100%; padding: 14px; background: var(--gold-gradient); color: #0A0A0A; border: none; border-radius: 50px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
-        .btn-login-email:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,0.3); }
-        .btn-login-email:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-        .divider { display: flex; align-items: center; gap: 10px; margin: 8px 0; color: rgba(255,255,255,0.2); font-size: 0.7rem; }
-        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
-
-        .btn-google { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; background: #FFF; color: #1A1A1A; border: none; border-radius: 50px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
-        .btn-google:hover { transform: translateY(-2px); }
+        /* LOGIN */
+        .auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px; text-align: center; background: #0A0A0A; }
+        .auth-screen .logo { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 900; font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+        .auth-screen h2 { font-family: 'Playfair Display', serif; color: #FFF; font-size: 1.2rem; margin-bottom: 2px; }
+        .auth-screen .subtitle { color: var(--gold); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px; }
+        .auth-form { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 10px; }
+        .auth-form input { width: 100%; padding: 13px 16px; border-radius: var(--radius-sm); border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #FFF; font-size: 0.88rem; font-family: 'Inter', sans-serif; outline: none; transition: var(--transition); }
+        .auth-form input::placeholder { color: rgba(255,255,255,0.3); }
+        .auth-form input:focus { border-color: var(--gold); background: rgba(255,255,255,0.08); }
+        .auth-error { color: #FF6B6B; font-size: 0.73rem; display: none; text-align: center; padding: 8px; background: rgba(211,47,47,0.1); border-radius: 8px; }
+        .auth-error.show { display: block; }
+        .auth-success { color: var(--success); font-size: 0.73rem; display: none; text-align: center; padding: 8px; background: rgba(46,125,50,0.1); border-radius: 8px; }
+        .auth-success.show { display: block; }
+        .btn-auth { width: 100%; padding: 13px; border: none; border-radius: 50px; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .btn-primary { background: var(--gold-gradient); color: #0A0A0A; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212,175,55,0.3); }
+        .btn-outline-white { background: transparent; border: 1.5px solid rgba(255,255,255,0.3); color: #FFF; }
+        .btn-outline-white:hover { border-color: var(--gold); background: rgba(212,175,55,0.08); }
+        .btn-google { display: flex; align-items: center; justify-content: center; gap: 8px; background: #FFF; color: #1A1A1A; }
         .btn-google img { width: 18px; height: 18px; }
+        .auth-toggle { color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-top: 6px; }
+        .auth-toggle span { color: var(--gold); cursor: pointer; font-weight: 600; text-decoration: underline; }
+        .divider-line { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.2); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; }
+        .divider-line::before, .divider-line::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
 
         /* DASHBOARD */
         .dashboard { display: none; padding-bottom: 40px; }
         .dashboard.show { display: block; }
-
-        .admin-header { background: #0A0A0A; padding: 20px 20px 16px; text-align: center; position: relative; }
+        .admin-header { background: #0A0A0A; padding: 20px; text-align: center; position: relative; }
         .admin-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--gold-gradient); }
         .admin-header h2 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: #FFF; letter-spacing: 1px; }
         .admin-header .admin-label { font-size: 0.6rem; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; }
-        .btn-logout { position: absolute; top: 18px; right: 16px; padding: 6px 14px; background: rgba(255,255,255,0.08); color: #FFF; border: 1px solid rgba(255,255,255,0.15); border-radius: 50px; font-size: 0.7rem; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .admin-header .admin-email { font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
+        .btn-logout { position: absolute; top: 16px; right: 16px; padding: 6px 14px; background: rgba(255,255,255,0.08); color: #FFF; border: 1px solid rgba(255,255,255,0.15); border-radius: 50px; font-size: 0.7rem; cursor: pointer; font-family: 'Inter', sans-serif; }
         .btn-logout:hover { background: rgba(211,47,47,0.2); border-color: var(--error); }
 
-        /* DAY SELECTOR */
         .day-selector { display: flex; gap: 8px; padding: 16px 20px; background: var(--surface); border-bottom: 1px solid rgba(0,0,0,0.05); }
         .day-btn { flex: 1; padding: 12px 8px; border: 2px solid rgba(0,0,0,0.08); border-radius: var(--radius-sm); background: #FFF; font-weight: 700; font-size: 0.78rem; cursor: pointer; transition: var(--transition); text-align: center; font-family: 'Inter', sans-serif; }
-        .day-btn.active { border-color: var(--gold); background: rgba(212,175,55,0.06); color: var(--gold-deep); box-shadow: var(--shadow-gold); }
+        .day-btn.active { border-color: var(--gold); background: rgba(212,175,55,0.06); color: var(--gold-deep); box-shadow: 0 4px 20px rgba(212,175,55,0.15); }
         .day-btn .day-num { font-size: 1.2rem; display: block; }
         .day-btn .day-label { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
 
-        /* SCANNER */
         .scanner-section { padding: 16px 20px; }
         .scanner-box { border-radius: var(--radius); overflow: hidden; border: 2px solid rgba(0,0,0,0.08); background: #0A0A0A; }
         #reader { width: 100%; }
-
         .scan-status { margin-top: 10px; padding: 12px 16px; border-radius: var(--radius-sm); text-align: center; font-weight: 700; font-size: 0.85rem; display: none; }
-        .scan-status.show { display: block; animation: fadeInUp 0.3s ease; }
+        .scan-status.show { display: block; animation: fadeIn 0.3s ease; }
         .scan-status.success { background: rgba(46,125,50,0.1); color: var(--success); border: 1px solid rgba(46,125,50,0.2); }
         .scan-status.error { background: rgba(211,47,47,0.1); color: var(--error); border: 1px solid rgba(211,47,47,0.2); }
         .scan-status.warning { background: rgba(230,126,34,0.1); color: var(--warning); border: 1px solid rgba(230,126,34,0.2); }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .scanner-controls { display: flex; gap: 8px; margin-top: 10px; }
-        .btn-scanner { flex: 1; padding: 10px; border-radius: 50px; border: none; font-weight: 600; font-size: 0.78rem; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .btn-scanner { flex: 1; padding: 10px; border-radius: 50px; border: none; font-weight: 600; font-size: 0.78rem; cursor: pointer; font-family: 'Inter', sans-serif; }
         .btn-start { background: var(--gold-gradient); color: #0A0A0A; }
         .btn-stop { background: var(--surface); color: var(--text-secondary); border: 1px solid rgba(0,0,0,0.1); }
         .btn-scanner:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* STATS */
         .stats-row { display: flex; gap: 8px; padding: 0 20px 16px; }
         .stat-card { flex: 1; background: #FFF; border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; }
-        .stat-card .stat-num { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; color: var(--text); }
+        .stat-card .stat-num { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; }
         .stat-card .stat-label { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
         .stat-card.gold { border-color: rgba(212,175,55,0.3); background: rgba(212,175,55,0.03); }
         .stat-card.gold .stat-num { color: var(--gold-deep); }
 
-        /* TABLE */
         .table-section { padding: 0 20px; }
         .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
         .table-header h3 { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; }
         .table-controls { display: flex; gap: 6px; flex-wrap: wrap; }
-        .btn-sm { padding: 8px 14px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.1); background: #FFF; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
-        .btn-sm:hover { background: var(--surface); }
+        .btn-sm { padding: 8px 14px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.1); background: #FFF; font-size: 0.7rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
         .btn-sm.primary { background: var(--gold-gradient); color: #0A0A0A; border: none; font-weight: 700; }
-        .search-input { padding: 8px 14px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.1); font-size: 0.75rem; outline: none; font-family: 'Inter', sans-serif; width: 140px; }
+        .search-input { padding: 8px 14px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.1); font-size: 0.75rem; outline: none; font-family: 'Inter', sans-serif; width: 130px; }
         .search-input:focus { border-color: var(--gold); }
-
-        .table-wrap { overflow-x: auto; }
-        .attendee-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; background: #FFF; border-radius: var(--radius-sm); overflow: hidden; min-width: 500px; }
-        .attendee-table th { background: #0A0A0A; color: #FFF; padding: 10px 8px; text-align: left; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+        .table-wrap { overflow-x: auto; border-radius: var(--radius-sm); }
+        .attendee-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; background: #FFF; min-width: 500px; }
+        .attendee-table th { background: #0A0A0A; color: #FFF; padding: 10px 8px; text-align: left; font-size: 0.62rem; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
         .attendee-table td { padding: 10px 8px; border-bottom: 1px solid rgba(0,0,0,0.04); white-space: nowrap; }
         .attendee-table tr:hover td { background: rgba(212,175,55,0.03); }
         .check-mark { cursor: pointer; font-size: 1.2rem; text-align: center; user-select: none; }
-        .check-mark:hover { transform: scale(1.2); }
+        .check-mark:hover { transform: scale(1.25); }
         .check-mark.checked { color: var(--success); }
         .check-mark.unchecked { color: #CCC; }
 
-        /* MODAL */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
-        .modal { background: #FFF; border-radius: var(--radius); padding: 24px 20px; width: 100%; max-width: 420px; }
-        .modal h3 { font-family: 'Playfair Display', serif; margin-bottom: 16px; }
-        .modal .form-group { margin-bottom: 12px; }
-        .modal .form-group label { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 4px; }
+        .modal { background: #FFF; border-radius: var(--radius); padding: 24px 20px; width: 100%; max-width: 400px; }
+        .modal h3 { font-family: 'Playfair Display', serif; margin-bottom: 14px; }
+        .modal .form-group { margin-bottom: 10px; }
+        .modal .form-group label { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 4px; }
         .modal .form-group input { width: 100%; padding: 10px 12px; border: 1.5px solid rgba(0,0,0,0.1); border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; }
         .modal .form-group input:focus { border-color: var(--gold); }
-        .modal-buttons { display: flex; gap: 8px; margin-top: 16px; }
+        .modal-buttons { display: flex; gap: 8px; margin-top: 14px; }
         .modal-buttons button { flex: 1; padding: 12px; border-radius: 50px; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; font-family: 'Inter', sans-serif; }
         .btn-save { background: var(--gold-gradient); color: #0A0A0A; }
         .btn-cancel { background: var(--surface); color: var(--text-secondary); border: 1px solid rgba(0,0,0,0.1); }
@@ -144,39 +129,45 @@
 
     <div class="app-container">
 
-        <!-- LOGIN SCREEN -->
-        <div class="login-screen" id="loginScreen">
+        <!-- ========== AUTH SCREEN ========== -->
+        <div class="auth-screen" id="authScreen">
             <div class="logo">SPAC</div>
-            <h2>Admin Dashboard</h2>
+            <h2>Admin Access</h2>
             <p class="subtitle">EAGLE CONVERGENCE '25</p>
             
-            <div class="login-form">
-                <input type="email" id="loginEmail" placeholder="Admin Email" autocomplete="email">
-                <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
-                <span class="login-error" id="loginError">Invalid email or password</span>
-                <button class="btn-login-email" onclick="loginWithEmail()">Sign In</button>
+            <div class="auth-form" id="loginForm">
+                <input type="email" id="authEmail" placeholder="Email address" autocomplete="email">
+                <input type="password" id="authPassword" placeholder="Password (min 6 characters)" autocomplete="current-password">
+                <span class="auth-error" id="authError"></span>
+                <span class="auth-success" id="authSuccess"></span>
+                <button class="btn-auth btn-primary" onclick="handleLogin()">Sign In</button>
+                <div class="auth-toggle">
+                    Don't have an account? <span onclick="toggleAuthMode()">Create Account</span>
+                </div>
+                <div class="divider-line">or</div>
+                <button class="btn-auth btn-google" onclick="handleGoogleLogin()">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.96 16.46 0 20.12 0 24c0 3.88.96 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E" alt="G">
+                    Continue with Google
+                </button>
+                <button class="btn-auth btn-outline-white" onclick="handleGoogleLogin()" style="display:none;" id="btnGoogleFallback">
+                    Try Google Sign-In Instead
+                </button>
             </div>
-            
-            <div class="divider">or</div>
-            
-            <button class="btn-google" onclick="loginWithGoogle()">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.96 16.46 0 20.12 0 24c0 3.88.96 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E" alt="G">
-                Sign in with Google
-            </button>
         </div>
 
-        <!-- DASHBOARD (same as before — kept for space) -->
+        <!-- ========== DASHBOARD ========== -->
         <div class="dashboard" id="dashboard">
             <div class="admin-header">
-                <button class="btn-logout" onclick="logout()">Logout</button>
+                <button class="btn-logout" onclick="handleLogout()">Logout</button>
                 <div class="admin-label">Admin Dashboard</div>
                 <h2>EAGLE CONVERGENCE '25</h2>
+                <div class="admin-email" id="adminEmail"></div>
             </div>
 
             <div class="day-selector">
-                <button class="day-btn active" onclick="selectDay('day1', this)" id="btnDay1"><span class="day-num">Day 1</span><span class="day-label">Thu 4th</span></button>
-                <button class="day-btn" onclick="selectDay('day2', this)" id="btnDay2"><span class="day-num">Day 2</span><span class="day-label">Fri 5th</span></button>
-                <button class="day-btn" onclick="selectDay('day3', this)" id="btnDay3"><span class="day-num">Day 3</span><span class="day-label">Sat 6th</span></button>
+                <button class="day-btn active" onclick="selectDay('day1', this)"><span class="day-num">Day 1</span><span class="day-label">Thu 4th</span></button>
+                <button class="day-btn" onclick="selectDay('day2', this)"><span class="day-num">Day 2</span><span class="day-label">Fri 5th</span></button>
+                <button class="day-btn" onclick="selectDay('day3', this)"><span class="day-num">Day 3</span><span class="day-label">Sat 6th</span></button>
             </div>
 
             <div class="scanner-section">
@@ -213,12 +204,12 @@
 
             <div class="modal-overlay" id="walkInModal">
                 <div class="modal">
-                    <h3>➕ Add Walk-In</h3>
+                    <h3>➕ Add Walk-In Attendee</h3>
                     <div class="form-group"><label>Full Name</label><input type="text" id="walkInName" placeholder="Full name"></div>
-                    <div class="form-group"><label>WhatsApp</label><input type="tel" id="walkInWhatsapp" placeholder="08012345678"></div>
+                    <div class="form-group"><label>WhatsApp (optional)</label><input type="tel" id="walkInWhatsapp" placeholder="08012345678"></div>
                     <div class="modal-buttons">
                         <button class="btn-cancel" onclick="closeWalkInModal()">Cancel</button>
-                        <button class="btn-save" onclick="addWalkIn()">Add</button>
+                        <button class="btn-save" onclick="addWalkIn()">Add Attendee</button>
                     </div>
                 </div>
             </div>
@@ -228,7 +219,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc, getDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDvUeEnc2mtjw9Umhjh7qVls7tzTKgj2Pw",
@@ -249,66 +240,120 @@
         let html5QrCode = null;
         let allAttendees = [];
         let isScannerRunning = false;
+        let isSignUpMode = false;
 
-        // ============ LOGIN METHODS ============
-        window.loginWithEmail = async function() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            const errorEl = document.getElementById('loginError');
+        // ============ AUTH MODE TOGGLE ============
+        window.toggleAuthMode = function() {
+            isSignUpMode = !isSignUpMode;
+            const btn = document.querySelector('.btn-primary');
+            const toggleText = document.querySelector('.auth-toggle span');
+            const title = document.querySelector('.auth-screen h2');
+            const subtitle = document.querySelector('.auth-screen .subtitle');
+            
+            if (isSignUpMode) {
+                title.textContent = 'Create Admin Account';
+                subtitle.textContent = 'Register as an admin';
+                btn.textContent = 'Create Account';
+                toggleText.textContent = 'Already have an account? Sign In';
+            } else {
+                title.textContent = 'Admin Access';
+                subtitle.textContent = 'EAGLE CONVERGENCE \'25';
+                btn.textContent = 'Sign In';
+                toggleText.textContent = "Don't have an account? Create Account";
+            }
+            hideMessages();
+        };
+
+        function hideMessages() {
+            document.getElementById('authError').classList.remove('show');
+            document.getElementById('authSuccess').classList.remove('show');
+        }
+
+        // ============ LOGIN / SIGNUP ============
+        window.handleLogin = async function() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value;
+            const errorEl = document.getElementById('authError');
+            const successEl = document.getElementById('authSuccess');
+            
+            hideMessages();
             
             if (!email || !password) {
-                errorEl.textContent = 'Please enter email and password';
+                errorEl.textContent = 'Please fill in all fields';
+                errorEl.classList.add('show');
+                return;
+            }
+            
+            if (password.length < 6) {
+                errorEl.textContent = 'Password must be at least 6 characters';
                 errorEl.classList.add('show');
                 return;
             }
             
             try {
-                errorEl.classList.remove('show');
-                await signInWithEmailAndPassword(auth, email, password);
-                console.log('✅ Logged in with email');
-            } catch (error) {
-                console.error('Login error:', error.code, error.message);
-                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                    errorEl.textContent = 'Invalid email or password';
-                } else if (error.code === 'auth/invalid-email') {
-                    errorEl.textContent = 'Invalid email format';
+                if (isSignUpMode) {
+                    // CREATE NEW ADMIN ACCOUNT
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    successEl.textContent = '✅ Account created successfully!';
+                    successEl.classList.add('show');
+                    // Will auto-redirect via onAuthStateChanged
                 } else {
-                    errorEl.textContent = error.message;
+                    // SIGN IN
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+            } catch (error) {
+                console.error('Auth error:', error.code, error.message);
+                let msg = error.message;
+                if (error.code === 'auth/email-already-in-use') msg = 'This email is already registered. Sign in instead.';
+                if (error.code === 'auth/invalid-email') msg = 'Invalid email format.';
+                if (error.code === 'auth/weak-password') msg = 'Password is too weak. Use at least 6 characters.';
+                if (error.code === 'auth/invalid-credential') msg = 'Invalid email or password.';
+                errorEl.textContent = msg;
+                errorEl.classList.add('show');
+            }
+        };
+
+        window.handleGoogleLogin = async function() {
+            hideMessages();
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error('Google login error:', error.code, error.message);
+                const errorEl = document.getElementById('authError');
+                if (error.code === 'auth/popup-closed-by-user') {
+                    errorEl.textContent = 'Sign-in cancelled. Please try again.';
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    errorEl.textContent = 'This domain is not authorized for Google sign-in. Use Email/Password instead.';
+                } else {
+                    errorEl.textContent = 'Google sign-in failed: ' + error.message;
                 }
                 errorEl.classList.add('show');
             }
         };
 
-        window.loginWithGoogle = async function() {
-            try {
-                await signInWithPopup(auth, provider);
-                console.log('✅ Logged in with Google');
-            } catch (error) {
-                console.error('Google login error:', error.code, error.message);
-                alert('Google login failed: ' + error.message + '\n\nTry Email/Password instead.');
-            }
-        };
-
-        window.logout = async function() {
+        window.handleLogout = async function() {
             await signOut(auth);
         };
 
-        // Allow Enter key to submit login
-        document.getElementById('loginPassword').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') loginWithEmail();
+        // Enter key submits
+        document.getElementById('authPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleLogin();
         });
 
-        // ============ AUTH STATE ============
+        // ============ AUTH STATE LISTENER ============
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                console.log('👤 Logged in as:', user.email);
-                document.getElementById('loginScreen').style.display = 'none';
+                console.log('✅ Logged in:', user.email);
+                document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('dashboard').classList.add('show');
+                document.getElementById('adminEmail').textContent = user.email;
                 loadAttendees();
             } else {
-                console.log('👋 Logged out');
-                document.getElementById('loginScreen').style.display = 'flex';
+                console.log('👋 Signed out');
+                document.getElementById('authScreen').style.display = 'flex';
                 document.getElementById('dashboard').classList.remove('show');
+                document.getElementById('authEmail').value = '';
+                document.getElementById('authPassword').value = '';
                 stopScanner();
             }
         });
@@ -316,8 +361,7 @@
         // ============ DAY SELECTION ============
         window.selectDay = function(day, btn) {
             currentDay = day;
-            const labels = { day1: 'Day1', day2: 'Day2', day3: 'Day3' };
-            currentDayLabel = labels[day];
+            currentDayLabel = 'Day' + day.slice(-1);
             document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             if (isScannerRunning) { stopScanner(); setTimeout(startScanner, 500); }
@@ -329,14 +373,25 @@
             if (isScannerRunning) return;
             document.getElementById('btnStartScanner').disabled = true;
             document.getElementById('btnStopScanner').disabled = false;
+            const statusDiv = document.getElementById('scanStatus');
+            statusDiv.className = 'scan-status warning show';
+            statusDiv.textContent = '📷 Starting camera...';
             try {
                 html5QrCode = new Html5Qrcode("reader");
-                await html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } }, onScanSuccess, () => {});
+                await html5QrCode.start(
+                    { facingMode: "environment" },
+                    { fps: 10, qrbox: { width: 250, height: 250 } },
+                    onScanSuccess,
+                    () => {} // ignore scan errors
+                );
                 isScannerRunning = true;
+                statusDiv.textContent = '📷 Ready — point at ticket QR code';
             } catch (err) {
+                console.error('Scanner error:', err);
+                statusDiv.className = 'scan-status error show';
+                statusDiv.textContent = '❌ Camera error: ' + err.message;
                 document.getElementById('btnStartScanner').disabled = false;
                 document.getElementById('btnStopScanner').disabled = true;
-                alert('Camera error: ' + err.message);
             }
         };
 
@@ -347,6 +402,9 @@
             }
             document.getElementById('btnStartScanner').disabled = false;
             document.getElementById('btnStopScanner').disabled = true;
+            const statusDiv = document.getElementById('scanStatus');
+            statusDiv.className = 'scan-status';
+            statusDiv.textContent = '';
         };
 
         async function onScanSuccess(decodedText) {
@@ -360,6 +418,7 @@
             if (snapshot.empty) {
                 statusDiv.className = 'scan-status error show';
                 statusDiv.textContent = `❌ Ticket "${ticketId}" not found`;
+                playBeep('error');
                 return;
             }
             
@@ -373,10 +432,13 @@
                 return;
             }
             
-            await updateDoc(docData.ref, { [attendanceField]: true, [`markedAt_${attendanceField}`]: serverTimestamp() });
+            await updateDoc(docData.ref, {
+                [attendanceField]: true,
+                [`markedAt_${attendanceField}`]: serverTimestamp()
+            });
             
             statusDiv.className = 'scan-status success show';
-            statusDiv.textContent = `✅ ${data.fullName} — PRESENT`;
+            statusDiv.textContent = `✅ ${data.fullName} — PRESENT (Seat ${data['seat'+currentDayLabel] || 'N/A'})`;
             playBeep('success');
             loadAttendees();
         }
@@ -384,22 +446,25 @@
         function playBeep(type) {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain); gain.connect(ctx.destination);
-                gain.gain.value = 0.08;
-                osc.frequency.value = type === 'success' ? 880 : 400;
-                osc.start(); osc.stop(ctx.currentTime + (type === 'success' ? 0.12 : 0.25));
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                o.connect(g); g.connect(ctx.destination);
+                g.gain.value = 0.06;
+                o.frequency.value = type === 'success' ? 880 : type === 'warning' ? 500 : 300;
+                o.start(); o.stop(ctx.currentTime + 0.15);
             } catch(e) {}
         }
 
-        // ============ ATTENDANCE TABLE ============
+        // ============ TABLE ============
         window.toggleAttendance = async function(docId, day) {
             const field = 'attendance' + day;
             const attendee = allAttendees.find(a => a.id === docId);
             if (!attendee) return;
             const newVal = !attendee[field];
-            await updateDoc(doc(db, 'attendees', docId), { [field]: newVal });
+            await updateDoc(doc(db, 'attendees', docId), {
+                [field]: newVal,
+                [`markedAt_${field}`]: newVal ? serverTimestamp() : null
+            });
             attendee[field] = newVal;
             renderTable(allAttendees);
             updateStats();
@@ -433,32 +498,69 @@
         function updateStats() {
             const f = 'attendance' + currentDayLabel;
             const t = allAttendees.length;
-            const p = allAttendees.filter(a => a[f]===true).length;
+            const p = allAttendees.filter(a => a[f] === true).length;
             document.getElementById('statRegistered').textContent = t;
             document.getElementById('statPresent').textContent = p;
-            document.getElementById('statAbsent').textContent = t-p;
+            document.getElementById('statAbsent').textContent = t - p;
         }
 
         // ============ WALK-IN ============
         window.openWalkInModal = () => document.getElementById('walkInModal').classList.add('show');
-        window.closeWalkInModal = () => { document.getElementById('walkInModal').classList.remove('show'); document.getElementById('walkInName').value=''; document.getElementById('walkInWhatsapp').value=''; };
+        window.closeWalkInModal = () => {
+            document.getElementById('walkInModal').classList.remove('show');
+            document.getElementById('walkInName').value = '';
+            document.getElementById('walkInWhatsapp').value = '';
+        };
         window.addWalkIn = async function() {
             const name = document.getElementById('walkInName').value.trim();
             const wa = document.getElementById('walkInWhatsapp').value.trim() || 'walk-in';
-            if(!name) return alert('Enter name');
-            const cr = doc(db,'counters','ticketCounter'); const cs = await getDoc(cr); let nv=1; if(cs.exists()) nv=(cs.data().value||0)+1; await setDoc(cr,{value:nv},{merge:true});
-            const sr = doc(db,'counters','seatCounters'); const ss = await getDoc(sr); let se={day1:0,day2:0,day3:0}; if(ss.exists()) se=ss.data();
-            const s1=(se.day1||0)+1, s2=(se.day2||0)+1, s3=(se.day3||0)+1;
-            await setDoc(sr,{day1:s1,day2:s2,day3:s3},{merge:true});
-            await addDoc(collection(db,'attendees'),{fullName:name,whatsapp:wa,birthday:'',ticketId:`EAG-${String(nv).padStart(4,'0')}`,seatDay1:String(s1).padStart(3,'0'),seatDay2:String(s2).padStart(3,'0'),seatDay3:String(s3).padStart(3,'0'),attendanceDay1:currentDay==='day1',attendanceDay2:currentDay==='day2',attendanceDay3:currentDay==='day3',programName:'EAGLE CONVERGENCE',church:'SPAC CHURCH',hostPastor:'Yomi Okewunmi',registeredAt:serverTimestamp(),isWalkIn:true});
-            closeWalkInModal(); loadAttendees(); alert(`✅ Walk-in added!`);
+            if (!name) return alert('Please enter a name');
+            
+            const cr = doc(db, 'counters', 'ticketCounter');
+            const cs = await getDoc(cr);
+            let nv = 1;
+            if (cs.exists()) nv = (cs.data().value || 0) + 1;
+            await setDoc(cr, { value: nv }, { merge: true });
+            
+            const sr = doc(db, 'counters', 'seatCounters');
+            const ss = await getDoc(sr);
+            let se = { day1: 0, day2: 0, day3: 0 };
+            if (ss.exists()) se = ss.data();
+            const s1 = (se.day1 || 0) + 1, s2 = (se.day2 || 0) + 1, s3 = (se.day3 || 0) + 1;
+            await setDoc(sr, { day1: s1, day2: s2, day3: s3 }, { merge: true });
+            
+            await addDoc(collection(db, 'attendees'), {
+                fullName: name, whatsapp: wa, birthday: '',
+                ticketId: `EAG-${String(nv).padStart(4, '0')}`,
+                seatDay1: String(s1).padStart(3, '0'),
+                seatDay2: String(s2).padStart(3, '0'),
+                seatDay3: String(s3).padStart(3, '0'),
+                attendanceDay1: currentDay === 'day1',
+                attendanceDay2: currentDay === 'day2',
+                attendanceDay3: currentDay === 'day3',
+                programName: 'EAGLE CONVERGENCE', church: 'SPAC CHURCH',
+                hostPastor: 'Yomi Okewunmi',
+                registeredAt: serverTimestamp(), isWalkIn: true
+            });
+            
+            closeWalkInModal();
+            loadAttendees();
+            alert(`✅ Walk-in added! Ticket: EAG-${String(nv).padStart(4, '0')}`);
         };
 
         // ============ EXPORT ============
         window.exportToExcel = function() {
-            let csv='Name,Phone,Ticket,Seat D1,Seat D2,Seat D3,Day1,Day2,Day3\n';
-            allAttendees.forEach(a=>{csv+=`"${a.fullName}","${a.whatsapp}","${a.ticketId}","${a.seatDay1}","${a.seatDay2}","${a.seatDay3}",${a.attendanceDay1?'Present':'Absent'},${a.attendanceDay2?'Present':'Absent'},${a.attendanceDay3?'Present':'Absent'}\n`});
-            const b=new Blob([csv],{type:'text/csv'}),u=URL.createObjectURL(b),d=document.createElement('a');d.href=u;d.download='attendance.csv';d.click();URL.revokeObjectURL(u);
+            let csv = 'Name,Phone,Ticket ID,Seat D1,Seat D2,Seat D3,Day1,Day2,Day3\n';
+            allAttendees.forEach(a => {
+                csv += `"${a.fullName||''}","${a.whatsapp||''}","${a.ticketId||''}","${a.seatDay1||''}","${a.seatDay2||''}","${a.seatDay3||''}",${a.attendanceDay1?'Present':'Absent'},${a.attendanceDay2?'Present':'Absent'},${a.attendanceDay3?'Present':'Absent'}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `eagle-convergence-attendance-${currentDayLabel.toLowerCase()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
         };
     </script>
 </body>
