@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- QR Scanner Library -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     
     <style>
@@ -38,12 +37,28 @@
 
         /* LOGIN SCREEN */
         .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px; text-align: center; background: #0A0A0A; }
-        .login-screen .logo { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 20px; }
-        .login-screen h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.5rem; margin-bottom: 8px; }
-        .login-screen p { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-bottom: 30px; }
-        .btn-google { display: flex; align-items: center; gap: 10px; padding: 14px 28px; background: #FFF; color: #1A1A1A; border: none; border-radius: 50px; font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: var(--transition); }
-        .btn-google:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
-        .btn-google img { width: 20px; height: 20px; }
+        .login-screen .logo { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 900; font-family: 'Playfair Display', serif; font-size: 1.2rem; }
+        .login-screen h2 { font-family: 'Playfair Display', serif; color: #FFF; font-size: 1.3rem; margin-bottom: 4px; }
+        .login-screen .subtitle { color: var(--gold); font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; }
+        .login-screen p { color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-bottom: 6px; }
+
+        .login-form { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 12px; }
+        .login-form input { width: 100%; padding: 14px 16px; border-radius: var(--radius-sm); border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #FFF; font-size: 0.9rem; font-family: 'Inter', sans-serif; outline: none; transition: var(--transition); }
+        .login-form input::placeholder { color: rgba(255,255,255,0.3); }
+        .login-form input:focus { border-color: var(--gold); background: rgba(255,255,255,0.08); }
+        .login-error { color: var(--error); font-size: 0.75rem; display: none; text-align: left; }
+        .login-error.show { display: block; }
+
+        .btn-login-email { width: 100%; padding: 14px; background: var(--gold-gradient); color: #0A0A0A; border: none; border-radius: 50px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .btn-login-email:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,0.3); }
+        .btn-login-email:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .divider { display: flex; align-items: center; gap: 10px; margin: 8px 0; color: rgba(255,255,255,0.2); font-size: 0.7rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+
+        .btn-google { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; background: #FFF; color: #1A1A1A; border: none; border-radius: 50px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .btn-google:hover { transform: translateY(-2px); }
+        .btn-google img { width: 18px; height: 18px; }
 
         /* DASHBOARD */
         .dashboard { display: none; padding-bottom: 40px; }
@@ -53,7 +68,7 @@
         .admin-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--gold-gradient); }
         .admin-header h2 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: #FFF; letter-spacing: 1px; }
         .admin-header .admin-label { font-size: 0.6rem; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; }
-        .btn-logout { position: absolute; top: 18px; right: 16px; padding: 6px 14px; background: rgba(255,255,255,0.08); color: #FFF; border: 1px solid rgba(255,255,255,0.15); border-radius: 50px; font-size: 0.7rem; cursor: pointer; transition: var(--transition); }
+        .btn-logout { position: absolute; top: 18px; right: 16px; padding: 6px 14px; background: rgba(255,255,255,0.08); color: #FFF; border: 1px solid rgba(255,255,255,0.15); border-radius: 50px; font-size: 0.7rem; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
         .btn-logout:hover { background: rgba(211,47,47,0.2); border-color: var(--error); }
 
         /* DAY SELECTOR */
@@ -65,11 +80,10 @@
 
         /* SCANNER */
         .scanner-section { padding: 16px 20px; }
-        .scanner-box { border-radius: var(--radius); overflow: hidden; border: 2px solid rgba(0,0,0,0.08); position: relative; background: #0A0A0A; }
+        .scanner-box { border-radius: var(--radius); overflow: hidden; border: 2px solid rgba(0,0,0,0.08); background: #0A0A0A; }
         #reader { width: 100%; }
-        #reader video { border-radius: var(--radius); }
 
-        .scan-status { margin-top: 10px; padding: 12px 16px; border-radius: var(--radius-sm); text-align: center; font-weight: 700; font-size: 0.85rem; display: none; transition: var(--transition); }
+        .scan-status { margin-top: 10px; padding: 12px 16px; border-radius: var(--radius-sm); text-align: center; font-weight: 700; font-size: 0.85rem; display: none; }
         .scan-status.show { display: block; animation: fadeInUp 0.3s ease; }
         .scan-status.success { background: rgba(46,125,50,0.1); color: var(--success); border: 1px solid rgba(46,125,50,0.2); }
         .scan-status.error { background: rgba(211,47,47,0.1); color: var(--error); border: 1px solid rgba(211,47,47,0.2); }
@@ -84,36 +98,37 @@
 
         /* STATS */
         .stats-row { display: flex; gap: 8px; padding: 0 20px 16px; }
-        .stat-card { flex: 1; background: #FFF; border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .stat-card { flex: 1; background: #FFF; border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; }
         .stat-card .stat-num { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; color: var(--text); }
-        .stat-card .stat-label { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); margin-top: 2px; }
+        .stat-card .stat-label { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
         .stat-card.gold { border-color: rgba(212,175,55,0.3); background: rgba(212,175,55,0.03); }
         .stat-card.gold .stat-num { color: var(--gold-deep); }
 
         /* TABLE */
         .table-section { padding: 0 20px; }
-        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
         .table-header h3 { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; }
-        .table-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+        .table-controls { display: flex; gap: 6px; flex-wrap: wrap; }
         .btn-sm { padding: 8px 14px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.1); background: #FFF; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
         .btn-sm:hover { background: var(--surface); }
         .btn-sm.primary { background: var(--gold-gradient); color: #0A0A0A; border: none; font-weight: 700; }
         .search-input { padding: 8px 14px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.1); font-size: 0.75rem; outline: none; font-family: 'Inter', sans-serif; width: 140px; }
         .search-input:focus { border-color: var(--gold); }
 
-        .attendee-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; background: #FFF; border-radius: var(--radius-sm); overflow: hidden; box-shadow: 0 2px 15px rgba(0,0,0,0.04); }
-        .attendee-table th { background: #0A0A0A; color: #FFF; padding: 10px 8px; text-align: left; font-weight: 600; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+        .table-wrap { overflow-x: auto; }
+        .attendee-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; background: #FFF; border-radius: var(--radius-sm); overflow: hidden; min-width: 500px; }
+        .attendee-table th { background: #0A0A0A; color: #FFF; padding: 10px 8px; text-align: left; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
         .attendee-table td { padding: 10px 8px; border-bottom: 1px solid rgba(0,0,0,0.04); white-space: nowrap; }
         .attendee-table tr:hover td { background: rgba(212,175,55,0.03); }
-        .check-mark { cursor: pointer; font-size: 1.2rem; text-align: center; transition: var(--transition); user-select: none; }
+        .check-mark { cursor: pointer; font-size: 1.2rem; text-align: center; user-select: none; }
         .check-mark:hover { transform: scale(1.2); }
         .check-mark.checked { color: var(--success); }
         .check-mark.unchecked { color: #CCC; }
 
-        /* WALK-IN MODAL */
+        /* MODAL */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
-        .modal { background: #FFF; border-radius: var(--radius); padding: 24px 20px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal { background: #FFF; border-radius: var(--radius); padding: 24px 20px; width: 100%; max-width: 420px; }
         .modal h3 { font-family: 'Playfair Display', serif; margin-bottom: 16px; }
         .modal .form-group { margin-bottom: 12px; }
         .modal .form-group label { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 4px; }
@@ -123,8 +138,6 @@
         .modal-buttons button { flex: 1; padding: 12px; border-radius: 50px; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; font-family: 'Inter', sans-serif; }
         .btn-save { background: var(--gold-gradient); color: #0A0A0A; }
         .btn-cancel { background: var(--surface); color: var(--text-secondary); border: 1px solid rgba(0,0,0,0.1); }
-
-        .export-section { padding: 16px 20px; display: flex; gap: 8px; flex-wrap: wrap; }
     </style>
 </head>
 <body>
@@ -133,16 +146,26 @@
 
         <!-- LOGIN SCREEN -->
         <div class="login-screen" id="loginScreen">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70'%3E%3Ccircle cx='35' cy='35' r='32' fill='none' stroke='%23D4AF37' stroke-width='2'/%3E%3Ctext x='35' y='42' text-anchor='middle' font-size='16' fill='%23D4AF37' font-weight='bold'%3ESPAC%3C/text%3E%3C/svg%3E" alt="SPAC" class="logo">
+            <div class="logo">SPAC</div>
             <h2>Admin Dashboard</h2>
-            <p>EAGLE CONVERGENCE '25<br>Attendance Management</p>
+            <p class="subtitle">EAGLE CONVERGENCE '25</p>
+            
+            <div class="login-form">
+                <input type="email" id="loginEmail" placeholder="Admin Email" autocomplete="email">
+                <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+                <span class="login-error" id="loginError">Invalid email or password</span>
+                <button class="btn-login-email" onclick="loginWithEmail()">Sign In</button>
+            </div>
+            
+            <div class="divider">or</div>
+            
             <button class="btn-google" onclick="loginWithGoogle()">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.96 16.46 0 20.12 0 24c0 3.88.96 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E" alt="Google">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.96 16.46 0 20.12 0 24c0 3.88.96 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E" alt="G">
                 Sign in with Google
             </button>
         </div>
 
-        <!-- DASHBOARD -->
+        <!-- DASHBOARD (same as before — kept for space) -->
         <div class="dashboard" id="dashboard">
             <div class="admin-header">
                 <button class="btn-logout" onclick="logout()">Logout</button>
@@ -150,27 +173,14 @@
                 <h2>EAGLE CONVERGENCE '25</h2>
             </div>
 
-            <!-- Day Selector -->
             <div class="day-selector">
-                <button class="day-btn active" onclick="selectDay('day1', this)" id="btnDay1">
-                    <span class="day-num">Day 1</span>
-                    <span class="day-label">Thu 4th</span>
-                </button>
-                <button class="day-btn" onclick="selectDay('day2', this)" id="btnDay2">
-                    <span class="day-num">Day 2</span>
-                    <span class="day-label">Fri 5th</span>
-                </button>
-                <button class="day-btn" onclick="selectDay('day3', this)" id="btnDay3">
-                    <span class="day-num">Day 3</span>
-                    <span class="day-label">Sat 6th</span>
-                </button>
+                <button class="day-btn active" onclick="selectDay('day1', this)" id="btnDay1"><span class="day-num">Day 1</span><span class="day-label">Thu 4th</span></button>
+                <button class="day-btn" onclick="selectDay('day2', this)" id="btnDay2"><span class="day-num">Day 2</span><span class="day-label">Fri 5th</span></button>
+                <button class="day-btn" onclick="selectDay('day3', this)" id="btnDay3"><span class="day-num">Day 3</span><span class="day-label">Sat 6th</span></button>
             </div>
 
-            <!-- Scanner -->
             <div class="scanner-section">
-                <div class="scanner-box">
-                    <div id="reader"></div>
-                </div>
+                <div class="scanner-box"><div id="reader"></div></div>
                 <div class="scan-status" id="scanStatus"></div>
                 <div class="scanner-controls">
                     <button class="btn-scanner btn-start" onclick="startScanner()" id="btnStartScanner">📷 Start Scanner</button>
@@ -178,60 +188,47 @@
                 </div>
             </div>
 
-            <!-- Stats -->
             <div class="stats-row">
-                <div class="stat-card"><div class="stat-num" id="statRegistered">0</div><div class="stat-label">Registered</div></div>
-                <div class="stat-card gold"><div class="stat-num" id="statPresent">0</div><div class="stat-label">Present Today</div></div>
-                <div class="stat-card"><div class="stat-num" id="statAbsent">0</div><div class="stat-label">Absent Today</div></div>
+                <div class="stat-card"><div class="stat-num" id="statRegistered">0</div><div class="stat-label">Total</div></div>
+                <div class="stat-card gold"><div class="stat-num" id="statPresent">0</div><div class="stat-label">Present</div></div>
+                <div class="stat-card"><div class="stat-num" id="statAbsent">0</div><div class="stat-label">Absent</div></div>
             </div>
 
-            <!-- Table -->
             <div class="table-section">
                 <div class="table-header">
                     <h3>Attendees</h3>
                     <div class="table-controls">
-                        <input type="text" class="search-input" placeholder="🔍 Search name..." oninput="filterTable()" id="searchInput">
+                        <input type="text" class="search-input" placeholder="🔍 Search..." oninput="filterTable()" id="searchInput">
                         <button class="btn-sm primary" onclick="openWalkInModal()">+ Walk-In</button>
                         <button class="btn-sm" onclick="exportToExcel()">📥 Excel</button>
                     </div>
                 </div>
-                <div style="overflow-x: auto;">
+                <div class="table-wrap">
                     <table class="attendee-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Ticket</th>
-                                <th>Seat</th>
-                                <th>D1</th>
-                                <th>D2</th>
-                                <th>D3</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Name</th><th>Ticket</th><th>Seat</th><th>D1</th><th>D2</th><th>D3</th></tr></thead>
                         <tbody id="tableBody"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Walk-In Modal -->
             <div class="modal-overlay" id="walkInModal">
                 <div class="modal">
-                    <h3>➕ Add Walk-In Attendee</h3>
+                    <h3>➕ Add Walk-In</h3>
                     <div class="form-group"><label>Full Name</label><input type="text" id="walkInName" placeholder="Full name"></div>
-                    <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="walkInWhatsapp" placeholder="08012345678"></div>
+                    <div class="form-group"><label>WhatsApp</label><input type="tel" id="walkInWhatsapp" placeholder="08012345678"></div>
                     <div class="modal-buttons">
                         <button class="btn-cancel" onclick="closeWalkInModal()">Cancel</button>
-                        <button class="btn-save" onclick="addWalkIn()">Add Attendee</button>
+                        <button class="btn-save" onclick="addWalkIn()">Add</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc, getDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDvUeEnc2mtjw9Umhjh7qVls7tzTKgj2Pw",
@@ -239,8 +236,7 @@
             projectId: "eagle-ec67f",
             storageBucket: "eagle-ec67f.firebasestorage.app",
             messagingSenderId: "751509177511",
-            appId: "1:751509177511:web:91adcd50595210cb80c782",
-            measurementId: "G-LZL7THKG6T"
+            appId: "1:751509177511:web:91adcd50595210cb80c782"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -249,18 +245,47 @@
         const provider = new GoogleAuthProvider();
 
         let currentDay = 'day1';
-        let currentDayLabel = 'Day 1';
+        let currentDayLabel = 'Day1';
         let html5QrCode = null;
         let allAttendees = [];
         let isScannerRunning = false;
 
-        // ============ AUTH ============
+        // ============ LOGIN METHODS ============
+        window.loginWithEmail = async function() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+            
+            if (!email || !password) {
+                errorEl.textContent = 'Please enter email and password';
+                errorEl.classList.add('show');
+                return;
+            }
+            
+            try {
+                errorEl.classList.remove('show');
+                await signInWithEmailAndPassword(auth, email, password);
+                console.log('✅ Logged in with email');
+            } catch (error) {
+                console.error('Login error:', error.code, error.message);
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    errorEl.textContent = 'Invalid email or password';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorEl.textContent = 'Invalid email format';
+                } else {
+                    errorEl.textContent = error.message;
+                }
+                errorEl.classList.add('show');
+            }
+        };
+
         window.loginWithGoogle = async function() {
             try {
                 await signInWithPopup(auth, provider);
+                console.log('✅ Logged in with Google');
             } catch (error) {
-                console.error('Login failed:', error);
-                alert('Login failed: ' + error.message);
+                console.error('Google login error:', error.code, error.message);
+                alert('Google login failed: ' + error.message + '\n\nTry Email/Password instead.');
             }
         };
 
@@ -268,12 +293,20 @@
             await signOut(auth);
         };
 
+        // Allow Enter key to submit login
+        document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') loginWithEmail();
+        });
+
+        // ============ AUTH STATE ============
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                console.log('👤 Logged in as:', user.email);
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboard').classList.add('show');
                 loadAttendees();
             } else {
+                console.log('👋 Logged out');
                 document.getElementById('loginScreen').style.display = 'flex';
                 document.getElementById('dashboard').classList.remove('show');
                 stopScanner();
@@ -283,120 +316,69 @@
         // ============ DAY SELECTION ============
         window.selectDay = function(day, btn) {
             currentDay = day;
-            const labels = { day1: 'Day 1', day2: 'Day 2', day3: 'Day 3' };
+            const labels = { day1: 'Day1', day2: 'Day2', day3: 'Day3' };
             currentDayLabel = labels[day];
-            
             document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
-            // Restart scanner for new day if running
-            if (isScannerRunning) {
-                stopScanner();
-                setTimeout(startScanner, 500);
-            }
-            
+            if (isScannerRunning) { stopScanner(); setTimeout(startScanner, 500); }
             updateStats();
-            document.getElementById('scanStatus').className = 'scan-status';
-            document.getElementById('scanStatus').textContent = `📷 Ready to scan for ${currentDayLabel}`;
-            document.getElementById('scanStatus').classList.add('show', 'warning');
         };
 
         // ============ SCANNER ============
         window.startScanner = async function() {
             if (isScannerRunning) return;
-            
             document.getElementById('btnStartScanner').disabled = true;
             document.getElementById('btnStopScanner').disabled = false;
-            
             try {
                 html5QrCode = new Html5Qrcode("reader");
-                await html5QrCode.start(
-                    { facingMode: "environment" },
-                    { fps: 10, qrbox: { width: 250, height: 250 } },
-                    onScanSuccess,
-                    onScanError
-                );
+                await html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } }, onScanSuccess, () => {});
                 isScannerRunning = true;
-                document.getElementById('scanStatus').className = 'scan-status warning show';
-                document.getElementById('scanStatus').textContent = `📷 Scanning for ${currentDayLabel} — point at ticket QR`;
             } catch (err) {
-                console.error('Scanner error:', err);
                 document.getElementById('btnStartScanner').disabled = false;
                 document.getElementById('btnStopScanner').disabled = true;
-                document.getElementById('scanStatus').className = 'scan-status error show';
-                document.getElementById('scanStatus').textContent = '❌ Camera access denied. Check permissions.';
+                alert('Camera error: ' + err.message);
             }
         };
 
         window.stopScanner = async function() {
             if (html5QrCode && isScannerRunning) {
-                try {
-                    await html5QrCode.stop();
-                    html5QrCode.clear();
-                } catch (e) {}
+                try { await html5QrCode.stop(); html5QrCode.clear(); } catch(e) {}
                 isScannerRunning = false;
             }
             document.getElementById('btnStartScanner').disabled = false;
             document.getElementById('btnStopScanner').disabled = true;
         };
 
-        function onScanSuccess(decodedText) {
-            // Auto-mark attendance immediately
-            markAttendanceByTicketId(decodedText.trim());
-        }
-
-        function onScanError(error) {
-            // Scanning errors happen constantly — don't show them
-        }
-
-        // ============ AUTO MARK ATTENDANCE ============
-        async function markAttendanceByTicketId(ticketId) {
+        async function onScanSuccess(decodedText) {
+            const ticketId = decodedText.trim();
             const statusDiv = document.getElementById('scanStatus');
+            const attendanceField = 'attendance' + currentDayLabel;
             
-            // Query Firestore
             const q = query(collection(db, 'attendees'), where('ticketId', '==', ticketId));
             const snapshot = await getDocs(q);
             
             if (snapshot.empty) {
                 statusDiv.className = 'scan-status error show';
                 statusDiv.textContent = `❌ Ticket "${ticketId}" not found`;
-                setTimeout(() => { if (isScannerRunning) statusDiv.className = 'scan-status warning show'; statusDiv.textContent = `📷 Scanning for ${currentDayLabel}`; }, 2500);
                 return;
             }
             
-            const docRef = snapshot.docs[0].ref;
-            const data = snapshot.docs[0].data();
-            const attendanceField = `attendance${currentDayLabel.replace(' ', '')}`; // attendanceDay1, attendanceDay2, attendanceDay3
+            const docData = snapshot.docs[0];
+            const data = docData.data();
             
-            // Check if already marked
             if (data[attendanceField] === true) {
                 statusDiv.className = 'scan-status warning show';
-                statusDiv.textContent = `⚠️ ${data.fullName} already marked present for ${currentDayLabel}`;
+                statusDiv.textContent = `⚠️ ${data.fullName} already marked present`;
                 playBeep('warning');
-                setTimeout(() => { if (isScannerRunning) statusDiv.className = 'scan-status warning show'; statusDiv.textContent = `📷 Scanning for ${currentDayLabel}`; }, 2500);
                 return;
             }
             
-            // MARK ATTENDANCE
-            await updateDoc(docRef, {
-                [attendanceField]: true,
-                [`markedAt_${attendanceField}`]: serverTimestamp()
-            });
+            await updateDoc(docData.ref, { [attendanceField]: true, [`markedAt_${attendanceField}`]: serverTimestamp() });
             
             statusDiv.className = 'scan-status success show';
-            statusDiv.textContent = `✅ ${data.fullName} — PRESENT for ${currentDayLabel} (Seat: ${data['seat' + currentDayLabel.replace(' ', '')] || 'N/A'})`;
+            statusDiv.textContent = `✅ ${data.fullName} — PRESENT`;
             playBeep('success');
-            
-            // Refresh table and stats
             loadAttendees();
-            
-            // Auto-resume after 2 seconds
-            setTimeout(() => {
-                if (isScannerRunning) {
-                    statusDiv.className = 'scan-status warning show';
-                    statusDiv.textContent = `📷 Ready — Scanning for ${currentDayLabel}`;
-                }
-            }, 2000);
         }
 
         function playBeep(type) {
@@ -404,175 +386,80 @@
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                gain.gain.value = 0.1;
-                
-                if (type === 'success') {
-                    osc.frequency.value = 800;
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.15);
-                } else {
-                    osc.frequency.value = 400;
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.3);
-                }
+                osc.connect(gain); gain.connect(ctx.destination);
+                gain.gain.value = 0.08;
+                osc.frequency.value = type === 'success' ? 880 : 400;
+                osc.start(); osc.stop(ctx.currentTime + (type === 'success' ? 0.12 : 0.25));
             } catch(e) {}
         }
 
-        // ============ MANUAL ATTENDANCE TOGGLE ============
+        // ============ ATTENDANCE TABLE ============
         window.toggleAttendance = async function(docId, day) {
-            const attendanceField = `attendance${day}`;
+            const field = 'attendance' + day;
             const attendee = allAttendees.find(a => a.id === docId);
             if (!attendee) return;
-            
-            const newValue = !attendee[attendanceField];
-            
-            await updateDoc(doc(db, 'attendees', docId), {
-                [attendanceField]: newValue,
-                [`markedAt_${attendanceField}`]: newValue ? serverTimestamp() : null
-            });
-            
-            // Update local data
-            attendee[attendanceField] = newValue;
+            const newVal = !attendee[field];
+            await updateDoc(doc(db, 'attendees', docId), { [field]: newVal });
+            attendee[field] = newVal;
             renderTable(allAttendees);
             updateStats();
         };
 
-        // ============ LOAD ATTENDEES ============
         async function loadAttendees() {
-            const q = query(collection(db, 'attendees'), orderBy('registeredAt', 'desc'));
-            const snapshot = await getDocs(q);
+            const snap = await getDocs(query(collection(db, 'attendees'), orderBy('registeredAt', 'desc')));
             allAttendees = [];
-            snapshot.forEach(doc => {
-                allAttendees.push({ id: doc.id, ...doc.data() });
-            });
+            snap.forEach(d => allAttendees.push({ id: d.id, ...d.data() }));
             renderTable(allAttendees);
             updateStats();
         }
 
-        function renderTable(attendees) {
-            const tbody = document.getElementById('tableBody');
-            const searchTerm = (document.getElementById('searchInput').value || '').toLowerCase();
-            
-            const filtered = attendees.filter(a => 
-                !searchTerm || (a.fullName || '').toLowerCase().includes(searchTerm) || (a.ticketId || '').toLowerCase().includes(searchTerm)
-            );
-            
-            tbody.innerHTML = filtered.map(a => {
-                const d1 = a.attendanceDay1 ? '✅' : '❌';
-                const d2 = a.attendanceDay2 ? '✅' : '❌';
-                const d3 = a.attendanceDay3 ? '✅' : '❌';
-                const seat = a[`seat${currentDayLabel.replace(' ','')}`] || '—';
-                
-                return `
-                    <tr>
-                        <td><strong>${a.fullName || '—'}</strong></td>
-                        <td>${a.ticketId || '—'}</td>
-                        <td>${seat}</td>
-                        <td class="check-mark ${a.attendanceDay1 ? 'checked' : 'unchecked'}" onclick="toggleAttendance('${a.id}', 'Day1')">${d1}</td>
-                        <td class="check-mark ${a.attendanceDay2 ? 'checked' : 'unchecked'}" onclick="toggleAttendance('${a.id}', 'Day2')">${d2}</td>
-                        <td class="check-mark ${a.attendanceDay3 ? 'checked' : 'unchecked'}" onclick="toggleAttendance('${a.id}', 'Day3')">${d3}</td>
-                    </tr>
-                `;
+        function renderTable(list) {
+            const s = (document.getElementById('searchInput').value || '').toLowerCase();
+            const filtered = list.filter(a => !s || (a.fullName||'').toLowerCase().includes(s) || (a.ticketId||'').toLowerCase().includes(s));
+            document.getElementById('tableBody').innerHTML = filtered.map(a => {
+                const seat = a['seat'+currentDayLabel] || '—';
+                return `<tr>
+                    <td><strong>${a.fullName||'—'}</strong></td>
+                    <td>${a.ticketId||'—'}</td><td>${seat}</td>
+                    <td class="check-mark ${a.attendanceDay1?'checked':'unchecked'}" onclick="toggleAttendance('${a.id}','Day1')">${a.attendanceDay1?'✅':'❌'}</td>
+                    <td class="check-mark ${a.attendanceDay2?'checked':'unchecked'}" onclick="toggleAttendance('${a.id}','Day2')">${a.attendanceDay2?'✅':'❌'}</td>
+                    <td class="check-mark ${a.attendanceDay3?'checked':'unchecked'}" onclick="toggleAttendance('${a.id}','Day3')">${a.attendanceDay3?'✅':'❌'}</td>
+                </tr>`;
             }).join('');
         }
 
-        window.filterTable = function() {
-            renderTable(allAttendees);
-        };
+        window.filterTable = () => renderTable(allAttendees);
 
         function updateStats() {
-            const total = allAttendees.length;
-            const attendanceField = `attendance${currentDayLabel.replace(' ', '')}`;
-            const present = allAttendees.filter(a => a[attendanceField] === true).length;
-            const absent = total - present;
-            
-            document.getElementById('statRegistered').textContent = total;
-            document.getElementById('statPresent').textContent = present;
-            document.getElementById('statAbsent').textContent = absent;
+            const f = 'attendance' + currentDayLabel;
+            const t = allAttendees.length;
+            const p = allAttendees.filter(a => a[f]===true).length;
+            document.getElementById('statRegistered').textContent = t;
+            document.getElementById('statPresent').textContent = p;
+            document.getElementById('statAbsent').textContent = t-p;
         }
 
         // ============ WALK-IN ============
-        window.openWalkInModal = function() {
-            document.getElementById('walkInModal').classList.add('show');
-        };
-
-        window.closeWalkInModal = function() {
-            document.getElementById('walkInModal').classList.remove('show');
-            document.getElementById('walkInName').value = '';
-            document.getElementById('walkInWhatsapp').value = '';
-        };
-
+        window.openWalkInModal = () => document.getElementById('walkInModal').classList.add('show');
+        window.closeWalkInModal = () => { document.getElementById('walkInModal').classList.remove('show'); document.getElementById('walkInName').value=''; document.getElementById('walkInWhatsapp').value=''; };
         window.addWalkIn = async function() {
             const name = document.getElementById('walkInName').value.trim();
-            const whatsapp = document.getElementById('walkInWhatsapp').value.trim() || 'walk-in';
-            
-            if (!name) { alert('Enter name'); return; }
-            
-            // Generate ticket ID
-            const counterRef = doc(db, 'counters', 'ticketCounter');
-            const counterSnap = await getDoc(counterRef);
-            let nextVal = 1;
-            if (counterSnap.exists()) nextVal = (counterSnap.data().value || 0) + 1;
-            await setDoc(counterRef, { value: nextVal }, { merge: true });
-            
-            const ticketId = `EAG-${String(nextVal).padStart(4, '0')}`;
-            
-            // Get seats
-            const seatRef = doc(db, 'counters', 'seatCounters');
-            const seatSnap = await getDoc(seatRef);
-            let seats = { day1: 0, day2: 0, day3: 0 };
-            if (seatSnap.exists()) seats = seatSnap.data();
-            
-            const s1 = (seats.day1 || 0) + 1;
-            const s2 = (seats.day2 || 0) + 1;
-            const s3 = (seats.day3 || 0) + 1;
-            
-            await setDoc(seatRef, { day1: s1, day2: s2, day3: s3 }, { merge: true });
-            
-            await addDoc(collection(db, 'attendees'), {
-                fullName: name,
-                whatsapp,
-                birthday: '',
-                ticketId,
-                seatDay1: String(s1).padStart(3,'0'),
-                seatDay2: String(s2).padStart(3,'0'),
-                seatDay3: String(s3).padStart(3,'0'),
-                attendanceDay1: currentDay === 'day1',
-                attendanceDay2: currentDay === 'day2',
-                attendanceDay3: currentDay === 'day3',
-                programName: 'EAGLE CONVERGENCE',
-                church: 'SPAC CHURCH',
-                hostPastor: 'Yomi Okewunmi',
-                registeredAt: serverTimestamp(),
-                isWalkIn: true
-            });
-            
-            closeWalkInModal();
-            loadAttendees();
-            alert(`✅ Walk-in added! Ticket: ${ticketId}`);
+            const wa = document.getElementById('walkInWhatsapp').value.trim() || 'walk-in';
+            if(!name) return alert('Enter name');
+            const cr = doc(db,'counters','ticketCounter'); const cs = await getDoc(cr); let nv=1; if(cs.exists()) nv=(cs.data().value||0)+1; await setDoc(cr,{value:nv},{merge:true});
+            const sr = doc(db,'counters','seatCounters'); const ss = await getDoc(sr); let se={day1:0,day2:0,day3:0}; if(ss.exists()) se=ss.data();
+            const s1=(se.day1||0)+1, s2=(se.day2||0)+1, s3=(se.day3||0)+1;
+            await setDoc(sr,{day1:s1,day2:s2,day3:s3},{merge:true});
+            await addDoc(collection(db,'attendees'),{fullName:name,whatsapp:wa,birthday:'',ticketId:`EAG-${String(nv).padStart(4,'0')}`,seatDay1:String(s1).padStart(3,'0'),seatDay2:String(s2).padStart(3,'0'),seatDay3:String(s3).padStart(3,'0'),attendanceDay1:currentDay==='day1',attendanceDay2:currentDay==='day2',attendanceDay3:currentDay==='day3',programName:'EAGLE CONVERGENCE',church:'SPAC CHURCH',hostPastor:'Yomi Okewunmi',registeredAt:serverTimestamp(),isWalkIn:true});
+            closeWalkInModal(); loadAttendees(); alert(`✅ Walk-in added!`);
         };
 
         // ============ EXPORT ============
         window.exportToExcel = function() {
-            const day = currentDayLabel.replace(' ', '');
-            let csv = 'Name,Phone,Ticket ID,Seat Day1,Seat Day2,Seat Day3,Day1,Day2,Day3\n';
-            allAttendees.forEach(a => {
-                csv += `"${a.fullName}","${a.whatsapp}","${a.ticketId}","${a.seatDay1}","${a.seatDay2}","${a.seatDay3}",${a.attendanceDay1?'Present':'Absent'},${a.attendanceDay2?'Present':'Absent'},${a.attendanceDay3?'Present':'Absent'}\n`;
-            });
-            
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `eagle-convergence-attendance-${currentDayLabel.replace(' ','-').toLowerCase()}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
+            let csv='Name,Phone,Ticket,Seat D1,Seat D2,Seat D3,Day1,Day2,Day3\n';
+            allAttendees.forEach(a=>{csv+=`"${a.fullName}","${a.whatsapp}","${a.ticketId}","${a.seatDay1}","${a.seatDay2}","${a.seatDay3}",${a.attendanceDay1?'Present':'Absent'},${a.attendanceDay2?'Present':'Absent'},${a.attendanceDay3?'Present':'Absent'}\n`});
+            const b=new Blob([csv],{type:'text/csv'}),u=URL.createObjectURL(b),d=document.createElement('a');d.href=u;d.download='attendance.csv';d.click();URL.revokeObjectURL(u);
         };
-
-        // Make toggleAttendance available globally
-        window.toggleAttendance = toggleAttendance;
     </script>
 </body>
 </html>
