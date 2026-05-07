@@ -8,706 +8,130 @@
     
     <title>Register | EAGLE CONVERGENCE '25</title>
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- QR Library -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     
     <style>
-        /* ============ 2050 RESET & APP SHELL ============ */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --gold: #D4AF37;
-            --gold-deep: #B8960C;
-            --gold-light: #F5E6A3;
+            --gold: #D4AF37; --gold-deep: #B8960C; --gold-light: #F5E6A3;
             --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 40%, #B8960C 100%);
-            --gold-gradient-vertical: linear-gradient(180deg, #D4AF37 0%, #F5E6A3 50%, #B8960C 100%);
-            --bg: #FFFFFF;
-            --surface: #FAFAFA;
-            --text: #1A1A1A;
-            --text-secondary: #5A5A5A;
-            --error: #D32F2F;
-            --success: #2E7D32;
-            --shadow-gold: 0 4px 30px rgba(212, 175, 55, 0.2);
-            --shadow-card: 0 2px 20px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
-            --radius: 20px;
-            --radius-sm: 12px;
-            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg: #FFFFFF; --surface: #FAFAFA; --text: #1A1A1A; --text-secondary: #5A5A5A;
+            --error: #D32F2F; --success: #2E7D32;
+            --shadow-gold: 0 4px 30px rgba(212,175,55,0.2);
+            --shadow-card: 0 2px 20px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
+            --radius: 20px; --radius-sm: 12px;
+            --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
         }
 
-        html {
-            font-size: 16px;
-            -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+        html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #0A0A0A; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 0; color: var(--text); line-height: 1.6; overflow-x: hidden; }
 
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: #0A0A0A;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 0;
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            min-height: 100vh;
-            background: var(--bg);
-            position: relative;
-            overflow-x: hidden;
-            overflow-y: auto;
-            box-shadow: 0 0 80px rgba(212, 175, 55, 0.3);
-        }
-
-        @media (max-width: 480px) {
-            .app-container { max-width: 100%; box-shadow: none; }
-        }
-
-        @media (min-width: 768px) {
-            body { padding: 30px; background: radial-gradient(ellipse at center, #1a1a1a 0%, #0A0A0A 100%); }
-            .app-container { border-radius: 28px; min-height: calc(100vh - 60px); max-height: 95vh; }
-        }
+        .app-container { width: 100%; max-width: 480px; min-height: 100vh; background: var(--bg); position: relative; overflow-x: hidden; overflow-y: auto; box-shadow: 0 0 80px rgba(212,175,55,0.3); }
+        @media (max-width: 480px) { .app-container { max-width: 100%; box-shadow: none; } }
+        @media (min-width: 768px) { body { padding: 30px; background: radial-gradient(ellipse at center, #1a1a1a 0%, #0A0A0A 100%); } .app-container { border-radius: 28px; min-height: calc(100vh - 60px); max-height: 95vh; } }
 
         .app-container::-webkit-scrollbar { width: 4px; }
         .app-container::-webkit-scrollbar-track { background: transparent; }
         .app-container::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
-        /* ============ HEADER ============ */
-        .reg-header {
-            background: #0A0A0A;
-            padding: 28px 24px 22px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
+        .reg-header { background: #0A0A0A; padding: 28px 24px 22px; text-align: center; position: relative; overflow: hidden; z-index: 1; }
+        .reg-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--gold-gradient); }
+        .reg-header .mini-logo { width: 45px; height: 45px; border-radius: 50%; border: 1.5px solid rgba(212,175,55,0.4); object-fit: contain; padding: 4px; margin-bottom: 8px; background: rgba(255,255,255,0.03); }
+        .reg-header h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 800; color: #FFF; letter-spacing: 1px; line-height: 1.2; }
+        .reg-header h2 .gold { color: var(--gold); }
+        .reg-header .sub { font-size: 0.7rem; color: rgba(255,255,255,0.55); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
 
-        .reg-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--gold-gradient);
-            z-index: 2;
-        }
+        .back-btn { position: absolute; top: 20px; left: 16px; z-index: 5; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #FFF; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); backdrop-filter: blur(10px); text-decoration: none; }
+        .back-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--gold); }
 
-        .reg-header .mini-logo {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 1.5px solid rgba(212, 175, 55, 0.4);
-            object-fit: contain;
-            padding: 4px;
-            margin-bottom: 8px;
-            background: rgba(255,255,255,0.03);
-        }
+        /* COUNTDOWN */
+        .countdown-section { background: linear-gradient(180deg, #0A0A0A 0%, #151515 100%); padding: 24px 20px 28px; text-align: center; position: relative; border-bottom: 1px solid rgba(212,175,55,0.15); }
+        .countdown-section .cd-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: rgba(212,175,55,0.7); margin-bottom: 6px; }
+        .countdown-section .cd-event { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 16px; letter-spacing: 1px; }
 
-        .reg-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #FFFFFF;
-            letter-spacing: 1px;
-            line-height: 1.2;
-        }
+        .cd-calendar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 400px; margin: 0 auto; }
+        .cd-block { background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.2); border-radius: 12px; padding: 14px 8px; position: relative; overflow: hidden; }
+        .cd-block::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--gold-gradient); opacity: 0.5; }
+        .cd-block .cd-number { font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 800; color: #FFF; line-height: 1; }
+        .cd-block .cd-unit { font-size: 0.6rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 4px; }
+        .cd-block.highlight { border-color: rgba(212,175,55,0.5); background: rgba(212,175,55,0.06); }
 
-        .reg-header h2 .gold {
-            color: var(--gold);
-        }
+        .cd-sub-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-width: 400px; margin: 8px auto 0; }
+        .cd-sub-block { background: rgba(255,255,255,0.03); border: 1px solid rgba(212,175,55,0.12); border-radius: 10px; padding: 10px 8px; text-align: center; }
+        .cd-sub-block .cd-number { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: var(--gold-light); line-height: 1; }
+        .cd-sub-block .cd-number.milliseconds { font-size: 1.2rem; }
+        .cd-sub-block .cd-unit { font-size: 0.55rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-top: 3px; }
 
-        .reg-header .sub {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.55);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
+        .cd-live { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 5px 14px; background: rgba(212,175,55,0.08); border-radius: 50px; border: 1px solid rgba(212,175,55,0.2); }
+        .cd-live .live-dot { width: 7px; height: 7px; background: #4CAF50; border-radius: 50%; animation: livePulse 1.5s ease-in-out infinite; }
+        @keyframes livePulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(76,175,80,0.6)} 50%{opacity:0.6;box-shadow:0 0 0 8px rgba(76,175,80,0)} }
+        .cd-live span { font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
 
-        /* ============ BACK BUTTON ============ */
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 16px;
-            z-index: 5;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
-            color: #FFF;
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-            text-decoration: none;
-        }
-        .back-btn:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--gold);
-        }
+        /* FORM */
+        .form-section { padding: 30px 24px 20px; }
+        .form-intro { text-align: center; margin-bottom: 24px; }
+        .form-intro .icon-circle { width: 55px; height: 55px; border-radius: 50%; background: rgba(212,175,55,0.08); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 10px; }
+        .form-intro h3 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem; color: var(--text); }
+        .form-intro p { font-size: 0.78rem; color: var(--text-secondary); margin-top: 4px; }
 
-        /* ============ COUNTDOWN SECTION ============ */
-        .countdown-section {
-            background: linear-gradient(180deg, #0A0A0A 0%, #151515 100%);
-            padding: 24px 20px 28px;
-            text-align: center;
-            position: relative;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
-        }
-
-        .countdown-section .cd-label {
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: rgba(212, 175, 55, 0.7);
-            margin-bottom: 6px;
-        }
-
-        .countdown-section .cd-event {
-            font-family: 'Playfair Display', serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 16px;
-            letter-spacing: 1px;
-        }
-
-        /* Calendar-style countdown grid */
-        .cd-calendar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .cd-block {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 12px;
-            padding: 14px 8px;
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .cd-block::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--gold-gradient);
-            opacity: 0.5;
-        }
-
-        .cd-block .cd-number {
-            font-family: 'JetBrains Mono', 'Courier New', monospace;
-            font-size: 2rem;
-            font-weight: 800;
-            color: #FFFFFF;
-            line-height: 1;
-            letter-spacing: -1px;
-        }
-
-        .cd-block .cd-number.milliseconds {
-            font-size: 1.2rem;
-            color: var(--gold-light);
-            font-weight: 700;
-        }
-
-        .cd-block .cd-unit {
-            font-size: 0.6rem;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.4);
-            margin-top: 4px;
-        }
-
-        .cd-block.highlight {
-            border-color: rgba(212, 175, 55, 0.5);
-            background: rgba(212, 175, 55, 0.06);
-        }
-
-        /* Sub-seconds row */
-        .cd-sub-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            max-width: 400px;
-            margin: 8px auto 0;
-        }
-
-        .cd-sub-block {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(212, 175, 55, 0.12);
-            border-radius: 10px;
-            padding: 10px 8px;
-            text-align: center;
-        }
-
-        .cd-sub-block .cd-number {
-            font-family: 'JetBrains Mono', 'Courier New', monospace;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--gold-light);
-            line-height: 1;
-        }
-
-        .cd-sub-block .cd-unit {
-            font-size: 0.55rem;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.35);
-            margin-top: 3px;
-        }
-
-        /* Live indicator */
-        .cd-live {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 14px;
-            padding: 5px 14px;
-            background: rgba(212, 175, 55, 0.08);
-            border-radius: 50px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-        }
-
-        .cd-live .live-dot {
-            width: 7px;
-            height: 7px;
-            background: #4CAF50;
-            border-radius: 50%;
-            animation: livePulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes livePulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6); }
-            50% { opacity: 0.6; box-shadow: 0 0 0 8px rgba(76, 175, 80, 0); }
-        }
-
-        .cd-live span {
-            font-size: 0.65rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.5);
-        }
-
-        /* ============ FORM SECTION ============ */
-        .form-section {
-            padding: 30px 24px 20px;
-        }
-
-        .form-intro {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .form-intro .icon-circle {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: rgba(212, 175, 55, 0.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            margin: 0 auto 10px;
-        }
-
-        .form-intro h3 {
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 1.15rem;
-            color: var(--text);
-        }
-
-        .form-intro p {
-            font-size: 0.78rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        /* ============ INPUT STYLES ============ */
-        .form-group {
-            margin-bottom: 16px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-        }
-
-        .form-group label .required {
-            color: var(--gold-deep);
-        }
-
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-wrapper .input-icon {
-            position: absolute;
-            left: 14px;
-            font-size: 1rem;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px 14px 14px 42px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text);
-            background: var(--surface);
-            border: 1.5px solid rgba(0,0,0,0.08);
-            border-radius: var(--radius-sm);
-            outline: none;
-            transition: var(--transition);
-            letter-spacing: 0.3px;
-        }
-
-        .form-group input:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.08);
-            background: #FFFFFF;
-        }
-
-        .form-group input::placeholder {
-            color: #B0B0B0;
-            font-weight: 400;
-        }
-
-        .form-group input.error {
-            border-color: var(--error);
-            box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.06);
-        }
-
-        .error-msg {
-            font-size: 0.68rem;
-            color: var(--error);
-            margin-top: 4px;
-            display: none;
-        }
+        .form-group { margin-bottom: 16px; position: relative; }
+        .form-group label { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px; }
+        .form-group label .required { color: var(--gold-deep); }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper .input-icon { position: absolute; left: 14px; font-size: 1rem; pointer-events: none; z-index: 2; }
+        .form-group input { width: 100%; padding: 14px 14px 14px 42px; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--text); background: var(--surface); border: 1.5px solid rgba(0,0,0,0.08); border-radius: var(--radius-sm); outline: none; transition: var(--transition); }
+        .form-group input:focus { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(212,175,55,0.08); background: #FFF; }
+        .form-group input::placeholder { color: #B0B0B0; font-weight: 400; }
+        .form-group input.error { border-color: var(--error); box-shadow: 0 0 0 4px rgba(211,47,47,0.06); }
+        .error-msg { font-size: 0.68rem; color: var(--error); margin-top: 4px; display: none; }
         .error-msg.show { display: block; }
 
-        /* ============ SUBMIT BUTTON ============ */
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: var(--gold-gradient);
-            color: #0A0A0A;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            margin-top: 10px;
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition);
-            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.45);
-        }
-
-        .btn-submit:active {
-            transform: scale(0.97);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-submit .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(0,0,0,0.2);
-            border-top-color: #0A0A0A;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            margin-right: 8px;
-        }
-
+        .btn-submit { width: 100%; padding: 16px; background: var(--gold-gradient); color: #0A0A0A; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 1px; border: none; border-radius: 50px; cursor: pointer; margin-top: 10px; transition: var(--transition); box-shadow: 0 8px 30px rgba(212,175,55,0.3); }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(212,175,55,0.45); }
+        .btn-submit:active { transform: scale(0.97); }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-submit .spinner { display: none; width: 20px; height: 20px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #0A0A0A; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .btn-submit.loading .spinner { display: inline-block; }
         .btn-submit.loading .btn-text { display: none; }
 
-        .form-note {
-            text-align: center;
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-top: 14px;
-            line-height: 1.5;
-        }
+        .form-note { text-align: center; font-size: 0.7rem; color: var(--text-secondary); margin-top: 14px; }
+        .form-note a { color: var(--gold-deep); text-decoration: none; font-weight: 600; }
 
-        .form-note a {
-            color: var(--gold-deep);
-            text-decoration: none;
-            font-weight: 600;
-        }
+        /* TICKET */
+        .ticket-section { display: none; padding: 20px 24px 40px; animation: fadeInUp 0.5s ease-out; }
+        .ticket-section.show { display: block; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ============ TICKET SECTION ============ */
-        .ticket-section {
-            display: none;
-            padding: 20px 24px 40px;
-            animation: fadeInUp 0.5s ease-out;
-        }
-        .ticket-section.show {
-            display: block;
-        }
+        .ticket-card { background: #FFF; border: 2px solid var(--gold); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg); }
+        .ticket-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--gold-gradient); }
+        .ticket-top { background: #0A0A0A; padding: 18px 20px; text-align: center; position: relative; }
+        .ticket-top::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 10px solid #0A0A0A; }
+        .ticket-top .ticket-program { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 800; color: var(--gold); letter-spacing: 1px; }
+        .ticket-top .ticket-church { font-size: 0.65rem; color: rgba(255,255,255,0.6); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+        .ticket-body { padding: 24px 20px 20px; text-align: center; }
+        .ticket-body .attendee-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+        .ticket-body .ticket-id { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; color: var(--gold-deep); background: rgba(212,175,55,0.1); padding: 4px 14px; border-radius: 50px; margin-bottom: 14px; }
+        .ticket-body .host-line { font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 16px; }
+        .seats-grid { display: flex; gap: 10px; justify-content: center; margin-bottom: 18px; }
+        .seat-chip { background: var(--surface); border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 10px 14px; text-align: center; min-width: 70px; }
+        .seat-chip .day-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
+        .seat-chip .seat-num { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 900; color: var(--text); }
+        .qr-wrapper { display: flex; justify-content: center; margin: 10px 0; }
+        .qr-container { background: #FFF; padding: 12px; border-radius: var(--radius-sm); border: 1px solid rgba(0,0,0,0.08); display: inline-block; }
+        .ticket-footer { background: var(--surface); padding: 14px 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .btn-outline { padding: 10px 20px; background: transparent; border: 1.5px solid var(--gold); color: var(--gold-deep); font-weight: 600; font-size: 0.78rem; border-radius: 50px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .btn-outline:hover { background: rgba(212,175,55,0.08); }
+        .btn-outline.danger { border-color: #ccc; color: var(--text-secondary); }
+        .ticket-warning { text-align: center; font-size: 0.7rem; color: #E67E22; margin-top: 14px; padding: 10px; background: rgba(230,126,34,0.06); border-radius: 10px; font-weight: 500; }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .ticket-card {
-            background: #FFFFFF;
-            border: 2px solid var(--gold);
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-        }
-
-        .ticket-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--gold-gradient);
-        }
-
-        .ticket-top {
-            background: #0A0A0A;
-            padding: 18px 20px;
-            text-align: center;
-            position: relative;
-        }
-
-        .ticket-top::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 12px solid transparent;
-            border-right: 12px solid transparent;
-            border-top: 10px solid #0A0A0A;
-        }
-
-        .ticket-top .ticket-program {
-            font-family: 'Playfair Display', serif;
-            font-size: 1rem;
-            font-weight: 800;
-            color: var(--gold);
-            letter-spacing: 1px;
-        }
-
-        .ticket-top .ticket-church {
-            font-size: 0.65rem;
-            color: rgba(255,255,255,0.6);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
-
-        .ticket-body {
-            padding: 24px 20px 20px;
-            text-align: center;
-        }
-
-        .ticket-body .attendee-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: var(--text);
-            margin-bottom: 4px;
-        }
-
-        .ticket-body .ticket-id {
-            display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--gold-deep);
-            background: rgba(212, 175, 55, 0.1);
-            padding: 4px 14px;
-            border-radius: 50px;
-            margin-bottom: 14px;
-        }
-
-        .ticket-body .host-line {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            letter-spacing: 0.5px;
-        }
-
-        .seats-grid {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 18px;
-        }
-
-        .seat-chip {
-            background: var(--surface);
-            border: 1px solid rgba(0,0,0,0.06);
-            border-radius: 10px;
-            padding: 10px 14px;
-            text-align: center;
-            min-width: 70px;
-        }
-
-        .seat-chip .day-label {
-            font-size: 0.6rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-        }
-
-        .seat-chip .seat-num {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: var(--text);
-        }
-
-        .qr-wrapper {
-            display: flex;
-            justify-content: center;
-            margin: 10px 0;
-        }
-
-        .qr-container {
-            background: #FFFFFF;
-            padding: 12px;
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(0,0,0,0.08);
-            display: inline-block;
-        }
-
-        .qr-container canvas,
-        .qr-container img {
-            display: block;
-        }
-
-        .ticket-footer {
-            background: var(--surface);
-            padding: 14px 20px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-outline {
-            padding: 10px 20px;
-            background: transparent;
-            border: 1.5px solid var(--gold);
-            color: var(--gold-deep);
-            font-weight: 600;
-            font-size: 0.78rem;
-            letter-spacing: 0.5px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Inter', sans-serif;
-        }
-
-        .btn-outline:hover {
-            background: rgba(212, 175, 55, 0.08);
-        }
-
-        .btn-outline.danger {
-            border-color: #ccc;
-            color: var(--text-secondary);
-        }
-
-        .ticket-warning {
-            text-align: center;
-            font-size: 0.7rem;
-            color: #E67E22;
-            margin-top: 14px;
-            padding: 10px;
-            background: rgba(230, 126, 34, 0.06);
-            border-radius: 10px;
-            font-weight: 500;
-        }
-
-        /* ============ TOAST ============ */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #1A1A1A;
-            color: #FFF;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            z-index: 999;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            letter-spacing: 0.5px;
-            text-align: center;
-            max-width: 90%;
-        }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1A1A1A; color: #FFF; padding: 12px 24px; border-radius: 50px; font-size: 0.82rem; font-weight: 600; z-index: 999; transition: transform 0.4s; box-shadow: 0 10px 40px rgba(0,0,0,0.3); text-align: center; max-width: 90%; }
         .toast.show { transform: translateX(-50%) translateY(0); }
         .toast.success { border: 1px solid var(--success); }
         .toast.error { border: 1px solid var(--error); }
@@ -717,62 +141,31 @@
 
     <div class="app-container">
 
-        <!-- ============ HEADER ============ -->
         <div class="reg-header">
             <a href="index.html" class="back-btn" title="Back">←</a>
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45'%3E%3Ccircle cx='22.5' cy='22.5' r='20' fill='none' stroke='%23D4AF37' stroke-width='2'/%3E%3Ctext x='22.5' y='28' text-anchor='middle' font-size='11' fill='%23D4AF37' font-weight='bold'%3ESPAC%3C/text%3E%3C/svg%3E" 
-                 alt="SPAC" class="mini-logo">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45'%3E%3Ccircle cx='22.5' cy='22.5' r='20' fill='none' stroke='%23D4AF37' stroke-width='2'/%3E%3Ctext x='22.5' y='28' text-anchor='middle' font-size='11' fill='%23D4AF37' font-weight='bold'%3ESPAC%3C/text%3E%3C/svg%3E" alt="SPAC" class="mini-logo">
             <h2>EAGLE <span class="gold">CONVERGENCE</span> '25</h2>
             <p class="sub">Registration</p>
         </div>
 
-        <!-- ============ BIG COUNTDOWN ============ -->
         <div class="countdown-section" id="countdownSection">
             <div class="cd-label">⏳ Countdown to Eagle Convergence</div>
             <div class="cd-event">Thursday, 4th June 2026 • 5:00 PM WAT</div>
-
             <div class="cd-calendar">
-                <!-- Weeks -->
-                <div class="cd-block highlight">
-                    <div class="cd-number" id="cd-weeks">00</div>
-                    <div class="cd-unit">Weeks</div>
-                </div>
-                <!-- Days -->
-                <div class="cd-block highlight">
-                    <div class="cd-number" id="cd-days">00</div>
-                    <div class="cd-unit">Days</div>
-                </div>
-                <!-- Hours -->
-                <div class="cd-block">
-                    <div class="cd-number" id="cd-hours">00</div>
-                    <div class="cd-unit">Hours</div>
-                </div>
-                <!-- Minutes -->
-                <div class="cd-block">
-                    <div class="cd-number" id="cd-minutes">00</div>
-                    <div class="cd-unit">Minutes</div>
-                </div>
+                <div class="cd-block highlight"><div class="cd-number" id="cd-days">00</div><div class="cd-unit">Days</div></div>
+                <div class="cd-block"><div class="cd-number" id="cd-hours">00</div><div class="cd-unit">Hours</div></div>
+                <div class="cd-block"><div class="cd-number" id="cd-minutes">00</div><div class="cd-unit">Minutes</div></div>
+                <div class="cd-block"><div class="cd-number" id="cd-seconds">00</div><div class="cd-unit">Seconds</div></div>
             </div>
-
-            <!-- Seconds + Milliseconds row -->
             <div class="cd-sub-row">
-                <div class="cd-sub-block">
-                    <div class="cd-number" id="cd-seconds">00</div>
-                    <div class="cd-unit">Seconds</div>
-                </div>
-                <div class="cd-sub-block">
+                <div class="cd-sub-block" style="grid-column: span 2;">
                     <div class="cd-number milliseconds" id="cd-milliseconds">000</div>
                     <div class="cd-unit">Milliseconds</div>
                 </div>
             </div>
-
-            <div class="cd-live">
-                <div class="live-dot"></div>
-                <span>Live • Counting Down</span>
-            </div>
+            <div class="cd-live"><div class="live-dot"></div><span>Live • Counting Down</span></div>
         </div>
 
-        <!-- ============ FORM SECTION ============ -->
         <div class="form-section" id="formSection">
             <div class="form-intro">
                 <div class="icon-circle">🦅</div>
@@ -783,107 +176,53 @@
             <form id="registerForm" novalidate>
                 <div class="form-group">
                     <label for="fullName">Full Name <span class="required">*</span></label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">👤</span>
-                        <input type="text" id="fullName" placeholder="Enter your full name" required autocomplete="name">
-                    </div>
+                    <div class="input-wrapper"><span class="input-icon">👤</span><input type="text" id="fullName" placeholder="Enter your full name" required autocomplete="name"></div>
                     <span class="error-msg" id="nameError">Please enter your full name (at least 3 characters)</span>
                 </div>
-
                 <div class="form-group">
                     <label for="whatsapp">WhatsApp Number <span class="required">*</span></label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">💬</span>
-                        <input type="tel" id="whatsapp" placeholder="08012345678" required autocomplete="tel">
-                    </div>
+                    <div class="input-wrapper"><span class="input-icon">💬</span><input type="tel" id="whatsapp" placeholder="08012345678" required autocomplete="tel"></div>
                     <span class="error-msg" id="whatsappError">Please enter a valid WhatsApp number (e.g. 08012345678)</span>
                 </div>
-
                 <div class="form-group">
                     <label for="dob">Date of Birth <span class="required">*</span></label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">🎂</span>
-                        <input type="date" id="dob" required>
-                    </div>
+                    <div class="input-wrapper"><span class="input-icon">🎂</span><input type="date" id="dob" required></div>
                     <span class="error-msg" id="dobError">Please enter your date of birth</span>
                 </div>
-
-                <button type="submit" class="btn-submit" id="submitBtn">
-                    <span class="spinner"></span>
-                    <span class="btn-text">✦ Register Now ✦</span>
-                </button>
+                <button type="submit" class="btn-submit" id="submitBtn"><span class="spinner"></span><span class="btn-text">✦ Register Now ✦</span></button>
             </form>
-
-            <p class="form-note">
-                By registering, you're securing your place at <strong>Eagle Convergence '25</strong>.<br>
-                <a href="index.html">← Back to event info</a>
-            </p>
+            <p class="form-note">By registering, you're securing your place at <strong>Eagle Convergence '25</strong>.<br><a href="index.html">← Back to event info</a></p>
         </div>
 
-        <!-- ============ TICKET SECTION ============ -->
         <div class="ticket-section" id="ticketSection">
             <div class="ticket-card">
-                <div class="ticket-top">
-                    <div class="ticket-program">EAGLE CONVERGENCE '25</div>
-                    <div class="ticket-church">SPAC CHURCH</div>
-                </div>
+                <div class="ticket-top"><div class="ticket-program">EAGLE CONVERGENCE '25</div><div class="ticket-church">SPAC CHURCH</div></div>
                 <div class="ticket-body">
                     <div class="attendee-name" id="ticketName">—</div>
                     <div class="ticket-id" id="ticketId">—</div>
                     <div class="host-line">Host: Pastor Yomi Okewunmi</div>
-                    
                     <div class="seats-grid">
-                        <div class="seat-chip">
-                            <div class="day-label">Day 1</div>
-                            <div class="seat-num" id="seatDay1">—</div>
-                        </div>
-                        <div class="seat-chip">
-                            <div class="day-label">Day 2</div>
-                            <div class="seat-num" id="seatDay2">—</div>
-                        </div>
-                        <div class="seat-chip">
-                            <div class="day-label">Day 3</div>
-                            <div class="seat-num" id="seatDay3">—</div>
-                        </div>
+                        <div class="seat-chip"><div class="day-label">Day 1</div><div class="seat-num" id="seatDay1">—</div></div>
+                        <div class="seat-chip"><div class="day-label">Day 2</div><div class="seat-num" id="seatDay2">—</div></div>
+                        <div class="seat-chip"><div class="day-label">Day 3</div><div class="seat-num" id="seatDay3">—</div></div>
                     </div>
-
-                    <div class="qr-wrapper">
-                        <div class="qr-container" id="qrCode"></div>
-                    </div>
+                    <div class="qr-wrapper"><div class="qr-container" id="qrCode"></div></div>
                 </div>
                 <div class="ticket-footer">
                     <button class="btn-outline" onclick="downloadTicket()">📥 Save Ticket</button>
                     <button class="btn-outline danger" onclick="registerAgain()">Register Again</button>
                 </div>
             </div>
-
-            <div class="ticket-warning">
-                ⚠️ Screenshot or save this ticket. The QR code will be scanned for attendance each day. 
-                Your seat numbers are unique — do not share this ticket.
-            </div>
+            <div class="ticket-warning">⚠️ Screenshot or save this ticket. The QR code will be scanned for attendance each day. Your seat numbers are unique — do not share this ticket.</div>
         </div>
-
     </div>
 
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <!-- ============ FIREBASE SDK ============ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { 
-            getFirestore, 
-            collection, 
-            addDoc, 
-            getDocs, 
-            query, 
-            where, 
-            runTransaction,
-            doc,
-            setDoc,
-            getDoc,
-            serverTimestamp 
-        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDvUeEnc2mtjw9Umhjh7qVls7tzTKgj2Pw",
@@ -897,54 +236,34 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        console.log('🔥 Firebase connected. Project:', firebaseConfig.projectId);
 
-        // ============ GLOBAL STATE ============
         let currentTicketData = null;
 
-        // ============ COUNTDOWN TIMER ============
-        function startCountdown() {
-            const targetDate = new Date('2026-06-04T17:00:00+01:00'); // 5:00 PM WAT (UTC+1)
-
+        // ============ COUNTDOWN (Days, Hours, Minutes, Seconds, Milliseconds) ============
+        (function startCountdown() {
+            const targetDate = new Date('2026-06-04T17:00:00+01:00');
             function update() {
                 const now = new Date();
                 const diff = targetDate - now;
-
-                if (diff <= 0) {
-                    document.getElementById('cd-weeks').textContent = '00';
-                    document.getElementById('cd-days').textContent = '00';
-                    document.getElementById('cd-hours').textContent = '00';
-                    document.getElementById('cd-minutes').textContent = '00';
-                    document.getElementById('cd-seconds').textContent = '00';
-                    document.getElementById('cd-milliseconds').textContent = '000';
-                    return;
-                }
-
+                if (diff <= 0) { ['cd-days','cd-hours','cd-minutes','cd-seconds'].forEach(id=>document.getElementById(id).textContent='00'); document.getElementById('cd-milliseconds').textContent='000'; return; }
                 const totalSeconds = Math.floor(diff / 1000);
                 const totalMinutes = Math.floor(totalSeconds / 60);
                 const totalHours = Math.floor(totalMinutes / 60);
-                const totalDays = Math.floor(totalHours / 24);
-                const weeks = Math.floor(totalDays / 7);
-                const days = totalDays % 7;
+                const days = Math.floor(totalHours / 24);
                 const hours = totalHours % 24;
                 const minutes = totalMinutes % 60;
                 const seconds = totalSeconds % 60;
                 const milliseconds = diff % 1000;
-
-                document.getElementById('cd-weeks').textContent = String(weeks).padStart(2, '0');
-                document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
-                document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
-                document.getElementById('cd-minutes').textContent = String(minutes).padStart(2, '0');
-                document.getElementById('cd-seconds').textContent = String(seconds).padStart(2, '0');
-                document.getElementById('cd-milliseconds').textContent = String(milliseconds).padStart(3, '0');
+                document.getElementById('cd-days').textContent = String(days).padStart(2,'0');
+                document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+                document.getElementById('cd-minutes').textContent = String(minutes).padStart(2,'0');
+                document.getElementById('cd-seconds').textContent = String(seconds).padStart(2,'0');
+                document.getElementById('cd-milliseconds').textContent = String(milliseconds).padStart(3,'0');
             }
-
-            // Update every 50ms for smooth millisecond display
             update();
-            setInterval(update, 50);
-        }
-
-        // Start immediately
-        startCountdown();
+            setInterval(update, 33); // ~30fps for smooth milliseconds
+        })();
 
         // ============ TOAST ============
         function showToast(message, type = 'success') {
@@ -952,243 +271,169 @@
             toast.textContent = message;
             toast.className = 'toast ' + type + ' show';
             clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 4000);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
         // ============ VALIDATION ============
         function validateForm() {
             let isValid = true;
+            document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
             const name = document.getElementById('fullName').value.trim();
             const whatsapp = document.getElementById('whatsapp').value.trim();
             const dob = document.getElementById('dob').value;
-
-            document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
-            document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
-
-            // Name
-            if (!name || name.length < 3) {
-                document.getElementById('nameError').classList.add('show');
-                document.getElementById('fullName').classList.add('error');
-                isValid = false;
-            }
-
-            // WhatsApp
-            const phoneRegex = /^0\d{10}$/;
-            if (!phoneRegex.test(whatsapp.replace(/\s/g, ''))) {
-                document.getElementById('whatsappError').classList.add('show');
-                document.getElementById('whatsapp').classList.add('error');
-                isValid = false;
-            }
-
-            // DOB
-            if (!dob) {
-                document.getElementById('dobError').classList.add('show');
-                document.getElementById('dob').classList.add('error');
-                isValid = false;
-            }
-
+            if (!name || name.length < 3) { document.getElementById('nameError').classList.add('show'); document.getElementById('fullName').classList.add('error'); isValid = false; }
+            if (!/^0\d{10}$/.test(whatsapp.replace(/\s/g, ''))) { document.getElementById('whatsappError').classList.add('show'); document.getElementById('whatsapp').classList.add('error'); isValid = false; }
+            if (!dob) { document.getElementById('dobError').classList.add('show'); document.getElementById('dob').classList.add('error'); isValid = false; }
             return isValid;
         }
 
-        // ============ SEAT GENERATION ============
+        // ============ SEAT GENERATION (NO TRANSACTIONS) ============
         async function getNextSeatNumber(day) {
             const counterRef = doc(db, 'counters', 'seatCounters');
-            
+            console.log(`🪑 [${day}] Reading counter...`);
+            let docSnap;
             try {
-                const docSnap = await getDoc(counterRef);
-                if (!docSnap.exists()) {
-                    await setDoc(counterRef, { day1: 0, day2: 0, day3: 0 });
-                }
-
-                const newSeatNumber = await runTransaction(db, async (transaction) => {
-                    const currentDoc = await transaction.get(counterRef);
-                    
-                    if (!currentDoc.exists()) {
-                        transaction.set(counterRef, { day1: 1, day2: 0, day3: 0 });
-                        return 1;
-                    }
-                    
-                    const data = currentDoc.data();
-                    const nextNumber = (data[day] || 0) + 1;
-                    
-                    if (nextNumber > 1000) {
-                        throw new Error(`All 1000 seats for ${day} are taken.`);
-                    }
-                    
-                    transaction.update(counterRef, { [day]: nextNumber });
-                    return nextNumber;
-                });
-                
-                return newSeatNumber;
-                
-            } catch (error) {
-                console.error('Seat error:', error);
-                // Fallback
-                const docSnap = await getDoc(counterRef);
-                if (!docSnap.exists()) {
-                    await setDoc(counterRef, { day1: 1, day2: 0, day3: 0 });
-                    return 1;
-                }
-                const nextNumber = (docSnap.data()[day] || 0) + 1;
-                await setDoc(counterRef, { [day]: nextNumber }, { merge: true });
-                return nextNumber;
+                docSnap = await getDoc(counterRef);
+                console.log(`📖 [${day}] Counter exists:`, docSnap.exists());
+            } catch (err) {
+                console.error(`❌ [${day}] getDoc failed:`, err.code, err.message);
+                throw err;
             }
+            let nextNumber = 1;
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                nextNumber = (data[day] || 0) + 1;
+                console.log(`📊 [${day}] Current: ${data[day] || 0}, Next: ${nextNumber}`);
+            } else {
+                console.log(`📄 [${day}] No counter doc. Starting at 1.`);
+            }
+            if (nextNumber > 1000) throw new Error(`All 1000 seats for ${day} taken.`);
+            try {
+                await setDoc(counterRef, { [day]: nextNumber }, { merge: true });
+                console.log(`✅ [${day}] Set to ${nextNumber}`);
+            } catch (err) {
+                console.error(`❌ [${day}] setDoc failed:`, err.code, err.message);
+                throw err;
+            }
+            return nextNumber;
         }
 
-        // ============ TICKET ID GENERATION ============
+        // ============ TICKET ID (NO TRANSACTIONS) ============
         async function generateTicketId() {
             const counterRef = doc(db, 'counters', 'ticketCounter');
-            
+            console.log('🎫 Reading ticket counter...');
+            let docSnap;
             try {
-                const docSnap = await getDoc(counterRef);
-                if (!docSnap.exists()) {
-                    await setDoc(counterRef, { value: 0 });
-                }
-                
-                const newId = await runTransaction(db, async (transaction) => {
-                    const currentDoc = await transaction.get(counterRef);
-                    if (!currentDoc.exists()) {
-                        transaction.set(counterRef, { value: 1 });
-                        return 1;
-                    }
-                    const nextValue = (currentDoc.data().value || 0) + 1;
-                    transaction.update(counterRef, { value: nextValue });
-                    return nextValue;
-                });
-                
-                return `EAG-${String(newId).padStart(4, '0')}`;
-                
-            } catch (error) {
-                console.error('Ticket ID error:', error);
-                const timestamp = Date.now().toString().slice(-6);
-                return `EAG-${timestamp}`;
+                docSnap = await getDoc(counterRef);
+                console.log('📖 Ticket counter exists:', docSnap.exists());
+            } catch (err) {
+                console.error('❌ Ticket counter getDoc failed:', err.code, err.message);
+                throw err;
             }
+            let nextValue = 1;
+            if (docSnap.exists()) {
+                nextValue = (docSnap.data().value || 0) + 1;
+                console.log('📊 Current ticket:', docSnap.data().value, 'Next:', nextValue);
+            }
+            try {
+                await setDoc(counterRef, { value: nextValue }, { merge: true });
+                console.log('✅ Ticket counter set to:', nextValue);
+            } catch (err) {
+                console.error('❌ Ticket counter setDoc failed:', err.code, err.message);
+                throw err;
+            }
+            const ticketId = `EAG-${String(nextValue).padStart(4, '0')}`;
+            console.log('🎟️ Generated:', ticketId);
+            return ticketId;
         }
 
-        // ============ FORM SUBMISSION ============
+        // ============ FORM SUBMIT ============
         document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            if (!validateForm()) {
-                showToast('Please fill all fields correctly', 'error');
-                return;
-            }
-            
+            console.log('📝 Form submit triggered');
+            if (!validateForm()) { showToast('Please fill all fields correctly', 'error'); return; }
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;
-            
             try {
                 const fullName = document.getElementById('fullName').value.trim();
                 const whatsapp = document.getElementById('whatsapp').value.trim();
                 const dob = document.getElementById('dob').value;
-                
-                // Check if phone already registered
-                const attendeesRef = collection(db, 'attendees');
-                const phoneQuery = query(attendeesRef, where('whatsapp', '==', whatsapp));
-                const existingDocs = await getDocs(phoneQuery);
-                
-                if (!existingDocs.empty) {
+                console.log('👤', fullName, '| 💬', whatsapp, '| 🎂', dob);
+
+                // Duplicate check
+                console.log('🔍 Checking duplicates...');
+                const dupSnap = await getDocs(query(collection(db, 'attendees'), where('whatsapp', '==', whatsapp)));
+                console.log('📋 Duplicates found:', dupSnap.size);
+                if (!dupSnap.empty) {
                     showToast('⚠️ This WhatsApp number is already registered', 'error');
                     submitBtn.classList.remove('loading');
                     submitBtn.disabled = false;
                     return;
                 }
-                
-                console.log('Generating seats...');
+
+                console.log('🪑 Generating seats...');
                 const seatDay1 = await getNextSeatNumber('day1');
                 const seatDay2 = await getNextSeatNumber('day2');
                 const seatDay3 = await getNextSeatNumber('day3');
                 const ticketId = await generateTicketId();
                 
-                console.log('Seats:', seatDay1, seatDay2, seatDay3, '| Ticket:', ticketId);
-                
-                const formatSeat = (num) => String(num).padStart(3, '0');
-                
-                const docRef = await addDoc(collection(db, 'attendees'), {
-                    fullName,
-                    whatsapp,
-                    dob,
-                    ticketId,
-                    seatDay1: formatSeat(seatDay1),
-                    seatDay2: formatSeat(seatDay2),
-                    seatDay3: formatSeat(seatDay3),
-                    programName: 'EAGLE CONVERGENCE',
-                    church: 'SPAC CHURCH',
-                    hostPastor: 'Yomi Okewunmi',
-                    attendanceDay1: false,
-                    attendanceDay2: false,
-                    attendanceDay3: false,
-                    registeredAt: serverTimestamp(),
-                    isWalkIn: false
-                });
-                
-                console.log('Saved:', docRef.id);
-                
-                currentTicketData = {
-                    fullName,
-                    ticketId,
-                    seatDay1: formatSeat(seatDay1),
-                    seatDay2: formatSeat(seatDay2),
-                    seatDay3: formatSeat(seatDay3)
+                const formatSeat = num => String(num).padStart(3, '0');
+                const attendeeData = {
+                    fullName, whatsapp, dob, ticketId,
+                    seatDay1: formatSeat(seatDay1), seatDay2: formatSeat(seatDay2), seatDay3: formatSeat(seatDay3),
+                    programName: 'EAGLE CONVERGENCE', church: 'SPAC CHURCH', hostPastor: 'Yomi Okewunmi',
+                    attendanceDay1: false, attendanceDay2: false, attendanceDay3: false,
+                    registeredAt: serverTimestamp(), isWalkIn: false
                 };
-                
+
+                console.log('💾 Saving to Firestore...');
+                const docRef = await addDoc(collection(db, 'attendees'), attendeeData);
+                console.log('✅ SAVED! Document ID:', docRef.id);
+
+                currentTicketData = {
+                    fullName, ticketId,
+                    seatDay1: formatSeat(seatDay1), seatDay2: formatSeat(seatDay2), seatDay3: formatSeat(seatDay3)
+                };
                 showTicket(currentTicketData);
-                showToast('✅ Registration successful! Your ticket is ready.', 'success');
-                
+                showToast('✅ Registration successful!', 'success');
             } catch (error) {
-                console.error('Registration error:', error);
-                showToast('❌ ' + (error.message || 'Something went wrong. Please try again.'), 'error');
+                console.error('❌❌❌ REGISTRATION FAILED ❌❌❌');
+                console.error('Code:', error.code);
+                console.error('Message:', error.message);
+                console.error('Full error:', error);
+                showToast('❌ ' + error.code + ': ' + error.message, 'error');
             } finally {
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
             }
         });
 
-        // ============ SHOW TICKET ============
         function showTicket(data) {
             document.getElementById('formSection').style.display = 'none';
             document.getElementById('countdownSection').style.display = 'none';
-            const ticketSection = document.getElementById('ticketSection');
-            ticketSection.classList.add('show');
-            
+            document.getElementById('ticketSection').classList.add('show');
             document.getElementById('ticketName').textContent = data.fullName;
             document.getElementById('ticketId').textContent = data.ticketId;
             document.getElementById('seatDay1').textContent = data.seatDay1;
             document.getElementById('seatDay2').textContent = data.seatDay2;
             document.getElementById('seatDay3').textContent = data.seatDay3;
-            
             const qrContainer = document.getElementById('qrCode');
             qrContainer.innerHTML = '';
-            new QRCode(qrContainer, {
-                text: data.ticketId,
-                width: 150,
-                height: 150,
-                colorDark: '#1A1A1A',
-                colorLight: '#FFFFFF',
-                correctLevel: QRCode.CorrectLevel.H
-            });
-            
-            ticketSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            new QRCode(qrContainer, { text: data.ticketId, width: 150, height: 150, colorDark: '#1A1A1A', colorLight: '#FFFFFF', correctLevel: QRCode.CorrectLevel.H });
+            document.getElementById('ticketSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // ============ DOWNLOAD TICKET ============
         window.downloadTicket = function() {
             if (!currentTicketData) return;
-            showToast('📸 Please take a screenshot of your ticket now', 'success');
-            
+            showToast('📸 Screenshot your ticket', 'success');
             setTimeout(() => {
-                const printWindow = window.open('', '_blank', 'width=400,height=700');
-                if (printWindow) {
-                    printWindow.document.write(`<!DOCTYPE html><html><head><title>Ticket - ${currentTicketData.ticketId}</title><style>body{font-family:Georgia,serif;text-align:center;padding:20px;max-width:380px;margin:0 auto}.ticket{border:2px solid #D4AF37;border-radius:16px;padding:20px;background:#fff}.program{font-size:18px;font-weight:700;color:#B8960C}.church{font-size:11px;color:#666;letter-spacing:2px;text-transform:uppercase}.name{font-size:20px;font-weight:700;margin:16px 0 4px}.tid{font-size:13px;color:#B8960C;font-weight:700;background:#FFF8E7;display:inline-block;padding:4px 14px;border-radius:20px;margin:10px 0}.host{font-size:11px;color:#666;margin-bottom:14px}.seats{display:flex;gap:8px;justify-content:center;margin-bottom:16px}.seat{border:1px solid #eee;border-radius:8px;padding:8px 12px;background:#fafafa}.seat .day{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:#888}.seat .num{font-size:22px;font-weight:700}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="ticket"><div class="program">EAGLE CONVERGENCE '25</div><div class="church">SPAC CHURCH</div><div class="name">${currentTicketData.fullName}</div><div class="tid">${currentTicketData.ticketId}</div><div class="host">Host: Pastor Yomi Okewunmi</div><div class="seats"><div class="seat"><div class="day">Day 1</div><div class="num">${currentTicketData.seatDay1}</div></div><div class="seat"><div class="day">Day 2</div><div class="num">${currentTicketData.seatDay2}</div></div><div class="seat"><div class="day">Day 3</div><div class="num">${currentTicketData.seatDay3}</div></div></div><p style="font-size:11px;color:#666">Scan QR code on original ticket for attendance.</p><p style="font-size:9px;color:#999;margin-top:10px">4th–6th June, 2026 | 2-6 Church Street, Poly Road, Sango, Ibadan</p></div><script>window.onload=function(){window.print()};<\/script></body></html>`);
-                    printWindow.document.close();
-                }
+                const pw = window.open('', '_blank', 'width=400,height=700');
+                if (pw) { pw.document.write(`<!DOCTYPE html><html><head><title>${currentTicketData.ticketId}</title><style>body{font-family:Georgia;text-align:center;padding:20px;max-width:380px;margin:0 auto}.ticket{border:2px solid #D4AF37;border-radius:16px;padding:20px}.program{font-size:18px;font-weight:700;color:#B8960C}.name{font-size:20px;font-weight:700;margin:16px 0}.tid{font-size:13px;color:#B8960C;background:#FFF8E7;padding:4px 14px;border-radius:20px}.seats{display:flex;gap:8px;justify-content:center;margin:16px 0}.seat{border:1px solid #eee;border-radius:8px;padding:8px 12px;background:#fafafa}.seat .num{font-size:22px;font-weight:700}@media print{body{-webkit-print-color-adjust:exact}}</style></head><body><div class="ticket"><div class="program">EAGLE CONVERGENCE '25</div><p style="color:#666">SPAC CHURCH</p><div class="name">${currentTicketData.fullName}</div><div class="tid">${currentTicketData.ticketId}</div><p style="color:#666">Host: Pastor Yomi Okewunmi</p><div class="seats"><div class="seat"><p style="font-size:8px;color:#888">Day 1</p><div class="num">${currentTicketData.seatDay1}</div></div><div class="seat"><p style="font-size:8px;color:#888">Day 2</p><div class="num">${currentTicketData.seatDay2}</div></div><div class="seat"><p style="font-size:8px;color:#888">Day 3</p><div class="num">${currentTicketData.seatDay3}</div></div></div><p style="font-size:11px;color:#666">Scan QR on original ticket</p></div><script>window.onload=()=>window.print()<\/script></body></html>`); pw.document.close(); }
             }, 500);
         };
 
-        // ============ REGISTER AGAIN ============
         window.registerAgain = function() {
             document.getElementById('formSection').style.display = 'block';
             document.getElementById('countdownSection').style.display = 'block';
@@ -1196,22 +441,19 @@
             document.getElementById('registerForm').reset();
             document.getElementById('qrCode').innerHTML = '';
             currentTicketData = null;
-            document.getElementById('countdownSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('countdownSection').scrollIntoView({ behavior: 'smooth' });
         };
 
-        // Live validation
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('input', function() {
                 this.classList.remove('error');
-                const errorEl = this.parentElement.parentElement.querySelector('.error-msg');
-                if (errorEl) errorEl.classList.remove('show');
+                const errEl = this.parentElement.parentElement.querySelector('.error-msg');
+                if (errEl) errEl.classList.remove('show');
             });
         });
 
-        console.log('%c🦅 EAGLE CONVERGENCE \'25 %c| %cRegistration + Live Countdown %c| %cReady',
-            'color: #D4AF37; font-size: 1.1em; font-weight: bold;', '',
-            'color: #D4AF37; font-weight: bold;', '',
-            'color: #888; font-size: 0.8em;');
+        console.log('%c🦅 READY — Open Console & Test %c| %cCheck Firestore Rules if it fails',
+            'color:#D4AF37;font-size:1.1em;font-weight:bold', '', 'color:#FFF');
     </script>
 
 </body>
