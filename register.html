@@ -11,7 +11,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- QR Library -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -29,6 +29,7 @@
             --gold-deep: #B8960C;
             --gold-light: #F5E6A3;
             --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 40%, #B8960C 100%);
+            --gold-gradient-vertical: linear-gradient(180deg, #D4AF37 0%, #F5E6A3 50%, #B8960C 100%);
             --bg: #FFFFFF;
             --surface: #FAFAFA;
             --text: #1A1A1A;
@@ -95,6 +96,7 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            z-index: 1;
         }
 
         .reg-header::after {
@@ -105,6 +107,7 @@
             width: 100%;
             height: 3px;
             background: var(--gold-gradient);
+            z-index: 2;
         }
 
         .reg-header .mini-logo {
@@ -158,10 +161,164 @@
             justify-content: center;
             transition: var(--transition);
             backdrop-filter: blur(10px);
+            text-decoration: none;
         }
         .back-btn:hover {
             background: rgba(255,255,255,0.1);
             border-color: var(--gold);
+        }
+
+        /* ============ COUNTDOWN SECTION ============ */
+        .countdown-section {
+            background: linear-gradient(180deg, #0A0A0A 0%, #151515 100%);
+            padding: 24px 20px 28px;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+        }
+
+        .countdown-section .cd-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(212, 175, 55, 0.7);
+            margin-bottom: 6px;
+        }
+
+        .countdown-section .cd-event {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        /* Calendar-style countdown grid */
+        .cd-calendar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .cd-block {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 14px 8px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .cd-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gold-gradient);
+            opacity: 0.5;
+        }
+
+        .cd-block .cd-number {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+
+        .cd-block .cd-number.milliseconds {
+            font-size: 1.2rem;
+            color: var(--gold-light);
+            font-weight: 700;
+        }
+
+        .cd-block .cd-unit {
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+        }
+
+        .cd-block.highlight {
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(212, 175, 55, 0.06);
+        }
+
+        /* Sub-seconds row */
+        .cd-sub-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            max-width: 400px;
+            margin: 8px auto 0;
+        }
+
+        .cd-sub-block {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(212, 175, 55, 0.12);
+            border-radius: 10px;
+            padding: 10px 8px;
+            text-align: center;
+        }
+
+        .cd-sub-block .cd-number {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold-light);
+            line-height: 1;
+        }
+
+        .cd-sub-block .cd-unit {
+            font-size: 0.55rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-top: 3px;
+        }
+
+        /* Live indicator */
+        .cd-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            padding: 5px 14px;
+            background: rgba(212, 175, 55, 0.08);
+            border-radius: 50px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .cd-live .live-dot {
+            width: 7px;
+            height: 7px;
+            background: #4CAF50;
+            border-radius: 50%;
+            animation: livePulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6); }
+            50% { opacity: 0.6; box-shadow: 0 0 0 8px rgba(76, 175, 80, 0); }
+        }
+
+        .cd-live span {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
         }
 
         /* ============ FORM SECTION ============ */
@@ -562,11 +719,57 @@
 
         <!-- ============ HEADER ============ -->
         <div class="reg-header">
-            <button class="back-btn" onclick="window.location.href='index.html'" title="Back">←</button>
+            <a href="index.html" class="back-btn" title="Back">←</a>
             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45'%3E%3Ccircle cx='22.5' cy='22.5' r='20' fill='none' stroke='%23D4AF37' stroke-width='2'/%3E%3Ctext x='22.5' y='28' text-anchor='middle' font-size='11' fill='%23D4AF37' font-weight='bold'%3ESPAC%3C/text%3E%3C/svg%3E" 
                  alt="SPAC" class="mini-logo">
             <h2>EAGLE <span class="gold">CONVERGENCE</span> '25</h2>
             <p class="sub">Registration</p>
+        </div>
+
+        <!-- ============ BIG COUNTDOWN ============ -->
+        <div class="countdown-section" id="countdownSection">
+            <div class="cd-label">⏳ Countdown to Eagle Convergence</div>
+            <div class="cd-event">Thursday, 4th June 2026 • 5:00 PM WAT</div>
+
+            <div class="cd-calendar">
+                <!-- Weeks -->
+                <div class="cd-block highlight">
+                    <div class="cd-number" id="cd-weeks">00</div>
+                    <div class="cd-unit">Weeks</div>
+                </div>
+                <!-- Days -->
+                <div class="cd-block highlight">
+                    <div class="cd-number" id="cd-days">00</div>
+                    <div class="cd-unit">Days</div>
+                </div>
+                <!-- Hours -->
+                <div class="cd-block">
+                    <div class="cd-number" id="cd-hours">00</div>
+                    <div class="cd-unit">Hours</div>
+                </div>
+                <!-- Minutes -->
+                <div class="cd-block">
+                    <div class="cd-number" id="cd-minutes">00</div>
+                    <div class="cd-unit">Minutes</div>
+                </div>
+            </div>
+
+            <!-- Seconds + Milliseconds row -->
+            <div class="cd-sub-row">
+                <div class="cd-sub-block">
+                    <div class="cd-number" id="cd-seconds">00</div>
+                    <div class="cd-unit">Seconds</div>
+                </div>
+                <div class="cd-sub-block">
+                    <div class="cd-number milliseconds" id="cd-milliseconds">000</div>
+                    <div class="cd-unit">Milliseconds</div>
+                </div>
+            </div>
+
+            <div class="cd-live">
+                <div class="live-dot"></div>
+                <span>Live • Counting Down</span>
+            </div>
         </div>
 
         <!-- ============ FORM SECTION ============ -->
@@ -584,25 +787,16 @@
                         <span class="input-icon">👤</span>
                         <input type="text" id="fullName" placeholder="Enter your full name" required autocomplete="name">
                     </div>
-                    <span class="error-msg" id="nameError">Please enter your full name</span>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Phone Number <span class="required">*</span></label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">📞</span>
-                        <input type="tel" id="phone" placeholder="08012345678" required autocomplete="tel">
-                    </div>
-                    <span class="error-msg" id="phoneError">Please enter a valid phone number</span>
+                    <span class="error-msg" id="nameError">Please enter your full name (at least 3 characters)</span>
                 </div>
 
                 <div class="form-group">
                     <label for="whatsapp">WhatsApp Number <span class="required">*</span></label>
                     <div class="input-wrapper">
                         <span class="input-icon">💬</span>
-                        <input type="tel" id="whatsapp" placeholder="WhatsApp number" required autocomplete="tel">
+                        <input type="tel" id="whatsapp" placeholder="08012345678" required autocomplete="tel">
                     </div>
-                    <span class="error-msg" id="whatsappError">Please enter your WhatsApp number</span>
+                    <span class="error-msg" id="whatsappError">Please enter a valid WhatsApp number (e.g. 08012345678)</span>
                 </div>
 
                 <div class="form-group">
@@ -684,10 +878,10 @@
             getDocs, 
             query, 
             where, 
-            orderBy, 
-            limit, 
             runTransaction,
             doc,
+            setDoc,
+            getDoc,
             serverTimestamp 
         } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
@@ -707,6 +901,51 @@
         // ============ GLOBAL STATE ============
         let currentTicketData = null;
 
+        // ============ COUNTDOWN TIMER ============
+        function startCountdown() {
+            const targetDate = new Date('2026-06-04T17:00:00+01:00'); // 5:00 PM WAT (UTC+1)
+
+            function update() {
+                const now = new Date();
+                const diff = targetDate - now;
+
+                if (diff <= 0) {
+                    document.getElementById('cd-weeks').textContent = '00';
+                    document.getElementById('cd-days').textContent = '00';
+                    document.getElementById('cd-hours').textContent = '00';
+                    document.getElementById('cd-minutes').textContent = '00';
+                    document.getElementById('cd-seconds').textContent = '00';
+                    document.getElementById('cd-milliseconds').textContent = '000';
+                    return;
+                }
+
+                const totalSeconds = Math.floor(diff / 1000);
+                const totalMinutes = Math.floor(totalSeconds / 60);
+                const totalHours = Math.floor(totalMinutes / 60);
+                const totalDays = Math.floor(totalHours / 24);
+                const weeks = Math.floor(totalDays / 7);
+                const days = totalDays % 7;
+                const hours = totalHours % 24;
+                const minutes = totalMinutes % 60;
+                const seconds = totalSeconds % 60;
+                const milliseconds = diff % 1000;
+
+                document.getElementById('cd-weeks').textContent = String(weeks).padStart(2, '0');
+                document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+                document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('cd-minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('cd-seconds').textContent = String(seconds).padStart(2, '0');
+                document.getElementById('cd-milliseconds').textContent = String(milliseconds).padStart(3, '0');
+            }
+
+            // Update every 50ms for smooth millisecond display
+            update();
+            setInterval(update, 50);
+        }
+
+        // Start immediately
+        startCountdown();
+
         // ============ TOAST ============
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
@@ -722,11 +961,9 @@
         function validateForm() {
             let isValid = true;
             const name = document.getElementById('fullName').value.trim();
-            const phone = document.getElementById('phone').value.trim();
             const whatsapp = document.getElementById('whatsapp').value.trim();
             const dob = document.getElementById('dob').value;
 
-            // Reset errors
             document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
             document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
 
@@ -737,15 +974,8 @@
                 isValid = false;
             }
 
-            // Phone
-            const phoneRegex = /^0\d{10}$/;
-            if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
-                document.getElementById('phoneError').classList.add('show');
-                document.getElementById('phone').classList.add('error');
-                isValid = false;
-            }
-
             // WhatsApp
+            const phoneRegex = /^0\d{10}$/;
             if (!phoneRegex.test(whatsapp.replace(/\s/g, ''))) {
                 document.getElementById('whatsappError').classList.add('show');
                 document.getElementById('whatsapp').classList.add('error');
@@ -767,84 +997,74 @@
             const counterRef = doc(db, 'counters', 'seatCounters');
             
             try {
-                const result = await runTransaction(db, async (transaction) => {
-                    const counterDoc = await transaction.get(counterRef);
+                const docSnap = await getDoc(counterRef);
+                if (!docSnap.exists()) {
+                    await setDoc(counterRef, { day1: 0, day2: 0, day3: 0 });
+                }
+
+                const newSeatNumber = await runTransaction(db, async (transaction) => {
+                    const currentDoc = await transaction.get(counterRef);
                     
-                    let currentCounts = {
-                        day1: 0,
-                        day2: 0,
-                        day3: 0
-                    };
-                    
-                    if (counterDoc.exists()) {
-                        currentCounts = counterDoc.data();
+                    if (!currentDoc.exists()) {
+                        transaction.set(counterRef, { day1: 1, day2: 0, day3: 0 });
+                        return 1;
                     }
                     
-                    // Increment the counter for this day
-                    const nextNumber = (currentCounts[day] || 0) + 1;
+                    const data = currentDoc.data();
+                    const nextNumber = (data[day] || 0) + 1;
                     
                     if (nextNumber > 1000) {
                         throw new Error(`All 1000 seats for ${day} are taken.`);
                     }
                     
-                    currentCounts[day] = nextNumber;
-                    
-                    transaction.set(counterRef, currentCounts, { merge: true });
-                    
+                    transaction.update(counterRef, { [day]: nextNumber });
                     return nextNumber;
                 });
                 
-                return result;
+                return newSeatNumber;
+                
             } catch (error) {
-                // If counter document doesn't exist yet, create it
-                if (error.message && error.message.includes('No document to update')) {
-                    const initialData = { day1: 1, day2: 1, day3: 1 };
-                    await runTransaction(db, async (transaction) => {
-                        transaction.set(counterRef, initialData);
-                        return 1;
-                    });
+                console.error('Seat error:', error);
+                // Fallback
+                const docSnap = await getDoc(counterRef);
+                if (!docSnap.exists()) {
+                    await setDoc(counterRef, { day1: 1, day2: 0, day3: 0 });
                     return 1;
                 }
-                throw error;
+                const nextNumber = (docSnap.data()[day] || 0) + 1;
+                await setDoc(counterRef, { [day]: nextNumber }, { merge: true });
+                return nextNumber;
             }
         }
 
         // ============ TICKET ID GENERATION ============
         async function generateTicketId() {
-            const year = '26';
-            // Count existing registrations to create sequential ID
-            const attendeesRef = collection(db, 'attendees');
-            const q = query(attendeesRef, orderBy('registeredAt', 'desc'), limit(1));
-            const snapshot = await getDocs(q);
-            
-            let nextNumber = 1;
-            if (!snapshot.empty) {
-                const lastDoc = snapshot.docs[0];
-                const lastId = lastDoc.data().ticketId || '';
-                const match = lastId.match(/EAG-(\d+)/);
-                if (match) {
-                    nextNumber = parseInt(match[1]) + 1;
-                }
-            }
-            
-            // Fallback: use counter document
             const counterRef = doc(db, 'counters', 'ticketCounter');
-            try {
-                const result = await runTransaction(db, async (transaction) => {
-                    const counterDoc = await transaction.get(counterRef);
-                    let count = nextNumber;
-                    if (counterDoc.exists()) {
-                        count = Math.max(count, (counterDoc.data().value || 0) + 1);
-                    }
-                    transaction.set(counterRef, { value: count }, { merge: true });
-                    return count;
-                });
-                nextNumber = result;
-            } catch (e) {
-                // If transaction fails, use the sequential count
-            }
             
-            return `EAG-${String(nextNumber).padStart(4, '0')}`;
+            try {
+                const docSnap = await getDoc(counterRef);
+                if (!docSnap.exists()) {
+                    await setDoc(counterRef, { value: 0 });
+                }
+                
+                const newId = await runTransaction(db, async (transaction) => {
+                    const currentDoc = await transaction.get(counterRef);
+                    if (!currentDoc.exists()) {
+                        transaction.set(counterRef, { value: 1 });
+                        return 1;
+                    }
+                    const nextValue = (currentDoc.data().value || 0) + 1;
+                    transaction.update(counterRef, { value: nextValue });
+                    return nextValue;
+                });
+                
+                return `EAG-${String(newId).padStart(4, '0')}`;
+                
+            } catch (error) {
+                console.error('Ticket ID error:', error);
+                const timestamp = Date.now().toString().slice(-6);
+                return `EAG-${timestamp}`;
+            }
         }
 
         // ============ FORM SUBMISSION ============
@@ -862,37 +1082,33 @@
             
             try {
                 const fullName = document.getElementById('fullName').value.trim();
-                const phone = document.getElementById('phone').value.trim();
                 const whatsapp = document.getElementById('whatsapp').value.trim();
                 const dob = document.getElementById('dob').value;
                 
                 // Check if phone already registered
                 const attendeesRef = collection(db, 'attendees');
-                const phoneQuery = query(attendeesRef, where('phone', '==', phone));
+                const phoneQuery = query(attendeesRef, where('whatsapp', '==', whatsapp));
                 const existingDocs = await getDocs(phoneQuery);
                 
                 if (!existingDocs.empty) {
-                    showToast('This phone number is already registered', 'error');
+                    showToast('⚠️ This WhatsApp number is already registered', 'error');
                     submitBtn.classList.remove('loading');
                     submitBtn.disabled = false;
                     return;
                 }
                 
-                // Generate seat numbers for all 3 days
-                const [seatDay1, seatDay2, seatDay3, ticketId] = await Promise.all([
-                    getNextSeatNumber('day1'),
-                    getNextSeatNumber('day2'),
-                    getNextSeatNumber('day3'),
-                    generateTicketId()
-                ]);
+                console.log('Generating seats...');
+                const seatDay1 = await getNextSeatNumber('day1');
+                const seatDay2 = await getNextSeatNumber('day2');
+                const seatDay3 = await getNextSeatNumber('day3');
+                const ticketId = await generateTicketId();
                 
-                // Format seat numbers with leading zeros
+                console.log('Seats:', seatDay1, seatDay2, seatDay3, '| Ticket:', ticketId);
+                
                 const formatSeat = (num) => String(num).padStart(3, '0');
                 
-                // Save to Firestore
                 const docRef = await addDoc(collection(db, 'attendees'), {
                     fullName,
-                    phone,
                     whatsapp,
                     dob,
                     ticketId,
@@ -909,7 +1125,8 @@
                     isWalkIn: false
                 });
                 
-                // Store ticket data
+                console.log('Saved:', docRef.id);
+                
                 currentTicketData = {
                     fullName,
                     ticketId,
@@ -918,14 +1135,12 @@
                     seatDay3: formatSeat(seatDay3)
                 };
                 
-                // Show ticket
                 showTicket(currentTicketData);
-                
                 showToast('✅ Registration successful! Your ticket is ready.', 'success');
                 
             } catch (error) {
                 console.error('Registration error:', error);
-                showToast('❌ Something went wrong. Please try again.', 'error');
+                showToast('❌ ' + (error.message || 'Something went wrong. Please try again.'), 'error');
             } finally {
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
@@ -935,6 +1150,7 @@
         // ============ SHOW TICKET ============
         function showTicket(data) {
             document.getElementById('formSection').style.display = 'none';
+            document.getElementById('countdownSection').style.display = 'none';
             const ticketSection = document.getElementById('ticketSection');
             ticketSection.classList.add('show');
             
@@ -944,7 +1160,6 @@
             document.getElementById('seatDay2').textContent = data.seatDay2;
             document.getElementById('seatDay3').textContent = data.seatDay3;
             
-            // Generate QR Code
             const qrContainer = document.getElementById('qrCode');
             qrContainer.innerHTML = '';
             new QRCode(qrContainer, {
@@ -956,128 +1171,18 @@
                 correctLevel: QRCode.CorrectLevel.H
             });
             
-            // Scroll to ticket
             ticketSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         // ============ DOWNLOAD TICKET ============
         window.downloadTicket = function() {
             if (!currentTicketData) return;
-            
-            // Simple approach: create a canvas from the ticket card
-            const ticketCard = document.querySelector('.ticket-card');
-            
-            // Use html2canvas if available, otherwise prompt screenshot
             showToast('📸 Please take a screenshot of your ticket now', 'success');
             
-            // Attempt to trigger print dialogue for ticket
             setTimeout(() => {
                 const printWindow = window.open('', '_blank', 'width=400,height=700');
                 if (printWindow) {
-                    printWindow.document.write(`
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <title>Ticket - ${currentTicketData.ticketId}</title>
-                            <style>
-                                body { 
-                                    font-family: 'Georgia', serif; 
-                                    text-align: center; 
-                                    padding: 20px;
-                                    max-width: 380px;
-                                    margin: 0 auto;
-                                }
-                                .ticket { 
-                                    border: 2px solid #D4AF37; 
-                                    border-radius: 16px; 
-                                    padding: 20px;
-                                    background: #fff;
-                                }
-                                .program { 
-                                    font-size: 18px; 
-                                    font-weight: bold; 
-                                    color: #B8960C; 
-                                    margin-bottom: 4px;
-                                }
-                                .church { 
-                                    font-size: 11px; 
-                                    color: #666; 
-                                    letter-spacing: 2px;
-                                    text-transform: uppercase;
-                                }
-                                .name { 
-                                    font-size: 20px; 
-                                    font-weight: bold; 
-                                    margin: 16px 0 4px;
-                                }
-                                .tid { 
-                                    font-size: 13px; 
-                                    color: #B8960C; 
-                                    font-weight: bold;
-                                    background: #FFF8E7;
-                                    display: inline-block;
-                                    padding: 4px 14px;
-                                    border-radius: 20px;
-                                    margin: 10px 0;
-                                }
-                                .host { 
-                                    font-size: 11px; 
-                                    color: #666; 
-                                    margin-bottom: 14px;
-                                }
-                                .seats { 
-                                    display: flex; 
-                                    gap: 8px; 
-                                    justify-content: center;
-                                    margin-bottom: 16px;
-                                }
-                                .seat { 
-                                    border: 1px solid #eee;
-                                    border-radius: 8px;
-                                    padding: 8px 12px;
-                                    background: #fafafa;
-                                }
-                                .seat .day { 
-                                    font-size: 8px; 
-                                    letter-spacing: 1px;
-                                    text-transform: uppercase;
-                                    color: #888;
-                                }
-                                .seat .num { 
-                                    font-size: 22px; 
-                                    font-weight: bold;
-                                }
-                                .qr-box {
-                                    border: 1px solid #eee;
-                                    padding: 10px;
-                                    border-radius: 10px;
-                                    display: inline-block;
-                                    margin: 10px 0;
-                                }
-                                @media print {
-                                    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <div class="ticket">
-                                <div class="program">EAGLE CONVERGENCE '25</div>
-                                <div class="church">SPAC CHURCH</div>
-                                <div class="name">${currentTicketData.fullName}</div>
-                                <div class="tid">${currentTicketData.ticketId}</div>
-                                <div class="host">Host: Pastor Yomi Okewunmi</div>
-                                <div class="seats">
-                                    <div class="seat"><div class="day">Day 1</div><div class="num">${currentTicketData.seatDay1}</div></div>
-                                    <div class="seat"><div class="day">Day 2</div><div class="num">${currentTicketData.seatDay2}</div></div>
-                                    <div class="seat"><div class="day">Day 3</div><div class="num">${currentTicketData.seatDay3}</div></div>
-                                </div>
-                                <p style="font-size: 11px; color:#666;">Scan QR code on the original ticket for attendance.</p>
-                                <p style="font-size: 9px; color:#999; margin-top: 10px;">4th – 6th June, 2026 | 2-6 Church Street, Poly Road, Sango, Ibadan</p>
-                            </div>
-                            <script>window.onload = function() { window.print(); };<\/script>
-                        </body>
-                        </html>
-                    `);
+                    printWindow.document.write(`<!DOCTYPE html><html><head><title>Ticket - ${currentTicketData.ticketId}</title><style>body{font-family:Georgia,serif;text-align:center;padding:20px;max-width:380px;margin:0 auto}.ticket{border:2px solid #D4AF37;border-radius:16px;padding:20px;background:#fff}.program{font-size:18px;font-weight:700;color:#B8960C}.church{font-size:11px;color:#666;letter-spacing:2px;text-transform:uppercase}.name{font-size:20px;font-weight:700;margin:16px 0 4px}.tid{font-size:13px;color:#B8960C;font-weight:700;background:#FFF8E7;display:inline-block;padding:4px 14px;border-radius:20px;margin:10px 0}.host{font-size:11px;color:#666;margin-bottom:14px}.seats{display:flex;gap:8px;justify-content:center;margin-bottom:16px}.seat{border:1px solid #eee;border-radius:8px;padding:8px 12px;background:#fafafa}.seat .day{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:#888}.seat .num{font-size:22px;font-weight:700}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="ticket"><div class="program">EAGLE CONVERGENCE '25</div><div class="church">SPAC CHURCH</div><div class="name">${currentTicketData.fullName}</div><div class="tid">${currentTicketData.ticketId}</div><div class="host">Host: Pastor Yomi Okewunmi</div><div class="seats"><div class="seat"><div class="day">Day 1</div><div class="num">${currentTicketData.seatDay1}</div></div><div class="seat"><div class="day">Day 2</div><div class="num">${currentTicketData.seatDay2}</div></div><div class="seat"><div class="day">Day 3</div><div class="num">${currentTicketData.seatDay3}</div></div></div><p style="font-size:11px;color:#666">Scan QR code on original ticket for attendance.</p><p style="font-size:9px;color:#999;margin-top:10px">4th–6th June, 2026 | 2-6 Church Street, Poly Road, Sango, Ibadan</p></div><script>window.onload=function(){window.print()};<\/script></body></html>`);
                     printWindow.document.close();
                 }
             }, 500);
@@ -1086,14 +1191,15 @@
         // ============ REGISTER AGAIN ============
         window.registerAgain = function() {
             document.getElementById('formSection').style.display = 'block';
+            document.getElementById('countdownSection').style.display = 'block';
             document.getElementById('ticketSection').classList.remove('show');
             document.getElementById('registerForm').reset();
             document.getElementById('qrCode').innerHTML = '';
             currentTicketData = null;
-            document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('countdownSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
         };
 
-        // ============ REAL-TIME VALIDATION ============
+        // Live validation
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('input', function() {
                 this.classList.remove('error');
@@ -1102,11 +1208,9 @@
             });
         });
 
-        console.log('%c🦅 EAGLE CONVERGENCE \'25 %c| %cRegistration Module %c| %cReady',
-            'color: #D4AF37; font-size: 1.1em; font-weight: bold;',
-            '',
-            'color: #D4AF37; font-weight: bold;',
-            '',
+        console.log('%c🦅 EAGLE CONVERGENCE \'25 %c| %cRegistration + Live Countdown %c| %cReady',
+            'color: #D4AF37; font-size: 1.1em; font-weight: bold;', '',
+            'color: #D4AF37; font-weight: bold;', '',
             'color: #888; font-size: 0.8em;');
     </script>
 
