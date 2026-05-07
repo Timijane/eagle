@@ -50,7 +50,6 @@
         .back-btn { position: absolute; top: 20px; left: 16px; z-index: 5; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #FFF; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); backdrop-filter: blur(10px); text-decoration: none; }
         .back-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--gold); }
 
-        /* COUNTDOWN */
         .countdown-section { background: linear-gradient(180deg, #0A0A0A 0%, #151515 100%); padding: 24px 20px 28px; text-align: center; position: relative; border-bottom: 1px solid rgba(212,175,55,0.15); }
         .countdown-section .cd-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: rgba(212,175,55,0.7); margin-bottom: 6px; }
         .countdown-section .cd-event { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 16px; letter-spacing: 1px; }
@@ -73,7 +72,6 @@
         @keyframes livePulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(76,175,80,0.6)} 50%{opacity:0.6;box-shadow:0 0 0 8px rgba(76,175,80,0)} }
         .cd-live span { font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
 
-        /* FORM */
         .form-section { padding: 30px 24px 20px; }
         .form-intro { text-align: center; margin-bottom: 24px; }
         .form-intro .icon-circle { width: 55px; height: 55px; border-radius: 50%; background: rgba(212,175,55,0.08); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 10px; }
@@ -104,13 +102,12 @@
         .form-note { text-align: center; font-size: 0.7rem; color: var(--text-secondary); margin-top: 14px; }
         .form-note a { color: var(--gold-deep); text-decoration: none; font-weight: 600; }
 
-        /* TICKET */
         .ticket-section { display: none; padding: 20px 24px 40px; animation: fadeInUp 0.5s ease-out; }
         .ticket-section.show { display: block; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        .ticket-card { background: #FFF; border: 2px solid var(--gold); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg); }
-        .ticket-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--gold-gradient); }
+        .ticket-card { background: #FFF; border: 2px solid var(--gold); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg); position: relative; }
+        .ticket-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--gold-gradient); z-index: 1; }
         .ticket-top { background: #0A0A0A; padding: 18px 20px; text-align: center; position: relative; }
         .ticket-top::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 10px solid #0A0A0A; }
         .ticket-top .ticket-program { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 800; color: var(--gold); letter-spacing: 1px; }
@@ -125,6 +122,7 @@
         .seat-chip .seat-num { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 900; color: var(--text); }
         .qr-wrapper { display: flex; justify-content: center; margin: 10px 0; }
         .qr-container { background: #FFF; padding: 12px; border-radius: var(--radius-sm); border: 1px solid rgba(0,0,0,0.08); display: inline-block; }
+        .qr-container canvas, .qr-container img { display: block; }
         .ticket-footer { background: var(--surface); padding: 14px 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
         .btn-outline { padding: 10px 20px; background: transparent; border: 1.5px solid var(--gold); color: var(--gold-deep); font-weight: 600; font-size: 0.78rem; border-radius: 50px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
         .btn-outline:hover { background: rgba(212,175,55,0.08); }
@@ -170,7 +168,7 @@
             <div class="form-intro">
                 <div class="icon-circle">🦅</div>
                 <h3>Secure Your Seat</h3>
-                <p>Fill the form below. Your ticket with seat numbers will be generated instantly.</p>
+                <p>Fill the form below. Your ticket with unique seat numbers for each day will be generated instantly.</p>
             </div>
 
             <form id="registerForm" novalidate>
@@ -185,9 +183,9 @@
                     <span class="error-msg" id="whatsappError">Please enter a valid WhatsApp number (e.g. 08012345678)</span>
                 </div>
                 <div class="form-group">
-                    <label for="dob">Date of Birth <span class="required">*</span></label>
-                    <div class="input-wrapper"><span class="input-icon">🎂</span><input type="date" id="dob" required></div>
-                    <span class="error-msg" id="dobError">Please enter your date of birth</span>
+                    <label for="birthday">Birthday (Day & Month only) <span class="required">*</span></label>
+                    <div class="input-wrapper"><span class="input-icon">🎂</span><input type="text" id="birthday" placeholder="e.g. 14 Feb or 14/02" required autocomplete="off"></div>
+                    <span class="error-msg" id="birthdayError">Please enter your birthday (day and month) so we can celebrate you</span>
                 </div>
                 <button type="submit" class="btn-submit" id="submitBtn"><span class="spinner"></span><span class="btn-text">✦ Register Now ✦</span></button>
             </form>
@@ -195,7 +193,7 @@
         </div>
 
         <div class="ticket-section" id="ticketSection">
-            <div class="ticket-card">
+            <div class="ticket-card" id="ticketCard">
                 <div class="ticket-top"><div class="ticket-program">EAGLE CONVERGENCE '25</div><div class="ticket-church">SPAC CHURCH</div></div>
                 <div class="ticket-body">
                     <div class="attendee-name" id="ticketName">—</div>
@@ -239,14 +237,19 @@
         console.log('🔥 Firebase connected. Project:', firebaseConfig.projectId);
 
         let currentTicketData = null;
+        let currentQRDataURL = null; // Stores QR code as image for printing
 
-        // ============ COUNTDOWN (Days, Hours, Minutes, Seconds, Milliseconds) ============
+        // ============ COUNTDOWN ============
         (function startCountdown() {
             const targetDate = new Date('2026-06-04T17:00:00+01:00');
             function update() {
                 const now = new Date();
                 const diff = targetDate - now;
-                if (diff <= 0) { ['cd-days','cd-hours','cd-minutes','cd-seconds'].forEach(id=>document.getElementById(id).textContent='00'); document.getElementById('cd-milliseconds').textContent='000'; return; }
+                if (diff <= 0) { 
+                    ['cd-days','cd-hours','cd-minutes','cd-seconds'].forEach(id => document.getElementById(id).textContent='00'); 
+                    document.getElementById('cd-milliseconds').textContent='000'; 
+                    return; 
+                }
                 const totalSeconds = Math.floor(diff / 1000);
                 const totalMinutes = Math.floor(totalSeconds / 60);
                 const totalHours = Math.floor(totalMinutes / 60);
@@ -262,7 +265,7 @@
                 document.getElementById('cd-milliseconds').textContent = String(milliseconds).padStart(3,'0');
             }
             update();
-            setInterval(update, 33); // ~30fps for smooth milliseconds
+            setInterval(update, 33);
         })();
 
         // ============ TOAST ============
@@ -271,7 +274,7 @@
             toast.textContent = message;
             toast.className = 'toast ' + type + ' show';
             clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 5000);
         }
 
         // ============ VALIDATION ============
@@ -279,50 +282,80 @@
             let isValid = true;
             document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
             document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
+            
             const name = document.getElementById('fullName').value.trim();
             const whatsapp = document.getElementById('whatsapp').value.trim();
-            const dob = document.getElementById('dob').value;
-            if (!name || name.length < 3) { document.getElementById('nameError').classList.add('show'); document.getElementById('fullName').classList.add('error'); isValid = false; }
-            if (!/^0\d{10}$/.test(whatsapp.replace(/\s/g, ''))) { document.getElementById('whatsappError').classList.add('show'); document.getElementById('whatsapp').classList.add('error'); isValid = false; }
-            if (!dob) { document.getElementById('dobError').classList.add('show'); document.getElementById('dob').classList.add('error'); isValid = false; }
+            const birthday = document.getElementById('birthday').value.trim();
+            
+            if (!name || name.length < 3) { 
+                document.getElementById('nameError').classList.add('show'); 
+                document.getElementById('fullName').classList.add('error'); 
+                isValid = false; 
+            }
+            
+            const cleanNumber = whatsapp.replace(/\s/g, '');
+            if (!/^0\d{10}$/.test(cleanNumber)) { 
+                document.getElementById('whatsappError').classList.add('show'); 
+                document.getElementById('whatsapp').classList.add('error'); 
+                isValid = false; 
+            }
+            
+            if (!birthday || birthday.length < 3) { 
+                document.getElementById('birthdayError').classList.add('show'); 
+                document.getElementById('birthday').classList.add('error'); 
+                isValid = false; 
+            }
+            
             return isValid;
         }
 
-        // ============ SEAT GENERATION (NO TRANSACTIONS) ============
+        // ============ SEAT GENERATION ============
         async function getNextSeatNumber(day) {
             const counterRef = doc(db, 'counters', 'seatCounters');
-            console.log(`🪑 [${day}] Reading counter...`);
+            console.log(`🪑 [${day}] Fetching counter...`);
+            
             let docSnap;
             try {
                 docSnap = await getDoc(counterRef);
-                console.log(`📖 [${day}] Counter exists:`, docSnap.exists());
+                console.log(`📖 [${day}] Counter doc exists:`, docSnap.exists());
             } catch (err) {
                 console.error(`❌ [${day}] getDoc failed:`, err.code, err.message);
                 throw err;
             }
-            let nextNumber = 1;
+            
+            let currentData = { day1: 0, day2: 0, day3: 0 };
             if (docSnap.exists()) {
-                const data = docSnap.data();
-                nextNumber = (data[day] || 0) + 1;
-                console.log(`📊 [${day}] Current: ${data[day] || 0}, Next: ${nextNumber}`);
-            } else {
-                console.log(`📄 [${day}] No counter doc. Starting at 1.`);
+                currentData = docSnap.data();
+                currentData.day1 = currentData.day1 || 0;
+                currentData.day2 = currentData.day2 || 0;
+                currentData.day3 = currentData.day3 || 0;
             }
-            if (nextNumber > 1000) throw new Error(`All 1000 seats for ${day} taken.`);
+            
+            const currentCount = currentData[day] || 0;
+            const nextNumber = currentCount + 1;
+            
+            if (nextNumber > 1000) {
+                throw new Error(`All 1000 seats for ${day} are taken.`);
+            }
+            
+            console.log(`📊 [${day}] Current: ${currentCount}, Next: ${nextNumber}`);
+            
             try {
                 await setDoc(counterRef, { [day]: nextNumber }, { merge: true });
-                console.log(`✅ [${day}] Set to ${nextNumber}`);
+                console.log(`✅ [${day}] Updated to ${nextNumber}`);
             } catch (err) {
                 console.error(`❌ [${day}] setDoc failed:`, err.code, err.message);
                 throw err;
             }
+            
             return nextNumber;
         }
 
-        // ============ TICKET ID (NO TRANSACTIONS) ============
+        // ============ TICKET ID ============
         async function generateTicketId() {
             const counterRef = doc(db, 'counters', 'ticketCounter');
-            console.log('🎫 Reading ticket counter...');
+            console.log('🎫 Fetching ticket counter...');
+            
             let docSnap;
             try {
                 docSnap = await getDoc(counterRef);
@@ -331,18 +364,20 @@
                 console.error('❌ Ticket counter getDoc failed:', err.code, err.message);
                 throw err;
             }
+            
             let nextValue = 1;
             if (docSnap.exists()) {
                 nextValue = (docSnap.data().value || 0) + 1;
-                console.log('📊 Current ticket:', docSnap.data().value, 'Next:', nextValue);
             }
+            
             try {
                 await setDoc(counterRef, { value: nextValue }, { merge: true });
-                console.log('✅ Ticket counter set to:', nextValue);
+                console.log('✅ Ticket counter updated to:', nextValue);
             } catch (err) {
                 console.error('❌ Ticket counter setDoc failed:', err.code, err.message);
                 throw err;
             }
+            
             const ticketId = `EAG-${String(nextValue).padStart(4, '0')}`;
             console.log('🎟️ Generated:', ticketId);
             return ticketId;
@@ -351,89 +386,297 @@
         // ============ FORM SUBMIT ============
         document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            console.log('📝 Form submit triggered');
-            if (!validateForm()) { showToast('Please fill all fields correctly', 'error'); return; }
+            console.log('📝 Form submitted');
+            
+            if (!validateForm()) { 
+                showToast('Please fill all fields correctly', 'error'); 
+                return; 
+            }
+            
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;
+            
             try {
                 const fullName = document.getElementById('fullName').value.trim();
-                const whatsapp = document.getElementById('whatsapp').value.trim();
-                const dob = document.getElementById('dob').value;
-                console.log('👤', fullName, '| 💬', whatsapp, '| 🎂', dob);
+                const whatsapp = document.getElementById('whatsapp').value.trim().replace(/\s/g, '');
+                const birthday = document.getElementById('birthday').value.trim();
+                
+                console.log('👤', fullName, '| 💬', whatsapp, '| 🎂', birthday);
 
                 // Duplicate check
-                console.log('🔍 Checking duplicates...');
-                const dupSnap = await getDocs(query(collection(db, 'attendees'), where('whatsapp', '==', whatsapp)));
-                console.log('📋 Duplicates found:', dupSnap.size);
+                console.log('🔍 Checking if number already registered...');
+                const attendeesRef = collection(db, 'attendees');
+                const dupQuery = query(attendeesRef, where('whatsapp', '==', whatsapp));
+                const dupSnap = await getDocs(dupQuery);
+                
+                console.log('📋 Existing registrations with this number:', dupSnap.size);
+                
                 if (!dupSnap.empty) {
-                    showToast('⚠️ This WhatsApp number is already registered', 'error');
+                    const existingData = dupSnap.docs[0].data();
+                    showToast(
+                        `⚠️ This number (${whatsapp}) is already registered as "${existingData.fullName}". One registration per person.`, 
+                        'error'
+                    );
                     submitBtn.classList.remove('loading');
                     submitBtn.disabled = false;
                     return;
                 }
 
-                console.log('🪑 Generating seats...');
+                // Generate seats
+                console.log('🪑 Generating seats for all 3 days...');
                 const seatDay1 = await getNextSeatNumber('day1');
                 const seatDay2 = await getNextSeatNumber('day2');
                 const seatDay3 = await getNextSeatNumber('day3');
-                const ticketId = await generateTicketId();
                 
+                console.log('📊 Seats assigned — Day1:', seatDay1, '| Day2:', seatDay2, '| Day3:', seatDay3);
+                
+                const ticketId = await generateTicketId();
                 const formatSeat = num => String(num).padStart(3, '0');
+                
                 const attendeeData = {
-                    fullName, whatsapp, dob, ticketId,
-                    seatDay1: formatSeat(seatDay1), seatDay2: formatSeat(seatDay2), seatDay3: formatSeat(seatDay3),
-                    programName: 'EAGLE CONVERGENCE', church: 'SPAC CHURCH', hostPastor: 'Yomi Okewunmi',
-                    attendanceDay1: false, attendanceDay2: false, attendanceDay3: false,
-                    registeredAt: serverTimestamp(), isWalkIn: false
+                    fullName,
+                    whatsapp,
+                    birthday,
+                    ticketId,
+                    seatDay1: formatSeat(seatDay1),
+                    seatDay2: formatSeat(seatDay2),
+                    seatDay3: formatSeat(seatDay3),
+                    programName: 'EAGLE CONVERGENCE',
+                    church: 'SPAC CHURCH',
+                    hostPastor: 'Yomi Okewunmi',
+                    attendanceDay1: false,
+                    attendanceDay2: false,
+                    attendanceDay3: false,
+                    registeredAt: serverTimestamp(),
+                    isWalkIn: false
                 };
 
-                console.log('💾 Saving to Firestore...');
+                console.log('💾 Saving to Firestore:', attendeeData);
                 const docRef = await addDoc(collection(db, 'attendees'), attendeeData);
                 console.log('✅ SAVED! Document ID:', docRef.id);
 
                 currentTicketData = {
-                    fullName, ticketId,
-                    seatDay1: formatSeat(seatDay1), seatDay2: formatSeat(seatDay2), seatDay3: formatSeat(seatDay3)
+                    fullName,
+                    ticketId,
+                    seatDay1: formatSeat(seatDay1),
+                    seatDay2: formatSeat(seatDay2),
+                    seatDay3: formatSeat(seatDay3)
                 };
+                
                 showTicket(currentTicketData);
-                showToast('✅ Registration successful!', 'success');
+                showToast('✅ Registration successful! Your ticket is ready.', 'success');
+                
             } catch (error) {
                 console.error('❌❌❌ REGISTRATION FAILED ❌❌❌');
                 console.error('Code:', error.code);
                 console.error('Message:', error.message);
-                console.error('Full error:', error);
-                showToast('❌ ' + error.code + ': ' + error.message, 'error');
+                showToast('❌ Error: ' + error.message, 'error');
             } finally {
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
             }
         });
 
+        // ============ SHOW TICKET ============
         function showTicket(data) {
             document.getElementById('formSection').style.display = 'none';
             document.getElementById('countdownSection').style.display = 'none';
-            document.getElementById('ticketSection').classList.add('show');
+            const ticketSection = document.getElementById('ticketSection');
+            ticketSection.classList.add('show');
+            
             document.getElementById('ticketName').textContent = data.fullName;
             document.getElementById('ticketId').textContent = data.ticketId;
             document.getElementById('seatDay1').textContent = data.seatDay1;
             document.getElementById('seatDay2').textContent = data.seatDay2;
             document.getElementById('seatDay3').textContent = data.seatDay3;
+            
+            // Generate QR Code
             const qrContainer = document.getElementById('qrCode');
             qrContainer.innerHTML = '';
-            new QRCode(qrContainer, { text: data.ticketId, width: 150, height: 150, colorDark: '#1A1A1A', colorLight: '#FFFFFF', correctLevel: QRCode.CorrectLevel.H });
-            document.getElementById('ticketSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const qrCodeInstance = new QRCode(qrContainer, { 
+                text: data.ticketId, 
+                width: 150, 
+                height: 150, 
+                colorDark: '#1A1A1A', 
+                colorLight: '#FFFFFF', 
+                correctLevel: QRCode.CorrectLevel.H 
+            });
+            
+            // Capture QR as data URL for saving/printing
+            setTimeout(() => {
+                const canvas = qrContainer.querySelector('canvas');
+                if (canvas) {
+                    currentQRDataURL = canvas.toDataURL('image/png');
+                }
+            }, 300);
+            
+            ticketSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
+        // ============ DOWNLOAD TICKET (WITH QR CODE) ============
         window.downloadTicket = function() {
             if (!currentTicketData) return;
-            showToast('📸 Screenshot your ticket', 'success');
+            
+            // Use stored QR data URL
+            const qrImageSrc = currentQRDataURL || '';
+            
+            showToast('📥 Opening ticket for printing...', 'success');
+            
             setTimeout(() => {
-                const pw = window.open('', '_blank', 'width=400,height=700');
-                if (pw) { pw.document.write(`<!DOCTYPE html><html><head><title>${currentTicketData.ticketId}</title><style>body{font-family:Georgia;text-align:center;padding:20px;max-width:380px;margin:0 auto}.ticket{border:2px solid #D4AF37;border-radius:16px;padding:20px}.program{font-size:18px;font-weight:700;color:#B8960C}.name{font-size:20px;font-weight:700;margin:16px 0}.tid{font-size:13px;color:#B8960C;background:#FFF8E7;padding:4px 14px;border-radius:20px}.seats{display:flex;gap:8px;justify-content:center;margin:16px 0}.seat{border:1px solid #eee;border-radius:8px;padding:8px 12px;background:#fafafa}.seat .num{font-size:22px;font-weight:700}@media print{body{-webkit-print-color-adjust:exact}}</style></head><body><div class="ticket"><div class="program">EAGLE CONVERGENCE '25</div><p style="color:#666">SPAC CHURCH</p><div class="name">${currentTicketData.fullName}</div><div class="tid">${currentTicketData.ticketId}</div><p style="color:#666">Host: Pastor Yomi Okewunmi</p><div class="seats"><div class="seat"><p style="font-size:8px;color:#888">Day 1</p><div class="num">${currentTicketData.seatDay1}</div></div><div class="seat"><p style="font-size:8px;color:#888">Day 2</p><div class="num">${currentTicketData.seatDay2}</div></div><div class="seat"><p style="font-size:8px;color:#888">Day 3</p><div class="num">${currentTicketData.seatDay3}</div></div></div><p style="font-size:11px;color:#666">Scan QR on original ticket</p></div><script>window.onload=()=>window.print()<\/script></body></html>`); pw.document.close(); }
-            }, 500);
+                const pw = window.open('', '_blank', 'width=420,height=750');
+                if (pw) { 
+                    pw.document.write(`<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket - ${currentTicketData.ticketId}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Georgia, 'Times New Roman', serif; 
+            text-align: center; 
+            padding: 20px; 
+            max-width: 400px; 
+            margin: 0 auto; 
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .ticket { 
+            border: 3px solid #D4AF37; 
+            border-radius: 18px; 
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .ticket-header { 
+            background: #0A0A0A; 
+            color: #D4AF37; 
+            padding: 16px; 
+            text-align: center;
+            position: relative;
+        }
+        .ticket-header .program { 
+            font-size: 20px; 
+            font-weight: 900; 
+            letter-spacing: 1px;
+        }
+        .ticket-header .church { 
+            font-size: 10px; 
+            color: rgba(255,255,255,0.6); 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            margin-top: 3px;
+        }
+        .ticket-body { 
+            padding: 22px 18px 18px; 
+            background: #fff; 
+        }
+        .ticket-body .name { 
+            font-size: 22px; 
+            font-weight: 800; 
+            color: #1A1A1A; 
+            margin-bottom: 4px;
+        }
+        .ticket-body .tid { 
+            display: inline-block;
+            font-size: 12px; 
+            color: #B8960C; 
+            font-weight: 700; 
+            background: #FFF8E7; 
+            padding: 4px 14px; 
+            border-radius: 20px; 
+            margin: 8px 0 12px;
+            letter-spacing: 1px;
+        }
+        .ticket-body .host { 
+            font-size: 10px; 
+            color: #666; 
+            margin-bottom: 14px;
+        }
+        .seats { 
+            display: flex; 
+            gap: 8px; 
+            justify-content: center; 
+            margin: 14px 0 18px;
+        }
+        .seat { 
+            border: 1px solid #eee; 
+            border-radius: 10px; 
+            padding: 10px 14px; 
+            background: #FAFAFA;
+            min-width: 65px;
+        }
+        .seat .day { 
+            font-size: 7px; 
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+            color: #888; 
+            margin-bottom: 2px;
+        }
+        .seat .num { 
+            font-size: 24px; 
+            font-weight: 900; 
+            color: #1A1A1A;
+        }
+        .qr-box {
+            display: flex;
+            justify-content: center;
+            margin: 12px 0 6px;
+        }
+        .qr-box img {
+            width: 140px;
+            height: 140px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 8px;
+            background: #fff;
+        }
+        .footer-info {
+            font-size: 9px;
+            color: #999;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+        .footer-info strong {
+            color: #666;
+        }
+        @media print {
+            body { padding: 10px; }
+            .ticket { box-shadow: none; border-width: 2px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket">
+        <div class="ticket-header">
+            <div class="program">EAGLE CONVERGENCE '25</div>
+            <div class="church">SPAC CHURCH</div>
+        </div>
+        <div class="ticket-body">
+            <div class="name">${currentTicketData.fullName}</div>
+            <div class="tid">${currentTicketData.ticketId}</div>
+            <div class="host">Host: Pastor Yomi Okewunmi</div>
+            <div class="seats">
+                <div class="seat"><div class="day">Day 1</div><div class="num">${currentTicketData.seatDay1}</div></div>
+                <div class="seat"><div class="day">Day 2</div><div class="num">${currentTicketData.seatDay2}</div></div>
+                <div class="seat"><div class="day">Day 3</div><div class="num">${currentTicketData.seatDay3}</div></div>
+            </div>
+            ${qrImageSrc ? `<div class="qr-box"><img src="${qrImageSrc}" alt="QR Code"></div>` : '<p style="color:#999;font-size:11px;">QR Code — see original ticket</p>'}
+            <div class="footer-info">
+                <strong>Date:</strong> 4th – 6th June, 2026<br>
+                <strong>Venue:</strong> 2-6 Church Street, Poly Road, Sango, Ibadan<br>
+                <strong>Contact:</strong> 08169172686
+            </div>
+        </div>
+    </div>
+    <script>window.onload = function() { window.print(); window.onafterprint = function() { window.close(); }; };<\/script>
+</body>
+</html>`); 
+                    pw.document.close(); 
+                }
+            }, 400);
         };
 
+        // ============ REGISTER AGAIN ============
         window.registerAgain = function() {
             document.getElementById('formSection').style.display = 'block';
             document.getElementById('countdownSection').style.display = 'block';
@@ -441,6 +684,7 @@
             document.getElementById('registerForm').reset();
             document.getElementById('qrCode').innerHTML = '';
             currentTicketData = null;
+            currentQRDataURL = null;
             document.getElementById('countdownSection').scrollIntoView({ behavior: 'smooth' });
         };
 
@@ -452,8 +696,8 @@
             });
         });
 
-        console.log('%c🦅 READY — Open Console & Test %c| %cCheck Firestore Rules if it fails',
-            'color:#D4AF37;font-size:1.1em;font-weight:bold', '', 'color:#FFF');
+        console.log('%c🦅 EAGLE CONVERGENCE \'25 %c| %cRegistration Ready %c| %cDifferent seats per day + QR in saved ticket',
+            'color:#D4AF37;font-size:1.1em;font-weight:bold', '', 'color:#D4AF37;font-weight:bold', '', 'color:#888;font-size:0.8em');
     </script>
 
 </body>
