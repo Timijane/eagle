@@ -29,6 +29,25 @@
         .app-container::-webkit-scrollbar-track { background: transparent; }
         .app-container::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
+        /* DEBUG PANEL */
+        .debug-panel {
+            position: fixed; bottom: 0; left: 0; right: 0; max-height: 200px;
+            background: rgba(0,0,0,0.92); color: #0f0; font-family: monospace;
+            font-size: 10px; padding: 8px 12px; overflow-y: auto; z-index: 9999;
+            display: none; border-top: 2px solid #0f0;
+        }
+        .debug-panel.show { display: block; }
+        .debug-panel .log-line { margin: 1px 0; word-break: break-all; }
+        .debug-panel .log-error { color: #f44; }
+        .debug-panel .log-warn { color: #fa0; }
+        .debug-panel .log-success { color: #4f4; }
+        .debug-toggle {
+            position: fixed; bottom: 8px; right: 8px; z-index: 10000;
+            width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.8);
+            color: #0f0; border: 1px solid #0f0; font-family: monospace;
+            font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+
         /* LOGIN */
         .auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px; text-align: center; background: #0A0A0A; }
         .auth-screen .logo { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 900; font-family: 'Playfair Display', serif; font-size: 1.1rem; }
@@ -45,8 +64,6 @@
         .btn-auth { width: 100%; padding: 13px; border: none; border-radius: 50px; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
         .btn-primary { background: var(--gold-gradient); color: #0A0A0A; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212,175,55,0.3); }
-        .btn-outline-white { background: transparent; border: 1.5px solid rgba(255,255,255,0.3); color: #FFF; }
-        .btn-outline-white:hover { border-color: var(--gold); background: rgba(212,175,55,0.08); }
         .btn-google { display: flex; align-items: center; justify-content: center; gap: 8px; background: #FFF; color: #1A1A1A; }
         .btn-google img { width: 18px; height: 18px; }
         .auth-toggle { color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-top: 6px; }
@@ -129,7 +146,7 @@
 
     <div class="app-container">
 
-        <!-- ========== AUTH SCREEN ========== -->
+        <!-- AUTH SCREEN -->
         <div class="auth-screen" id="authScreen">
             <div class="logo">SPAC</div>
             <h2>Admin Access</h2>
@@ -149,18 +166,15 @@
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.96 16.46 0 20.12 0 24c0 3.88.96 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E" alt="G">
                     Continue with Google
                 </button>
-                <button class="btn-auth btn-outline-white" onclick="handleGoogleLogin()" style="display:none;" id="btnGoogleFallback">
-                    Try Google Sign-In Instead
-                </button>
             </div>
         </div>
 
-        <!-- ========== DASHBOARD ========== -->
+        <!-- DASHBOARD -->
         <div class="dashboard" id="dashboard">
             <div class="admin-header">
                 <button class="btn-logout" onclick="handleLogout()">Logout</button>
                 <div class="admin-label">Admin Dashboard</div>
-                <h2>EAGLE CONVERGENCE '25</h2>
+                <h2>EAGLE CONVERGENCE '26</h2>
                 <div class="admin-email" id="adminEmail"></div>
             </div>
 
@@ -216,7 +230,42 @@
         </div>
     </div>
 
+    <!-- DEBUG PANEL -->
+    <button class="debug-toggle" onclick="toggleDebug()">🐛</button>
+    <div class="debug-panel show" id="debugPanel"></div>
+
     <script type="module">
+        // ============ DEBUG LOGGER ============
+        const debugLogs = [];
+        function debug(msg, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const line = `[${time}] ${msg}`;
+            debugLogs.push({ line, type });
+            console.log(msg);
+            renderDebug();
+        }
+        function debugError(msg) { debug(msg, 'error'); console.error(msg); }
+        function debugWarn(msg) { debug(msg, 'warn'); console.warn(msg); }
+        function debugSuccess(msg) { debug(msg, 'success'); }
+        
+        function renderDebug() {
+            const panel = document.getElementById('debugPanel');
+            if (!panel) return;
+            panel.innerHTML = debugLogs.slice(-30).map(l => 
+                `<div class="log-line log-${l.type}">${l.line}</div>`
+            ).join('');
+            panel.scrollTop = panel.scrollHeight;
+        }
+        
+        window.toggleDebug = function() {
+            const panel = document.getElementById('debugPanel');
+            panel.classList.toggle('show');
+        };
+
+        debug('🚀 Admin page loaded');
+        debug(`📍 URL: ${window.location.href}`);
+        debug(`🌐 Hostname: ${window.location.hostname}`);
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc, getDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
@@ -230,10 +279,41 @@
             appId: "1:751509177511:web:91adcd50595210cb80c782"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+        debug('📦 Initializing Firebase...');
+        debug(`   Project: ${firebaseConfig.projectId}`);
+        debug(`   Auth Domain: ${firebaseConfig.authDomain}`);
+
+        let app, db, auth, provider;
+        
+        try {
+            app = initializeApp(firebaseConfig);
+            debugSuccess('✅ Firebase App initialized');
+        } catch (e) {
+            debugError(`❌ Firebase init failed: ${e.code} - ${e.message}`);
+        }
+
+        try {
+            db = getFirestore(app);
+            debugSuccess('✅ Firestore connected');
+        } catch (e) {
+            debugError(`❌ Firestore failed: ${e.code} - ${e.message}`);
+        }
+
+        try {
+            auth = getAuth(app);
+            debugSuccess('✅ Auth connected');
+            debug(`   Auth domain from config: ${auth.app.options.authDomain}`);
+        } catch (e) {
+            debugError(`❌ Auth failed: ${e.code} - ${e.message}`);
+        }
+
+        try {
+            provider = new GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: 'select_account' });
+            debugSuccess('✅ Google provider ready');
+        } catch (e) {
+            debugError(`❌ Google provider failed: ${e.message}`);
+        }
 
         let currentDay = 'day1';
         let currentDayLabel = 'Day1';
@@ -241,6 +321,26 @@
         let allAttendees = [];
         let isScannerRunning = false;
         let isSignUpMode = false;
+
+        // ============ AUTH STATE LISTENER ============
+        debug('👂 Setting up auth state listener...');
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                debugSuccess(`✅ AUTH STATE: Logged in as ${user.email}`);
+                debug(`   UID: ${user.uid}`);
+                debug(`   Provider: ${user.providerData[0]?.providerId || 'unknown'}`);
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('dashboard').classList.add('show');
+                document.getElementById('adminEmail').textContent = user.email;
+                try { loadAttendees(); } catch(e) { debugError(`Load attendees error: ${e.message}`); }
+            } else {
+                debugWarn('👋 AUTH STATE: Signed out');
+                document.getElementById('authScreen').style.display = 'flex';
+                document.getElementById('dashboard').classList.remove('show');
+            }
+        }, (error) => {
+            debugError(`❌ AUTH STATE LISTENER ERROR: ${error.code} - ${error.message}`);
+        });
 
         // ============ AUTH MODE TOGGLE ============
         window.toggleAuthMode = function() {
@@ -255,11 +355,13 @@
                 subtitle.textContent = 'Register as an admin';
                 btn.textContent = 'Create Account';
                 toggleText.textContent = 'Already have an account? Sign In';
+                debug('🔀 Switched to SIGN UP mode');
             } else {
                 title.textContent = 'Admin Access';
-                subtitle.textContent = 'EAGLE CONVERGENCE \'25';
+                subtitle.textContent = 'EAGLE CONVERGENCE \'26';
                 btn.textContent = 'Sign In';
                 toggleText.textContent = "Don't have an account? Create Account";
+                debug('🔀 Switched to SIGN IN mode');
             }
             hideMessages();
         };
@@ -277,14 +379,18 @@
             const successEl = document.getElementById('authSuccess');
             
             hideMessages();
+            debug(`🔐 handleLogin called — Mode: ${isSignUpMode ? 'SIGN UP' : 'SIGN IN'}`);
+            debug(`   Email: ${email}`);
             
             if (!email || !password) {
+                debugWarn('⚠️ Empty fields');
                 errorEl.textContent = 'Please fill in all fields';
                 errorEl.classList.add('show');
                 return;
             }
             
             if (password.length < 6) {
+                debugWarn('⚠️ Password too short');
                 errorEl.textContent = 'Password must be at least 6 characters';
                 errorEl.classList.add('show');
                 return;
@@ -292,22 +398,26 @@
             
             try {
                 if (isSignUpMode) {
-                    // CREATE NEW ADMIN ACCOUNT
-                    await createUserWithEmailAndPassword(auth, email, password);
+                    debug('📝 Attempting createUserWithEmailAndPassword...');
+                    const result = await createUserWithEmailAndPassword(auth, email, password);
+                    debugSuccess(`✅ ACCOUNT CREATED: ${result.user.email} (${result.user.uid})`);
                     successEl.textContent = '✅ Account created successfully!';
                     successEl.classList.add('show');
-                    // Will auto-redirect via onAuthStateChanged
                 } else {
-                    // SIGN IN
-                    await signInWithEmailAndPassword(auth, email, password);
+                    debug('🔑 Attempting signInWithEmailAndPassword...');
+                    const result = await signInWithEmailAndPassword(auth, email, password);
+                    debugSuccess(`✅ SIGNED IN: ${result.user.email} (${result.user.uid})`);
                 }
             } catch (error) {
-                console.error('Auth error:', error.code, error.message);
+                debugError(`❌ AUTH ERROR: ${error.code} - ${error.message}`);
                 let msg = error.message;
                 if (error.code === 'auth/email-already-in-use') msg = 'This email is already registered. Sign in instead.';
                 if (error.code === 'auth/invalid-email') msg = 'Invalid email format.';
                 if (error.code === 'auth/weak-password') msg = 'Password is too weak. Use at least 6 characters.';
                 if (error.code === 'auth/invalid-credential') msg = 'Invalid email or password.';
+                if (error.code === 'auth/too-many-requests') msg = 'Too many attempts. Try again later.';
+                if (error.code === 'auth/network-request-failed') msg = 'Network error. Check your internet connection.';
+                if (error.code === 'auth/unauthorized-domain') msg = 'This domain is not authorized. Check Firebase settings.';
                 errorEl.textContent = msg;
                 errorEl.classList.add('show');
             }
@@ -315,47 +425,41 @@
 
         window.handleGoogleLogin = async function() {
             hideMessages();
+            debug('🔴 Attempting Google signInWithPopup...');
+            debug(`   Current domain: ${window.location.hostname}`);
+            
             try {
-                await signInWithPopup(auth, provider);
+                const result = await signInWithPopup(auth, provider);
+                debugSuccess(`✅ GOOGLE LOGIN SUCCESS: ${result.user.email}`);
             } catch (error) {
-                console.error('Google login error:', error.code, error.message);
+                debugError(`❌ GOOGLE ERROR: ${error.code} - ${error.message}`);
+                debug(`   Full error: ${JSON.stringify(error)}`);
                 const errorEl = document.getElementById('authError');
                 if (error.code === 'auth/popup-closed-by-user') {
                     errorEl.textContent = 'Sign-in cancelled. Please try again.';
                 } else if (error.code === 'auth/unauthorized-domain') {
-                    errorEl.textContent = 'This domain is not authorized for Google sign-in. Use Email/Password instead.';
+                    errorEl.textContent = `Domain "${window.location.hostname}" is not authorized. Add it in Firebase Console → Auth → Settings → Authorized domains.`;
+                } else if (error.code === 'auth/popup-blocked') {
+                    errorEl.textContent = 'Popup was blocked. Please allow popups for this site.';
+                } else if (error.code === 'auth/cancelled-popup-request') {
+                    errorEl.textContent = 'Another sign-in popup is already open.';
+                } else if (error.code === 'auth/network-request-failed') {
+                    errorEl.textContent = 'Network error. Check your internet connection.';
                 } else {
-                    errorEl.textContent = 'Google sign-in failed: ' + error.message;
+                    errorEl.textContent = `Google sign-in failed: ${error.message}`;
                 }
                 errorEl.classList.add('show');
             }
         };
 
         window.handleLogout = async function() {
+            debug('👋 Logging out...');
             await signOut(auth);
+            debugSuccess('✅ Signed out');
         };
 
-        // Enter key submits
         document.getElementById('authPassword').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') handleLogin();
-        });
-
-        // ============ AUTH STATE LISTENER ============
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                console.log('✅ Logged in:', user.email);
-                document.getElementById('authScreen').style.display = 'none';
-                document.getElementById('dashboard').classList.add('show');
-                document.getElementById('adminEmail').textContent = user.email;
-                loadAttendees();
-            } else {
-                console.log('👋 Signed out');
-                document.getElementById('authScreen').style.display = 'flex';
-                document.getElementById('dashboard').classList.remove('show');
-                document.getElementById('authEmail').value = '';
-                document.getElementById('authPassword').value = '';
-                stopScanner();
-            }
         });
 
         // ============ DAY SELECTION ============
@@ -366,6 +470,7 @@
             btn.classList.add('active');
             if (isScannerRunning) { stopScanner(); setTimeout(startScanner, 500); }
             updateStats();
+            debug(`📅 Selected: ${currentDayLabel}`);
         };
 
         // ============ SCANNER ============
@@ -376,18 +481,20 @@
             const statusDiv = document.getElementById('scanStatus');
             statusDiv.className = 'scan-status warning show';
             statusDiv.textContent = '📷 Starting camera...';
+            debug('📷 Starting scanner...');
             try {
                 html5QrCode = new Html5Qrcode("reader");
                 await html5QrCode.start(
                     { facingMode: "environment" },
                     { fps: 10, qrbox: { width: 250, height: 250 } },
                     onScanSuccess,
-                    () => {} // ignore scan errors
+                    () => {}
                 );
                 isScannerRunning = true;
                 statusDiv.textContent = '📷 Ready — point at ticket QR code';
+                debugSuccess('✅ Scanner started');
             } catch (err) {
-                console.error('Scanner error:', err);
+                debugError(`❌ Scanner error: ${err.message}`);
                 statusDiv.className = 'scan-status error show';
                 statusDiv.textContent = '❌ Camera error: ' + err.message;
                 document.getElementById('btnStartScanner').disabled = false;
@@ -399,16 +506,17 @@
             if (html5QrCode && isScannerRunning) {
                 try { await html5QrCode.stop(); html5QrCode.clear(); } catch(e) {}
                 isScannerRunning = false;
+                debug('⏹ Scanner stopped');
             }
             document.getElementById('btnStartScanner').disabled = false;
             document.getElementById('btnStopScanner').disabled = true;
-            const statusDiv = document.getElementById('scanStatus');
-            statusDiv.className = 'scan-status';
-            statusDiv.textContent = '';
+            document.getElementById('scanStatus').className = 'scan-status';
+            document.getElementById('scanStatus').textContent = '';
         };
 
         async function onScanSuccess(decodedText) {
             const ticketId = decodedText.trim();
+            debug(`📱 QR Scanned: ${ticketId}`);
             const statusDiv = document.getElementById('scanStatus');
             const attendanceField = 'attendance' + currentDayLabel;
             
@@ -418,6 +526,7 @@
             if (snapshot.empty) {
                 statusDiv.className = 'scan-status error show';
                 statusDiv.textContent = `❌ Ticket "${ticketId}" not found`;
+                debugWarn(`⚠️ Ticket not found: ${ticketId}`);
                 playBeep('error');
                 return;
             }
@@ -428,6 +537,7 @@
             if (data[attendanceField] === true) {
                 statusDiv.className = 'scan-status warning show';
                 statusDiv.textContent = `⚠️ ${data.fullName} already marked present`;
+                debugWarn(`⚠️ Already marked: ${data.fullName}`);
                 playBeep('warning');
                 return;
             }
@@ -439,6 +549,7 @@
             
             statusDiv.className = 'scan-status success show';
             statusDiv.textContent = `✅ ${data.fullName} — PRESENT (Seat ${data['seat'+currentDayLabel] || 'N/A'})`;
+            debugSuccess(`✅ Marked present: ${data.fullName}`);
             playBeep('success');
             loadAttendees();
         }
@@ -474,6 +585,7 @@
             const snap = await getDocs(query(collection(db, 'attendees'), orderBy('registeredAt', 'desc')));
             allAttendees = [];
             snap.forEach(d => allAttendees.push({ id: d.id, ...d.data() }));
+            debug(`📋 Loaded ${allAttendees.length} attendees`);
             renderTable(allAttendees);
             updateStats();
         }
@@ -545,6 +657,7 @@
             
             closeWalkInModal();
             loadAttendees();
+            debugSuccess(`✅ Walk-in added: ${name}`);
             alert(`✅ Walk-in added! Ticket: EAG-${String(nv).padStart(4, '0')}`);
         };
 
@@ -561,7 +674,25 @@
             a.download = `eagle-convergence-attendance-${currentDayLabel.toLowerCase()}.csv`;
             a.click();
             URL.revokeObjectURL(url);
+            debugSuccess(`📥 Exported CSV for ${currentDayLabel}`);
         };
+
+        // ============ INITIAL STATUS ============
+        debugSuccess('✅ All modules loaded. Ready for authentication.');
+        debug(`📋 Summary:`);
+        debug(`   - Firebase App: ${app ? '✅' : '❌'}`);
+        debug(`   - Firestore: ${db ? '✅' : '❌'}`);
+        debug(`   - Auth: ${auth ? '✅' : '❌'}`);
+        debug(`   - Google Provider: ${provider ? '✅' : '❌'}`);
+        debug(`   - Current domain: ${window.location.hostname}`);
+        debug(`   - Expected auth domain: eagle-ec67f.firebaseapp.com`);
+        debug(`💡 If login fails, check:`);
+        debug(`   1. Firebase Console → Auth → Sign-in method → Email/Password ENABLED`);
+        debug(`   2. Firebase Console → Auth → Sign-in method → Google ENABLED`);
+        debug(`   3. Firebase Console → Auth → Settings → Authorized domains → ADD: ${window.location.hostname}`);
+        debug(`   4. Google Cloud → OAuth consent screen → Published`);
+        debug(`   5. Try Email/Password sign-up first, then sign in`);
+        renderDebug();
     </script>
 </body>
 </html>
