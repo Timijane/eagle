@@ -145,6 +145,22 @@
         .btn-save { background: var(--gold-gradient); color: #0A0A0A; }
         .btn-cancel { background: var(--surface); color: var(--text-secondary); border: 1px solid rgba(0,0,0,0.1); }
 
+        /* PIN MODAL (specific) */
+        .pin-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1001; justify-content: center; align-items: center; padding: 20px; }
+        .pin-overlay.show { display: flex; }
+        .pin-box { background: #FFF; border-radius: var(--radius); padding: 30px 24px; text-align: center; width: 100%; max-width: 340px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .pin-box .pin-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .pin-box h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 4px; color: var(--text); }
+        .pin-box p { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 18px; }
+        .pin-box input { width: 100%; padding: 14px 16px; border: 2px solid rgba(0,0,0,0.1); border-radius: var(--radius-sm); font-size: 1.2rem; text-align: center; letter-spacing: 4px; font-family: 'Inter', sans-serif; outline: none; transition: var(--transition); }
+        .pin-box input:focus { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(212,175,55,0.08); }
+        .pin-error { color: var(--error); font-size: 0.73rem; margin-top: 8px; display: none; }
+        .pin-error.show { display: block; }
+        .pin-buttons { display: flex; gap: 8px; margin-top: 14px; }
+        .pin-buttons button { flex: 1; padding: 12px; border-radius: 50px; border: none; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .pin-submit { background: var(--gold-gradient); color: #0A0A0A; }
+        .pin-cancel { background: var(--surface); color: var(--text-secondary); border: 1px solid rgba(0,0,0,0.1); }
+
         /* CONTACT */
         .contact-info { display: flex; flex-direction: column; gap: 14px; }
         .contact-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: #FFFFFF; border-radius: var(--radius-sm); box-shadow: var(--shadow-card); border: 1px solid rgba(0,0,0,0.04); }
@@ -176,6 +192,33 @@
         .countdown-ms .ms-box { background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 20px; padding: 4px 16px; }
         .countdown-ms .ms-number { font-family: 'Playfair Display', serif; font-size: 0.9rem; font-weight: 800; color: var(--gold-light); }
         .countdown-ms .ms-label { font-size: 0.5rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-left: 3px; }
+
+        /* ADMIN FAB BUTTON */
+        .admin-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(212,175,55,0.12);
+            border: 1.5px solid rgba(212,175,55,0.3);
+            color: var(--gold);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 998;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+        .admin-fab:hover {
+            background: rgba(212,175,55,0.25);
+            border-color: var(--gold);
+            transform: scale(1.1);
+            box-shadow: 0 4px 20px rgba(212,175,55,0.3);
+        }
     </style>
 </head>
 <body>
@@ -352,6 +395,24 @@
         <div class="lightbox" id="lightbox" onclick="closeLightbox()"><img src="" alt="Lightbox" id="lightboxImg"></div>
     </div>
 
+    <!-- ADMIN FAB BUTTON -->
+    <div class="admin-fab" onclick="openPinModal()" title="Admin Access">🔑</div>
+
+    <!-- PIN MODAL -->
+    <div class="pin-overlay" id="pinModal">
+        <div class="pin-box">
+            <div class="pin-icon">🔐</div>
+            <h3>Admin Access</h3>
+            <p>Enter the administrator PIN to continue</p>
+            <input type="password" id="pinInput" placeholder="••••••••••" maxlength="20" autocomplete="off">
+            <div class="pin-error" id="pinError">Incorrect PIN. Please try again.</div>
+            <div class="pin-buttons">
+                <button class="pin-cancel" onclick="closePinModal()">Cancel</button>
+                <button class="pin-submit" onclick="verifyPin()">Unlock</button>
+            </div>
+        </div>
+    </div>
+
     <!-- PAYMENT MODAL -->
     <div class="modal-overlay" id="paymentModal">
         <div class="modal">
@@ -373,6 +434,31 @@
         window.openPaymentModal=()=>{document.getElementById('paymentModal').classList.add('show');};
         window.closePaymentModal=()=>{document.getElementById('paymentModal').classList.remove('show');document.getElementById('payName').value='';document.getElementById('payAmount').value='';};
         window.submitPayment=function(){const n=document.getElementById('payName').value.trim();const a=document.getElementById('payAmount').value.trim();if(!n){alert('Please enter your account name');return;}if(!a){alert('Please enter the amount sent');return;}const m=`Hello,%20I%20made%20a%20payment%20for%20Eagle%20Convergence%20'26%0A%0AAccount%20Name:%20${encodeURIComponent(n)}%0AAmount:%20₦${encodeURIComponent(a)}`;window.open(`https://wa.me/2348066839398?text=${m}`,'_blank');closePaymentModal();};
+
+        // ============ PIN GATE ============
+        window.openPinModal = function() {
+            document.getElementById('pinModal').classList.add('show');
+            document.getElementById('pinInput').value = '';
+            document.getElementById('pinError').classList.remove('show');
+            setTimeout(() => document.getElementById('pinInput').focus(), 200);
+        };
+        window.closePinModal = function() {
+            document.getElementById('pinModal').classList.remove('show');
+        };
+        window.verifyPin = function() {
+            const pin = document.getElementById('pinInput').value.trim();
+            if (pin === 'tritech5665') {
+                document.getElementById('pinModal').classList.remove('show');
+                window.location.href = 'admin.html';
+            } else {
+                document.getElementById('pinError').classList.add('show');
+                document.getElementById('pinInput').value = '';
+                document.getElementById('pinInput').focus();
+            }
+        };
+        document.getElementById('pinInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') verifyPin();
+        });
 
         document.querySelectorAll('.gallery-item img').forEach(img=>{img.addEventListener('click',function(e){e.stopPropagation();document.getElementById('lightboxImg').src=this.src;document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden';});});
         window.closeLightbox=()=>{document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='';};
