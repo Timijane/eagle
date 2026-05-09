@@ -255,7 +255,7 @@
                 toggleText.textContent = 'Already have an account? Sign In';
             } else {
                 title.textContent = 'Admin Access';
-                subtitle.textContent = 'EAGLES' CONVERGENCE \'26';
+                subtitle.textContent = `EAGLES' CONVERGENCE '26`;   // ✅ fixed
                 btn.textContent = 'Sign In';
                 toggleText.textContent = "Don't have an account? Create Account";
             }
@@ -495,7 +495,8 @@
                 attendanceDay1: currentDay === 'day1',
                 attendanceDay2: currentDay === 'day2',
                 attendanceDay3: currentDay === 'day3',
-                programName: 'EAGLES' CONVERGENCE', church: 'SPAC CHURCH',
+                programName: `EAGLES' CONVERGENCE`,   // ✅ fixed
+                church: 'SPAC CHURCH',
                 hostPastor: 'Yomi Okewunmi',
                 registeredAt: serverTimestamp(), isWalkIn: true
             });
@@ -515,7 +516,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `eagles'-convergence-attendance-${currentDayLabel.toLowerCase()}.csv`;
+            a.download = `eagles-convergence-attendance-${currentDayLabel.toLowerCase()}.csv`;
             a.click();
             URL.revokeObjectURL(url);
         };
