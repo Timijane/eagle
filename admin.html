@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0A0A0A">
-    <title>Admin | EAGLE CONVERGENCE '26</title>
+    <title>Admin | EAGLES' CONVERGENCE '26</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -127,7 +127,7 @@
         <div class="auth-screen" id="authScreen">
             <div class="logo">SPAC</div>
             <h2>Admin Access</h2>
-            <p class="subtitle">EAGLE CONVERGENCE '26</p>
+            <p class="subtitle">EAGLES' CONVERGENCE '26</p>
             
             <div class="auth-form" id="loginForm">
                 <input type="email" id="authEmail" placeholder="Email address" autocomplete="email">
@@ -255,7 +255,7 @@
                 toggleText.textContent = 'Already have an account? Sign In';
             } else {
                 title.textContent = 'Admin Access';
-                subtitle.textContent = 'EAGLE CONVERGENCE \'26';
+                subtitle.textContent = 'EAGLES' CONVERGENCE \'26';
                 btn.textContent = 'Sign In';
                 toggleText.textContent = "Don't have an account? Create Account";
             }
@@ -495,7 +495,7 @@
                 attendanceDay1: currentDay === 'day1',
                 attendanceDay2: currentDay === 'day2',
                 attendanceDay3: currentDay === 'day3',
-                programName: 'EAGLE CONVERGENCE', church: 'SPAC CHURCH',
+                programName: 'EAGLES' CONVERGENCE', church: 'SPAC CHURCH',
                 hostPastor: 'Yomi Okewunmi',
                 registeredAt: serverTimestamp(), isWalkIn: true
             });
@@ -515,7 +515,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `eagle-convergence-attendance-${currentDayLabel.toLowerCase()}.csv`;
+            a.download = `eagles'-convergence-attendance-${currentDayLabel.toLowerCase()}.csv`;
             a.click();
             URL.revokeObjectURL(url);
         };
