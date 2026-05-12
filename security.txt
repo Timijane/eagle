@@ -1,4 +1,4 @@
 Contact: mailto:triangleofscholars@gmail.com
-Expires: 2027-01-01T00:00:00.000Z
+Expires: 2027-01-01
 Preferred-Languages: en
 Canonical: https://ariseconference.com.ng/
