@@ -13,32 +13,11 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
-    <!-- INLINE MANIFEST (blob URL) – still works for manual install, but may not trigger auto-popup -->
-    <script>
-        (function() {
-            const manifest = {
-                name: "Eagles' Convergence 2026 Admin",
-                short_name: "EC26 Admin",
-                start_url: location.href,
-                display: "standalone",
-                background_color: "#0A0A0A",
-                theme_color: "#D4AF37",
-                icons: [{
-                    src: "https://res.cloudinary.com/dmbjrohtn/image/upload/v1778272039/IMG-20260508-WA0022_cvvdsc.jpg",
-                    sizes: "192x192",
-                    type: "image/jpeg"
-                }]
-            };
-            const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-            const link = document.createElement('link');
-            link.rel = 'manifest';
-            link.href = URL.createObjectURL(blob);
-            document.head.appendChild(link);
-        })();
-    </script>
+    <!-- ✅ MANIFEST AS DATA URL – triggers automatic install popup -->
+    <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Eagles%27%20Convergence%202026%20Admin%22%2C%22short_name%22%3A%22EC26%20Admin%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230A0A0A%22%2C%22theme_color%22%3A%22%23D4AF37%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fres.cloudinary.com%2Fdmbjrohtn%2Fimage%2Fupload%2Fv1778272039%2FIMG-20260508-WA0022_cvvdsc.jpg%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fjpeg%22%7D%5D%7D">
     
     <style>
-        /* ============ EXISTING STYLES (unchanged) ============ */
+        /* ============ ALL YOUR CSS (unchanged) ============ */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --gold: #D4AF37; --gold-deep: #B8960C; --gold-light: #F5E6A3;
@@ -136,6 +115,7 @@
         .day-btn .day-num { font-size: 1.2rem; display: block; }
         .day-btn .day-label { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
 
+        /* SCANNER, TABLE, MODALS, etc. (unchanged) */
         .scanner-section { padding: 16px 20px; width: 100%; max-width: 100%; margin: 0 auto; }
         .scanner-box { border-radius: var(--radius); overflow: hidden; border: 2px solid rgba(0,0,0,0.08); background: #0A0A0A; }
         #reader { width: 100%; }
@@ -233,14 +213,12 @@
             <div class="admin-header">
                 <button class="btn-logout" id="btnLogout">Logout</button>
                 <button class="btn-theme" id="btnThemeToggle">🌓</button>
-                <!-- CUSTOM INSTALL BUTTON (hidden by default) -->
                 <button class="btn-install" id="btnInstall">📲 Install App</button>
                 <div class="admin-label">Admin Dashboard</div>
                 <h2>EAGLE CONVERGENCE '26</h2>
                 <div class="admin-email" id="adminEmail"></div>
             </div>
 
-            <!-- [REST OF DASHBOARD HTML UNCHANGED – I'll keep the same structure as before] -->
             <div class="day-selector" id="daySelector" role="tablist">
                 <button class="day-btn active" data-day="day1" role="tab" aria-selected="true"><span class="day-num">Day 1</span><span class="day-label">Thu 4th</span></button>
                 <button class="day-btn" data-day="day2" role="tab" aria-selected="false"><span class="day-num">Day 2</span><span class="day-label">Fri 5th</span></button>
@@ -332,6 +310,7 @@
 
     <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
+    <!-- ALL JAVASCRIPT (identical to previous, just confirming) -->
     <script type="module">
         // ==================== FIREBASE ====================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
@@ -351,7 +330,7 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // ==================== DOM ELEMENTS ====================
+        // DOM elements & app logic (unchanged from your previous full version)
         const authScreen = document.getElementById('authScreen');
         const dashboard = document.getElementById('dashboard');
         const authEmail = document.getElementById('authEmail');
@@ -407,22 +386,20 @@
         let sortDirection = 'asc';
         let confirmCallback = null;
         let groupInviteLink = '';
-        let deferredPrompt = null; // for install prompt
+        let deferredPrompt = null;
 
-        // ==================== WHATSAPP NUMBER FORMATTER ====================
+        // WhatsApp formatter
         function formatWhatsAppNumber(phone) {
             if (!phone) return null;
             const cleaned = phone.replace(/\D/g, '');
             if (!cleaned) return null;
             if (phone.startsWith('+')) return cleaned;
             if (cleaned.startsWith('234') && cleaned.length >= 10) return cleaned;
-            if (cleaned.startsWith('0') && cleaned.length >= 10) {
-                return '234' + cleaned.substring(1);
-            }
+            if (cleaned.startsWith('0') && cleaned.length >= 10) return '234' + cleaned.substring(1);
             return cleaned;
         }
 
-        // ==================== TOAST ====================
+        // Toast
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -431,7 +408,7 @@
             setTimeout(() => toast.remove(), 3500);
         }
 
-        // ==================== AUTH STATE ====================
+        // Auth
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 authScreen.style.display = 'none';
@@ -489,7 +466,7 @@
         authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
         btnLogout.addEventListener('click', () => signOut(auth));
 
-        // ==================== DARK MODE ====================
+        // Dark mode
         function applyTheme(dark) {
             document.documentElement.classList.toggle('dark-mode', dark);
             btnThemeToggle.textContent = dark ? '☀️' : '🌓';
@@ -503,37 +480,26 @@
             applyTheme(!isDark);
         });
 
-        // ==================== INSTALL PROMPT LOGIC ====================
+        // Install prompt logic
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
-            // Stash the event so it can be triggered later
             deferredPrompt = e;
-            // Show the install button
             btnInstall.classList.add('show');
         });
-
         btnInstall.addEventListener('click', async () => {
             if (!deferredPrompt) return;
-            // Show the native install prompt
             deferredPrompt.prompt();
-            // Wait for the user to respond to the prompt
             const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response to the install prompt: ${outcome}`);
-            // Clear the saved prompt since it can't be used again
+            console.log('Install outcome:', outcome);
             deferredPrompt = null;
-            // Hide the install button
             btnInstall.classList.remove('show');
         });
-
-        // If the app is already installed, hide the button
         window.addEventListener('appinstalled', () => {
             deferredPrompt = null;
             btnInstall.classList.remove('show');
-            console.log('PWA was installed');
         });
 
-        // ==================== DAY SELECTION ====================
+        // Day selection
         dayButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 currentDay = btn.dataset.day;
@@ -545,7 +511,7 @@
             });
         });
 
-        // ==================== SCANNER (unchanged) ====================
+        // Scanner
         async function startScanner() {
             if (isScannerRunning) return;
             btnStartScanner.disabled = true;
@@ -620,7 +586,7 @@
                     }
                 });
             }, 100);
-            const timeoutId = setTimeout(() => {
+            setTimeout(() => {
                 if (lastScanAction && lastScanAction.docId === docData.id) { lastScanAction = null; scanStatus.className = 'scan-status'; scanStatus.innerHTML = ''; }
             }, 5000);
         }
@@ -636,7 +602,7 @@
             } catch(e) {}
         }
 
-        // ==================== REALTIME LISTENER ====================
+        // Realtime listener
         function startRealtimeListener() {
             if (unsubscribe) unsubscribe();
             const q = query(collection(db, 'attendees'), orderBy('registeredAt', 'desc'));
@@ -649,7 +615,7 @@
         }
         function loadAttendees() { startRealtimeListener(); }
 
-        // ==================== TABLE RENDERING ====================
+        // Table rendering
         function renderTable() {
             const searchTerm = searchInput.value.toLowerCase();
             let filtered = allAttendees.filter(a => !searchTerm || (a.fullName||'').toLowerCase().includes(searchTerm) || (a.ticketId||'').toLowerCase().includes(searchTerm));
@@ -720,7 +686,7 @@
             statAbsent.textContent = total - present;
         }
 
-        // ==================== WALK-IN ====================
+        // Walk-in
         btnWalkIn.addEventListener('click', () => { walkInModal.classList.add('show'); walkInName.focus(); });
         cancelWalkIn.addEventListener('click', () => { walkInModal.classList.remove('show'); walkInName.value = ''; walkInWhatsapp.value = ''; });
         saveWalkIn.addEventListener('click', async () => {
@@ -754,7 +720,7 @@
             } catch(e) { showToast('Error adding walk-in: '+e.message, 'error'); }
         });
 
-        // ==================== GROUP LINK ====================
+        // Group link
         async function loadGroupLink() {
             try {
                 const snap = await getDoc(doc(db, 'settings', 'groupInviteLink'));
@@ -778,11 +744,11 @@
             else showToast('No group link set. Click ✏️ Set Link to add one.', 'warning');
         });
 
-        // ==================== CONFIRMATION MODAL ====================
+        // Confirmation modal
         confirmCancel.addEventListener('click', () => { confirmModal.classList.remove('show'); confirmCallback = null; });
         confirmOk.addEventListener('click', async () => { if (confirmCallback) await confirmCallback(); confirmModal.classList.remove('show'); confirmCallback = null; });
 
-        // ==================== EXPORT ====================
+        // Export
         btnExport.addEventListener('click', () => {
             const data = allAttendees.map(a => ({
                 Name: a.fullName || '', Phone: a.whatsapp || '', 'Ticket ID': a.ticketId || '',
@@ -804,13 +770,11 @@
 
             const swCode = `
                 const CACHE_NAME = 'ec26-v3';
-
                 self.addEventListener('install', event => {
                   event.waitUntil(
                     caches.open(CACHE_NAME).then(cache => cache.addAll(['./']))
                   );
                 });
-
                 self.addEventListener('activate', event => {
                   event.waitUntil(
                     caches.keys().then(keys =>
@@ -818,10 +782,8 @@
                     )
                   );
                 });
-
                 self.addEventListener('fetch', event => {
                   const url = new URL(event.request.url);
-
                   if (
                     url.hostname.includes('firestore.googleapis.com') ||
                     url.hostname.includes('firebaseauth.googleapis.com') ||
@@ -832,7 +794,6 @@
                     url.hostname.includes('fonts.gstatic.com') ||
                     url.hostname.includes('cloudinary.com')
                   ) return;
-
                   event.respondWith(
                     fetch(event.request)
                       .then(response => {
