@@ -382,15 +382,11 @@
             if (!phone) return null;
             const cleaned = phone.replace(/\D/g, '');
             if (!cleaned) return null;
-            // Already with '+' prefix -> remove '+'
             if (phone.startsWith('+')) return cleaned;
-            // Already international format (e.g. 234806...)
             if (cleaned.startsWith('234') && cleaned.length >= 10) return cleaned;
-            // Nigerian local format (e.g. 0806...)
             if (cleaned.startsWith('0') && cleaned.length >= 10) {
                 return '234' + cleaned.substring(1);
             }
-            // Otherwise just return cleaned
             return cleaned;
         }
 
@@ -749,8 +745,11 @@
             background_color: "#0A0A0A",
             theme_color: "#D4AF37",
             icons: [
-                { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Ccircle cx='96' cy='96' r='96' fill='%230A0A0A'/%3E%3Ccircle cx='96' cy='96' r='84' fill='none' stroke='%23D4AF37' stroke-width='8'/%3E%3Ctext x='96' y='112' font-size='72' font-weight='bold' text-anchor='middle' fill='%23D4AF37' font-family='serif'%3EEC%3C/text%3E%3C/svg%3E",
-                  sizes: "192x192", type: "image/svg+xml" }
+                {
+                    src: "https://res.cloudinary.com/dmbjrohtn/image/upload/v1778272039/IMG-20260508-WA0022_cvvdsc.jpg",
+                    sizes: "192x192",
+                    type: "image/jpeg"
+                }
             ]
         };
         const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
