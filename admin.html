@@ -13,11 +13,7 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
-    <!-- ✅ MANIFEST AS DATA URL – triggers automatic install popup -->
-    <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Eagles%27%20Convergence%202026%20Admin%22%2C%22short_name%22%3A%22EC26%20Admin%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230A0A0A%22%2C%22theme_color%22%3A%22%23D4AF37%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fres.cloudinary.com%2Fdmbjrohtn%2Fimage%2Fupload%2Fv1778272039%2FIMG-20260508-WA0022_cvvdsc.jpg%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fjpeg%22%7D%5D%7D">
-    
     <style>
-        /* ============ ALL YOUR CSS (unchanged) ============ */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --gold: #D4AF37; --gold-deep: #B8960C; --gold-light: #F5E6A3;
@@ -102,11 +98,9 @@
         .admin-header h2 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: inherit; letter-spacing: 1px; }
         .admin-label { font-size: 0.6rem; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; }
         .admin-email { font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
-        .btn-logout, .btn-theme, .btn-install { position: absolute; top: 16px; padding: 6px 14px; background: var(--btn-logout-bg); color: #FFF; border: 1px solid var(--btn-logout-border); border-radius: 50px; font-size: 0.7rem; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .btn-logout, .btn-theme { position: absolute; top: 16px; padding: 6px 14px; background: var(--btn-logout-bg); color: #FFF; border: 1px solid var(--btn-logout-border); border-radius: 50px; font-size: 0.7rem; cursor: pointer; font-family: 'Inter', sans-serif; }
         .btn-logout { right: 16px; }
         .btn-theme { left: 16px; background: transparent; border-color: var(--gold); color: var(--gold); }
-        .btn-install { left: 80px; background: rgba(212,175,55,0.2); border-color: var(--gold); color: var(--gold); display: none; }
-        .btn-install.show { display: inline-block; }
         .btn-logout:hover { background: rgba(211,47,47,0.2); border-color: var(--error); }
 
         .day-selector { display: flex; gap: 8px; padding: 16px 20px; background: var(--surface); border-bottom: 1px solid rgba(0,0,0,0.05); }
@@ -115,7 +109,6 @@
         .day-btn .day-num { font-size: 1.2rem; display: block; }
         .day-btn .day-label { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
 
-        /* SCANNER, TABLE, MODALS, etc. (unchanged) */
         .scanner-section { padding: 16px 20px; width: 100%; max-width: 100%; margin: 0 auto; }
         .scanner-box { border-radius: var(--radius); overflow: hidden; border: 2px solid rgba(0,0,0,0.08); background: #0A0A0A; }
         #reader { width: 100%; }
@@ -213,7 +206,6 @@
             <div class="admin-header">
                 <button class="btn-logout" id="btnLogout">Logout</button>
                 <button class="btn-theme" id="btnThemeToggle">🌓</button>
-                <button class="btn-install" id="btnInstall">📲 Install App</button>
                 <div class="admin-label">Admin Dashboard</div>
                 <h2>EAGLE CONVERGENCE '26</h2>
                 <div class="admin-email" id="adminEmail"></div>
@@ -310,11 +302,10 @@
 
     <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
-    <!-- ALL JAVASCRIPT (identical to previous, just confirming) -->
     <script type="module">
         // ==================== FIREBASE ====================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc, getDoc, serverTimestamp, orderBy, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc, getDoc, serverTimestamp, orderBy, onSnapshot, runTransaction, increment } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -330,7 +321,7 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // DOM elements & app logic (unchanged from your previous full version)
+        // ==================== DOM ELEMENTS ====================
         const authScreen = document.getElementById('authScreen');
         const dashboard = document.getElementById('dashboard');
         const authEmail = document.getElementById('authEmail');
@@ -342,7 +333,6 @@
         const adminEmailDisplay = document.getElementById('adminEmail');
         const btnLogout = document.getElementById('btnLogout');
         const btnThemeToggle = document.getElementById('btnThemeToggle');
-        const btnInstall = document.getElementById('btnInstall');
         const dayButtons = document.querySelectorAll('.day-btn');
         const btnStartScanner = document.getElementById('btnStartScanner');
         const btnStopScanner = document.getElementById('btnStopScanner');
@@ -386,20 +376,25 @@
         let sortDirection = 'asc';
         let confirmCallback = null;
         let groupInviteLink = '';
-        let deferredPrompt = null;
 
-        // WhatsApp formatter
+        // ==================== WHATSAPP NUMBER FORMATTER ====================
         function formatWhatsAppNumber(phone) {
             if (!phone) return null;
             const cleaned = phone.replace(/\D/g, '');
             if (!cleaned) return null;
+            // Already with '+' prefix -> remove '+'
             if (phone.startsWith('+')) return cleaned;
+            // Already international format (e.g. 234806...)
             if (cleaned.startsWith('234') && cleaned.length >= 10) return cleaned;
-            if (cleaned.startsWith('0') && cleaned.length >= 10) return '234' + cleaned.substring(1);
+            // Nigerian local format (e.g. 0806...)
+            if (cleaned.startsWith('0') && cleaned.length >= 10) {
+                return '234' + cleaned.substring(1);
+            }
+            // Otherwise just return cleaned
             return cleaned;
         }
 
-        // Toast
+        // ==================== TOAST ====================
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -408,7 +403,7 @@
             setTimeout(() => toast.remove(), 3500);
         }
 
-        // Auth
+        // ==================== AUTH STATE ====================
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 authScreen.style.display = 'none';
@@ -466,7 +461,7 @@
         authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
         btnLogout.addEventListener('click', () => signOut(auth));
 
-        // Dark mode
+        // ==================== DARK MODE ====================
         function applyTheme(dark) {
             document.documentElement.classList.toggle('dark-mode', dark);
             btnThemeToggle.textContent = dark ? '☀️' : '🌓';
@@ -480,26 +475,7 @@
             applyTheme(!isDark);
         });
 
-        // Install prompt logic
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            btnInstall.classList.add('show');
-        });
-        btnInstall.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log('Install outcome:', outcome);
-            deferredPrompt = null;
-            btnInstall.classList.remove('show');
-        });
-        window.addEventListener('appinstalled', () => {
-            deferredPrompt = null;
-            btnInstall.classList.remove('show');
-        });
-
-        // Day selection
+        // ==================== DAY SELECTION ====================
         dayButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 currentDay = btn.dataset.day;
@@ -511,7 +487,7 @@
             });
         });
 
-        // Scanner
+        // ==================== SCANNER ====================
         async function startScanner() {
             if (isScannerRunning) return;
             btnStartScanner.disabled = true;
@@ -586,7 +562,7 @@
                     }
                 });
             }, 100);
-            setTimeout(() => {
+            const timeoutId = setTimeout(() => {
                 if (lastScanAction && lastScanAction.docId === docData.id) { lastScanAction = null; scanStatus.className = 'scan-status'; scanStatus.innerHTML = ''; }
             }, 5000);
         }
@@ -602,7 +578,7 @@
             } catch(e) {}
         }
 
-        // Realtime listener
+        // ==================== REALTIME LISTENER ====================
         function startRealtimeListener() {
             if (unsubscribe) unsubscribe();
             const q = query(collection(db, 'attendees'), orderBy('registeredAt', 'desc'));
@@ -615,7 +591,7 @@
         }
         function loadAttendees() { startRealtimeListener(); }
 
-        // Table rendering
+        // ==================== TABLE RENDERING ====================
         function renderTable() {
             const searchTerm = searchInput.value.toLowerCase();
             let filtered = allAttendees.filter(a => !searchTerm || (a.fullName||'').toLowerCase().includes(searchTerm) || (a.ticketId||'').toLowerCase().includes(searchTerm));
@@ -686,7 +662,7 @@
             statAbsent.textContent = total - present;
         }
 
-        // Walk-in
+        // ==================== WALK-IN ====================
         btnWalkIn.addEventListener('click', () => { walkInModal.classList.add('show'); walkInName.focus(); });
         cancelWalkIn.addEventListener('click', () => { walkInModal.classList.remove('show'); walkInName.value = ''; walkInWhatsapp.value = ''; });
         saveWalkIn.addEventListener('click', async () => {
@@ -720,7 +696,7 @@
             } catch(e) { showToast('Error adding walk-in: '+e.message, 'error'); }
         });
 
-        // Group link
+        // ==================== GROUP LINK ====================
         async function loadGroupLink() {
             try {
                 const snap = await getDoc(doc(db, 'settings', 'groupInviteLink'));
@@ -744,11 +720,11 @@
             else showToast('No group link set. Click ✏️ Set Link to add one.', 'warning');
         });
 
-        // Confirmation modal
+        // ==================== CONFIRMATION MODAL ====================
         confirmCancel.addEventListener('click', () => { confirmModal.classList.remove('show'); confirmCallback = null; });
         confirmOk.addEventListener('click', async () => { if (confirmCallback) await confirmCallback(); confirmModal.classList.remove('show'); confirmCallback = null; });
 
-        // Export
+        // ==================== EXPORT ====================
         btnExport.addEventListener('click', () => {
             const data = allAttendees.map(a => ({
                 Name: a.fullName || '', Phone: a.whatsapp || '', 'Ticket ID': a.ticketId || '',
@@ -763,58 +739,45 @@
         });
     </script>
 
-    <!-- INLINE SERVICE WORKER (blob URL) – never caches Firebase or CDN -->
+    <!-- ==================== PWA: INLINE MANIFEST & SERVICE WORKER ==================== -->
     <script>
-        (function() {
-            if (!('serviceWorker' in navigator)) return;
+        const manifest = {
+            name: "Eagles' Convergence 2026 Admin",
+            short_name: "EC26 Admin",
+            start_url: location.href,
+            display: "standalone",
+            background_color: "#0A0A0A",
+            theme_color: "#D4AF37",
+            icons: [
+                { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Ccircle cx='96' cy='96' r='96' fill='%230A0A0A'/%3E%3Ccircle cx='96' cy='96' r='84' fill='none' stroke='%23D4AF37' stroke-width='8'/%3E%3Ctext x='96' y='112' font-size='72' font-weight='bold' text-anchor='middle' fill='%23D4AF37' font-family='serif'%3EEC%3C/text%3E%3C/svg%3E",
+                  sizes: "192x192", type: "image/svg+xml" }
+            ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+        const manifestUrl = URL.createObjectURL(manifestBlob);
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = manifestUrl;
+        document.head.appendChild(link);
 
-            const swCode = `
-                const CACHE_NAME = 'ec26-v3';
-                self.addEventListener('install', event => {
-                  event.waitUntil(
-                    caches.open(CACHE_NAME).then(cache => cache.addAll(['./']))
-                  );
-                });
-                self.addEventListener('activate', event => {
-                  event.waitUntil(
-                    caches.keys().then(keys =>
-                      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-                    )
-                  );
-                });
-                self.addEventListener('fetch', event => {
-                  const url = new URL(event.request.url);
-                  if (
-                    url.hostname.includes('firestore.googleapis.com') ||
-                    url.hostname.includes('firebaseauth.googleapis.com') ||
-                    url.hostname.includes('identitytoolkit.googleapis.com') ||
-                    url.hostname.includes('securetoken.googleapis.com') ||
-                    url.hostname.includes('unpkg.com') ||
-                    url.hostname.includes('fonts.googleapis.com') ||
-                    url.hostname.includes('fonts.gstatic.com') ||
-                    url.hostname.includes('cloudinary.com')
-                  ) return;
-                  event.respondWith(
-                    fetch(event.request)
-                      .then(response => {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-                        return response;
-                      })
-                      .catch(() => caches.match(event.request))
-                  );
-                });
-            `;
-
-            const swBlob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(swBlob);
-
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register(swUrl)
-                    .then(reg => console.log('✅ SW registered'))
-                    .catch(err => console.warn('SW registration failed', err));
+        const swCode = `
+            const CACHE = 'ec26-v1';
+            const SHELL = [self.location.href];
+            self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))));
+            self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k!==CACHE).map(k => caches.delete(k))))));
+            self.addEventListener('fetch', e => {
+                const url = new URL(e.request.url);
+                if (url.hostname.includes('firestore') || url.hostname.includes('firebaseauth') || url.hostname.includes('identitytoolkit')) return;
+                e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
             });
-        })();
+        `;
+        const swBlob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(swBlob);
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register(swUrl).catch(err => console.log('SW reg failed', err));
+            });
+        }
     </script>
 </body>
 </html>
