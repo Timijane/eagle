@@ -10,14 +10,35 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- External libraries -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
-    <!-- PWA manifest (separate file – correct way) -->
-    <link rel="manifest" href="manifest.json">
+    <!-- INLINE MANIFEST (blob URL) – still works for manual install, but may not trigger auto-popup -->
+    <script>
+        (function() {
+            const manifest = {
+                name: "Eagles' Convergence 2026 Admin",
+                short_name: "EC26 Admin",
+                start_url: location.href,
+                display: "standalone",
+                background_color: "#0A0A0A",
+                theme_color: "#D4AF37",
+                icons: [{
+                    src: "https://res.cloudinary.com/dmbjrohtn/image/upload/v1778272039/IMG-20260508-WA0022_cvvdsc.jpg",
+                    sizes: "192x192",
+                    type: "image/jpeg"
+                }]
+            };
+            const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+            const link = document.createElement('link');
+            link.rel = 'manifest';
+            link.href = URL.createObjectURL(blob);
+            document.head.appendChild(link);
+        })();
+    </script>
     
     <style>
+        /* ============ EXISTING STYLES (unchanged) ============ */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --gold: #D4AF37; --gold-deep: #B8960C; --gold-light: #F5E6A3;
@@ -102,9 +123,11 @@
         .admin-header h2 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: inherit; letter-spacing: 1px; }
         .admin-label { font-size: 0.6rem; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; }
         .admin-email { font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
-        .btn-logout, .btn-theme { position: absolute; top: 16px; padding: 6px 14px; background: var(--btn-logout-bg); color: #FFF; border: 1px solid var(--btn-logout-border); border-radius: 50px; font-size: 0.7rem; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .btn-logout, .btn-theme, .btn-install { position: absolute; top: 16px; padding: 6px 14px; background: var(--btn-logout-bg); color: #FFF; border: 1px solid var(--btn-logout-border); border-radius: 50px; font-size: 0.7rem; cursor: pointer; font-family: 'Inter', sans-serif; }
         .btn-logout { right: 16px; }
         .btn-theme { left: 16px; background: transparent; border-color: var(--gold); color: var(--gold); }
+        .btn-install { left: 80px; background: rgba(212,175,55,0.2); border-color: var(--gold); color: var(--gold); display: none; }
+        .btn-install.show { display: inline-block; }
         .btn-logout:hover { background: rgba(211,47,47,0.2); border-color: var(--error); }
 
         .day-selector { display: flex; gap: 8px; padding: 16px 20px; background: var(--surface); border-bottom: 1px solid rgba(0,0,0,0.05); }
@@ -210,11 +233,14 @@
             <div class="admin-header">
                 <button class="btn-logout" id="btnLogout">Logout</button>
                 <button class="btn-theme" id="btnThemeToggle">🌓</button>
+                <!-- CUSTOM INSTALL BUTTON (hidden by default) -->
+                <button class="btn-install" id="btnInstall">📲 Install App</button>
                 <div class="admin-label">Admin Dashboard</div>
                 <h2>EAGLE CONVERGENCE '26</h2>
                 <div class="admin-email" id="adminEmail"></div>
             </div>
 
+            <!-- [REST OF DASHBOARD HTML UNCHANGED – I'll keep the same structure as before] -->
             <div class="day-selector" id="daySelector" role="tablist">
                 <button class="day-btn active" data-day="day1" role="tab" aria-selected="true"><span class="day-num">Day 1</span><span class="day-label">Thu 4th</span></button>
                 <button class="day-btn" data-day="day2" role="tab" aria-selected="false"><span class="day-num">Day 2</span><span class="day-label">Fri 5th</span></button>
@@ -309,7 +335,7 @@
     <script type="module">
         // ==================== FIREBASE ====================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc, getDoc, serverTimestamp, orderBy, onSnapshot, runTransaction, increment } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc, getDoc, serverTimestamp, orderBy, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -337,6 +363,7 @@
         const adminEmailDisplay = document.getElementById('adminEmail');
         const btnLogout = document.getElementById('btnLogout');
         const btnThemeToggle = document.getElementById('btnThemeToggle');
+        const btnInstall = document.getElementById('btnInstall');
         const dayButtons = document.querySelectorAll('.day-btn');
         const btnStartScanner = document.getElementById('btnStartScanner');
         const btnStopScanner = document.getElementById('btnStopScanner');
@@ -380,6 +407,7 @@
         let sortDirection = 'asc';
         let confirmCallback = null;
         let groupInviteLink = '';
+        let deferredPrompt = null; // for install prompt
 
         // ==================== WHATSAPP NUMBER FORMATTER ====================
         function formatWhatsAppNumber(phone) {
@@ -475,6 +503,36 @@
             applyTheme(!isDark);
         });
 
+        // ==================== INSTALL PROMPT LOGIC ====================
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            // Show the install button
+            btnInstall.classList.add('show');
+        });
+
+        btnInstall.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            // Show the native install prompt
+            deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to the install prompt: ${outcome}`);
+            // Clear the saved prompt since it can't be used again
+            deferredPrompt = null;
+            // Hide the install button
+            btnInstall.classList.remove('show');
+        });
+
+        // If the app is already installed, hide the button
+        window.addEventListener('appinstalled', () => {
+            deferredPrompt = null;
+            btnInstall.classList.remove('show');
+            console.log('PWA was installed');
+        });
+
         // ==================== DAY SELECTION ====================
         dayButtons.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -487,7 +545,7 @@
             });
         });
 
-        // ==================== SCANNER ====================
+        // ==================== SCANNER (unchanged) ====================
         async function startScanner() {
             if (isScannerRunning) return;
             btnStartScanner.disabled = true;
@@ -739,15 +797,63 @@
         });
     </script>
 
-    <!-- Service worker registration (separate sw.js file) -->
+    <!-- INLINE SERVICE WORKER (blob URL) – never caches Firebase or CDN -->
     <script>
-        if ('serviceWorker' in navigator) {
+        (function() {
+            if (!('serviceWorker' in navigator)) return;
+
+            const swCode = `
+                const CACHE_NAME = 'ec26-v3';
+
+                self.addEventListener('install', event => {
+                  event.waitUntil(
+                    caches.open(CACHE_NAME).then(cache => cache.addAll(['./']))
+                  );
+                });
+
+                self.addEventListener('activate', event => {
+                  event.waitUntil(
+                    caches.keys().then(keys =>
+                      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+                    )
+                  );
+                });
+
+                self.addEventListener('fetch', event => {
+                  const url = new URL(event.request.url);
+
+                  if (
+                    url.hostname.includes('firestore.googleapis.com') ||
+                    url.hostname.includes('firebaseauth.googleapis.com') ||
+                    url.hostname.includes('identitytoolkit.googleapis.com') ||
+                    url.hostname.includes('securetoken.googleapis.com') ||
+                    url.hostname.includes('unpkg.com') ||
+                    url.hostname.includes('fonts.googleapis.com') ||
+                    url.hostname.includes('fonts.gstatic.com') ||
+                    url.hostname.includes('cloudinary.com')
+                  ) return;
+
+                  event.respondWith(
+                    fetch(event.request)
+                      .then(response => {
+                        const clone = response.clone();
+                        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+                        return response;
+                      })
+                      .catch(() => caches.match(event.request))
+                  );
+                });
+            `;
+
+            const swBlob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(swBlob);
+
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(reg => console.log('SW registered:', reg.scope))
-                    .catch(err => console.error('SW registration failed:', err));
+                navigator.serviceWorker.register(swUrl)
+                    .then(reg => console.log('✅ SW registered'))
+                    .catch(err => console.warn('SW registration failed', err));
             });
-        }
+        })();
     </script>
 </body>
 </html>
