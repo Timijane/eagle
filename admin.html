@@ -6,10 +6,12 @@
     <meta name="theme-color" content="#0A0A0A">
     <title>Admin | EAGLES' CONVERGENCE '26</title>
     
+    <!-- Preconnect for fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Libraries -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
@@ -300,6 +302,7 @@
         </div>
     </div>
 
+    <!-- Toast container -->
     <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
     <script type="module">
@@ -376,23 +379,6 @@
         let sortDirection = 'asc';
         let confirmCallback = null;
         let groupInviteLink = '';
-
-        // ==================== WHATSAPP NUMBER FORMATTER ====================
-        function formatWhatsAppNumber(phone) {
-            if (!phone) return null;
-            const cleaned = phone.replace(/\D/g, '');
-            if (!cleaned) return null;
-            // Already with '+' prefix -> remove '+'
-            if (phone.startsWith('+')) return cleaned;
-            // Already international format (e.g. 234806...)
-            if (cleaned.startsWith('234') && cleaned.length >= 10) return cleaned;
-            // Nigerian local format (e.g. 0806...)
-            if (cleaned.startsWith('0') && cleaned.length >= 10) {
-                return '234' + cleaned.substring(1);
-            }
-            // Otherwise just return cleaned
-            return cleaned;
-        }
 
         // ==================== TOAST ====================
         function showToast(message, type = 'info') {
@@ -609,15 +595,14 @@
                 tableBody.innerHTML = filtered.map(a => {
                     const seat = a['seat'+currentDayLabel] || '—';
                     const wa = a.whatsapp || '';
-                    const formattedWa = formatWhatsAppNumber(wa);
-                    const waLink = formattedWa ? `<a class="whatsapp-link" href="https://wa.me/${formattedWa}" target="_blank" title="Chat on WhatsApp">💬</a>` : '';
+                    const waLink = wa ? `<a class="whatsapp-link" href="https://wa.me/${wa.replace(/\D/g,'')}" target="_blank" title="Chat on WhatsApp">💬</a>` : '';
                     return `<tr>
                         <td><strong>${a.fullName||'—'}</strong>${waLink}</td>
                         <td>${a.ticketId||'—'}</td><td>${seat}</td>
                         <td class="check-mark ${a.attendanceDay1?'checked':'unchecked'}" data-id="${a.id}" data-field="attendanceDay1">${a.attendanceDay1?'✅':'❌'}</td>
                         <td class="check-mark ${a.attendanceDay2?'checked':'unchecked'}" data-id="${a.id}" data-field="attendanceDay2">${a.attendanceDay2?'✅':'❌'}</td>
                         <td class="check-mark ${a.attendanceDay3?'checked':'unchecked'}" data-id="${a.id}" data-field="attendanceDay3">${a.attendanceDay3?'✅':'❌'}</td>
-                        <td>${formattedWa ? `<a href="https://wa.me/${formattedWa}" target="_blank" class="whatsapp-link">Chat</a>` : '—'}</td>
+                        <td>${wa ? `<a href="https://wa.me/${wa.replace(/\D/g,'')}" target="_blank" class="whatsapp-link">Chat</a>` : '—'}</td>
                     </tr>`;
                 }).join('');
             }
@@ -741,6 +726,7 @@
 
     <!-- ==================== PWA: INLINE MANIFEST & SERVICE WORKER ==================== -->
     <script>
+        // Inline manifest via blob URL
         const manifest = {
             name: "Eagles' Convergence 2026 Admin",
             short_name: "EC26 Admin",
@@ -760,9 +746,10 @@
         link.href = manifestUrl;
         document.head.appendChild(link);
 
+        // Inline service worker via blob URL
         const swCode = `
             const CACHE = 'ec26-v1';
-            const SHELL = [self.location.href];
+            const SHELL = [self.location.href]; // cache this HTML
             self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))));
             self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k!==CACHE).map(k => caches.delete(k))))));
             self.addEventListener('fetch', e => {
