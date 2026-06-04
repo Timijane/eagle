@@ -13,6 +13,9 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
+    <!-- Link to real manifest file -->
+    <link rel="manifest" href="manifest.json">
+    
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -303,7 +306,6 @@
     <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
     <script type="module">
-        // ==================== FIREBASE ====================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc, getDoc, serverTimestamp, orderBy, onSnapshot, runTransaction, increment } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
@@ -321,7 +323,6 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // ==================== DOM ELEMENTS ====================
         const authScreen = document.getElementById('authScreen');
         const dashboard = document.getElementById('dashboard');
         const authEmail = document.getElementById('authEmail');
@@ -364,37 +365,18 @@
         const confirmOk = document.getElementById('confirmOk');
         const toastContainer = document.getElementById('toastContainer');
 
-        let currentDay = 'day1';
-        let currentDayLabel = 'Day1';
-        let html5QrCode = null;
-        let allAttendees = [];
-        let isScannerRunning = false;
-        let isSignUpMode = false;
-        let lastScanAction = null;
-        let unsubscribe = null;
-        let sortColumn = null;
-        let sortDirection = 'asc';
-        let confirmCallback = null;
-        let groupInviteLink = '';
+        let currentDay = 'day1', currentDayLabel = 'Day1', html5QrCode = null, allAttendees = [], isScannerRunning = false, isSignUpMode = false, lastScanAction = null, unsubscribe = null, sortColumn = null, sortDirection = 'asc', confirmCallback = null, groupInviteLink = '';
 
-        // ==================== WHATSAPP NUMBER FORMATTER ====================
         function formatWhatsAppNumber(phone) {
             if (!phone) return null;
             const cleaned = phone.replace(/\D/g, '');
             if (!cleaned) return null;
-            // Already with '+' prefix -> remove '+'
             if (phone.startsWith('+')) return cleaned;
-            // Already international format (e.g. 234806...)
             if (cleaned.startsWith('234') && cleaned.length >= 10) return cleaned;
-            // Nigerian local format (e.g. 0806...)
-            if (cleaned.startsWith('0') && cleaned.length >= 10) {
-                return '234' + cleaned.substring(1);
-            }
-            // Otherwise just return cleaned
+            if (cleaned.startsWith('0') && cleaned.length >= 10) return '234' + cleaned.substring(1);
             return cleaned;
         }
 
-        // ==================== TOAST ====================
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -403,7 +385,6 @@
             setTimeout(() => toast.remove(), 3500);
         }
 
-        // ==================== AUTH STATE ====================
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 authScreen.style.display = 'none';
@@ -461,7 +442,6 @@
         authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
         btnLogout.addEventListener('click', () => signOut(auth));
 
-        // ==================== DARK MODE ====================
         function applyTheme(dark) {
             document.documentElement.classList.toggle('dark-mode', dark);
             btnThemeToggle.textContent = dark ? '☀️' : '🌓';
@@ -475,7 +455,6 @@
             applyTheme(!isDark);
         });
 
-        // ==================== DAY SELECTION ====================
         dayButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 currentDay = btn.dataset.day;
@@ -487,7 +466,6 @@
             });
         });
 
-        // ==================== SCANNER ====================
         async function startScanner() {
             if (isScannerRunning) return;
             btnStartScanner.disabled = true;
@@ -562,9 +540,7 @@
                     }
                 });
             }, 100);
-            const timeoutId = setTimeout(() => {
-                if (lastScanAction && lastScanAction.docId === docData.id) { lastScanAction = null; scanStatus.className = 'scan-status'; scanStatus.innerHTML = ''; }
-            }, 5000);
+            setTimeout(() => { if (lastScanAction && lastScanAction.docId === docData.id) { lastScanAction = null; scanStatus.className = 'scan-status'; scanStatus.innerHTML = ''; } }, 5000);
         }
         function autoClearStatus(delay) { setTimeout(() => { if (!lastScanAction) { scanStatus.className = 'scan-status'; scanStatus.innerHTML = ''; } }, delay); }
         function playBeep(type) {
@@ -578,7 +554,6 @@
             } catch(e) {}
         }
 
-        // ==================== REALTIME LISTENER ====================
         function startRealtimeListener() {
             if (unsubscribe) unsubscribe();
             const q = query(collection(db, 'attendees'), orderBy('registeredAt', 'desc'));
@@ -591,7 +566,6 @@
         }
         function loadAttendees() { startRealtimeListener(); }
 
-        // ==================== TABLE RENDERING ====================
         function renderTable() {
             const searchTerm = searchInput.value.toLowerCase();
             let filtered = allAttendees.filter(a => !searchTerm || (a.fullName||'').toLowerCase().includes(searchTerm) || (a.ticketId||'').toLowerCase().includes(searchTerm));
@@ -662,7 +636,6 @@
             statAbsent.textContent = total - present;
         }
 
-        // ==================== WALK-IN ====================
         btnWalkIn.addEventListener('click', () => { walkInModal.classList.add('show'); walkInName.focus(); });
         cancelWalkIn.addEventListener('click', () => { walkInModal.classList.remove('show'); walkInName.value = ''; walkInWhatsapp.value = ''; });
         saveWalkIn.addEventListener('click', async () => {
@@ -696,7 +669,6 @@
             } catch(e) { showToast('Error adding walk-in: '+e.message, 'error'); }
         });
 
-        // ==================== GROUP LINK ====================
         async function loadGroupLink() {
             try {
                 const snap = await getDoc(doc(db, 'settings', 'groupInviteLink'));
@@ -720,11 +692,9 @@
             else showToast('No group link set. Click ✏️ Set Link to add one.', 'warning');
         });
 
-        // ==================== CONFIRMATION MODAL ====================
         confirmCancel.addEventListener('click', () => { confirmModal.classList.remove('show'); confirmCallback = null; });
         confirmOk.addEventListener('click', async () => { if (confirmCallback) await confirmCallback(); confirmModal.classList.remove('show'); confirmCallback = null; });
 
-        // ==================== EXPORT ====================
         btnExport.addEventListener('click', () => {
             const data = allAttendees.map(a => ({
                 Name: a.fullName || '', Phone: a.whatsapp || '', 'Ticket ID': a.ticketId || '',
@@ -739,43 +709,13 @@
         });
     </script>
 
-    <!-- ==================== PWA: INLINE MANIFEST & SERVICE WORKER ==================== -->
+    <!-- Register real service worker file -->
     <script>
-        const manifest = {
-            name: "Eagles' Convergence 2026 Admin",
-            short_name: "EC26 Admin",
-            start_url: location.href,
-            display: "standalone",
-            background_color: "#0A0A0A",
-            theme_color: "#D4AF37",
-            icons: [
-                { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Ccircle cx='96' cy='96' r='96' fill='%230A0A0A'/%3E%3Ccircle cx='96' cy='96' r='84' fill='none' stroke='%23D4AF37' stroke-width='8'/%3E%3Ctext x='96' y='112' font-size='72' font-weight='bold' text-anchor='middle' fill='%23D4AF37' font-family='serif'%3EEC%3C/text%3E%3C/svg%3E",
-                  sizes: "192x192", type: "image/svg+xml" }
-            ]
-        };
-        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-        const manifestUrl = URL.createObjectURL(manifestBlob);
-        const link = document.createElement('link');
-        link.rel = 'manifest';
-        link.href = manifestUrl;
-        document.head.appendChild(link);
-
-        const swCode = `
-            const CACHE = 'ec26-v1';
-            const SHELL = [self.location.href];
-            self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))));
-            self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k!==CACHE).map(k => caches.delete(k))))));
-            self.addEventListener('fetch', e => {
-                const url = new URL(e.request.url);
-                if (url.hostname.includes('firestore') || url.hostname.includes('firebaseauth') || url.hostname.includes('identitytoolkit')) return;
-                e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-            });
-        `;
-        const swBlob = new Blob([swCode], { type: 'application/javascript' });
-        const swUrl = URL.createObjectURL(swBlob);
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register(swUrl).catch(err => console.log('SW reg failed', err));
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.error('SW registration failed:', err));
             });
         }
     </script>
