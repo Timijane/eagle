@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0A0A0A">
+    <title>Admin | EAGLES' CONVERGENCE '26</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --gold: #D4AF37; --gold-deep: #B8960C; --gold-light: #F5E6A3;
+            --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 40%, #B8960C 100%);
+            --bg: #FFFFFF; --surface: #FAFAFA; --text: #1A1A1A; --text-secondary: #5A5A5A;
+            --success: #2E7D32; --error: #D32F2F; --warning: #E67E22;
+            --radius: 16px; --radius-sm: 10px; --transition: 0.3s ease;
+            
+            --body-bg: #0A0A0A;
+            --app-bg: #FFFFFF;
+            --header-bg: #0A0A0A;
+            --header-text: #FFF;
+            --btn-logout-bg: rgba(255,255,255,0.08);
+            --btn-logout-border: rgba(255,255,255,0.15);
+            --stat-card-bg: #FFF;
+            --stat-border: rgba(0,0,0,0.06);
+            --day-btn-bg: #FFF;
+            --day-btn-border: rgba(0,0,0,0.08);
+            --table-bg: #FFF;
+            --table-th-bg: #0A0A0A;
+            --table-th-text: #FFF;
+            --table-row-hover: rgba(212,175,55,0.03);
+            --modal-bg: #FFF;
+            --input-bg: #FFF;
+            --input-border: rgba(0,0,0,0.1);
+            --text-primary: #1A1A1A;
+        }
+        .dark-mode {
+            --body-bg: #0A0A0A;
+            --app-bg: #1A1A1A;
+            --header-bg: #000;
+            --btn-logout-bg: rgba(255,255,255,0.1);
+            --btn-logout-border: rgba(255,255,255,0.2);
+            --stat-card-bg: #2A2A2A;
+            --stat-border: rgba(255,255,255,0.05);
+            --day-btn-bg: #2A2A2A;
+            --day-btn-border: rgba(255,255,255,0.1);
+            --table-bg: #1E1E1E;
+            --table-th-bg: #000;
+            --table-row-hover: rgba(212,175,55,0.06);
+            --modal-bg: #2A2A2A;
+            --input-bg: #333;
+            --input-border: rgba(255,255,255,0.1);
+            --text-primary: #FFF;
+            color-scheme: dark;
+        }
+        html { font-size: 16px; -webkit-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--body-bg); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 0; color: var(--text-primary); transition: background 0.3s; }
+        .app-container { width: 100%; max-width: 100%; min-height: 100vh; background: var(--app-bg); position: relative; overflow-x: hidden; overflow-y: auto; box-shadow: var(--app-shadow); transition: background 0.3s, box-shadow 0.3s; }
+        @media (max-width: 480px) { .app-container { max-width: 100%; box-shadow: none; } }
+        @media (min-width: 481px) and (max-width: 1024px) { body { padding: 0; align-items: flex-start; } .app-container { max-width: 100%; min-height: 100vh; border-radius: 0; box-shadow: 0 0 40px rgba(212,175,55,0.2); } }
+        @media (min-width: 1025px) { body { padding: 30px; align-items: center; } .app-container { max-width: 1200px; min-height: calc(100vh - 60px); border-radius: 28px; box-shadow: 0 0 80px rgba(212,175,55,0.3); } }
+        @media (min-width: 1400px) { .app-container { max-width: 1300px; } }
+        .app-container::-webkit-scrollbar { width: 4px; }
+        .app-container::-webkit-scrollbar-track { background: transparent; }
+        .app-container::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
+        /* AUTH */
+        .auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px; text-align: center; background: #0A0A0A; }
+        .auth-screen .logo { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 900; font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+        .auth-screen h2 { font-family: 'Playfair Display', serif; color: #FFF; font-size: 1.2rem; margin-bottom: 2px; }
+        .auth-screen .subtitle { color: var(--gold); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px; }
+        .auth-form { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 10px; }
+        .auth-form input { width: 100%; padding: 13px 16px; border-radius: var(--radius-sm); border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #FFF; font-size: 0.88rem; font-family: 'Inter', sans-serif; outline: none; transition: var(--transition); }
+        .auth-form input:focus { border-color: var(--gold); background: rgba(255,255,255,0.08); }
+        .auth-error, .auth-success { font-size: 0.73rem; text-align: center; padding: 8px; border-radius: 8px; display: none; }
+        .auth-error { color: #FF6B6B; background: rgba(211,47,47,0.1); }
+        .auth-success { color: var(--success); background: rgba(46,125,50,0.1); }
+        .auth-error.show, .auth-success.show { display: block; }
+        .btn-auth { width: 100%; padding: 13px; border: none; border-radius: 50px; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .btn-primary { background: var(--gold-gradient); color: #0A0A0A; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212,175,55,0.3); }
+        .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+        .auth-toggle { color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-top: 6px; }
+        .auth-toggle span { color: var(--gold); cursor: pointer; font-weight: 600; text-decoration: underline; }
+
+        /* DASHBOARD */
+        .dashboard { display: none; padding-bottom: 40px; }
+        .dashboard.show { display: block; }
+        .admin-header { background: var(--header-bg); padding: 20px; text-align: center; position: relative; color: var(--header-text); }
+        .admin-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--gold-gradient); }
+        .admin-header h2 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: inherit; letter-spacing: 1px; }
+        .admin-label { font-size: 0.6rem; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; }
+        .admin-email { font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
+        .btn-logout, .btn-theme { position: absolute; top: 16px; padding: 6px 14px; background: var(--btn-logout-bg); color: #FFF; border: 1px solid var(--btn-logout-border); border-radius: 50px; font-size: 0.7rem; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .btn-logout { right: 16px; }
+        .btn-theme { left: 16px; background: transparent; border-color: var(--gold); color: var(--gold); }
+        .btn-logout:hover { background: rgba(211,47,47,0.2); border-color: var(--error); }
+
+        .day-selector { display: flex; gap: 8px; padding: 16px 20px; background: var(--surface); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .day-btn { flex: 1; padding: 12px 8px; border: 2px solid var(--day-btn-border); border-radius: var(--radius-sm); background: var(--day-btn-bg); font-weight: 700; font-size: 0.78rem; cursor: pointer; transition: var(--transition); text-align: center; font-family: 'Inter', sans-serif; color: var(--text-primary); }
+        .day-btn.active { border-color: var(--gold); background: rgba(212,175,55,0.06); color: var(--gold-deep); box-shadow: 0 4px 20px rgba(212,175,55,0.15); }
+        .day-btn .day-num { font-size: 1.2rem; display: block; }
+        .day-btn .day-label { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
+
+        .scanner-section { padding: 16px 20px; width: 100%; max-width: 100%; margin: 0 auto; }
+        .scanner-box { border-radius: var(--radius); overflow: hidden; border: 2px solid rgba(0,0,0,0.08); background: #0A0A0A; }
+        #reader { width: 100%; }
+        .scan-status { margin-top: 10px; padding: 12px 16px; border-radius: var(--radius-sm); text-align: center; font-weight: 700; font-size: 0.85rem; display: none; }
+        .scan-status.show { display: block; animation: fadeIn 0.3s ease; }
+        .scan-status.success { background: rgba(46,125,50,0.1); color: var(--success); border: 1px solid rgba(46,125,50,0.2); }
+        .scan-status.error { background: rgba(211,47,47,0.1); color: var(--error); border: 1px solid rgba(211,47,47,0.2); }
+        .scan-status.warning { background: rgba(230,126,34,0.1); color: var(--warning); border: 1px solid rgba(230,126,34,0.2); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .undo-btn { margin-left: 12px; background: none; border: 1px solid currentColor; border-radius: 20px; padding: 2px 12px; cursor: pointer; font-weight: 600; font-size: 0.75rem; }
+
+        .scanner-controls, .manual-scan { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .manual-scan input { flex: 2; min-width: 150px; padding: 10px 14px; border-radius: 50px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-primary); }
+        .btn-scanner { flex: 1; padding: 10px; border-radius: 50px; border: none; font-weight: 600; font-size: 0.78rem; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .btn-start { background: var(--gold-gradient); color: #0A0A0A; }
+        .btn-stop { background: var(--surface); color: var(--text-secondary); border: 1px solid rgba(0,0,0,0.1); }
+        .btn-scanner:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .stats-row { display: flex; gap: 8px; padding: 0 20px 16px; }
+        .stat-card { flex: 1; background: var(--stat-card-bg); border: 1px solid var(--stat-border); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; }
+        .stat-card .stat-num { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; }
+        .stat-card .stat-label { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
+        .stat-card.gold { border-color: rgba(212,175,55,0.3); background: rgba(212,175,55,0.03); }
+        .stat-card.gold .stat-num { color: var(--gold-deep); }
+
+        .table-section { padding: 0 20px; width: 100%; max-width: 100%; margin: 0 auto; }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+        .table-header h3 { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; }
+        .table-controls { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .btn-sm { padding: 8px 14px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.1); background: #FFF; font-size: 0.7rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .btn-sm.primary { background: var(--gold-gradient); color: #0A0A0A; border: none; }
+        .search-wrap { position: relative; display: inline-block; }
+        .search-input { padding: 8px 32px 8px 14px; border-radius: 50px; border: 1px solid var(--input-border); font-size: 0.75rem; outline: none; font-family: 'Inter', sans-serif; width: 160px; background: var(--input-bg); color: var(--text-primary); }
+        .search-input:focus { border-color: var(--gold); }
+        .search-clear { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 0.9rem; color: var(--text-secondary); }
+        .table-wrap { overflow-x: auto; border-radius: var(--radius-sm); }
+        .attendee-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; background: var(--table-bg); min-width: 600px; }
+        .attendee-table th { background: var(--table-th-bg); color: var(--table-th-text); padding: 10px 8px; text-align: left; font-size: 0.62rem; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; cursor: pointer; user-select: none; }
+        .attendee-table th:hover { background: #222; }
+        .sort-icon { margin-left: 4px; font-size: 0.7rem; }
+        .attendee-table td { padding: 10px 8px; border-bottom: 1px solid rgba(0,0,0,0.04); white-space: nowrap; }
+        .attendee-table tr:hover td { background: var(--table-row-hover); }
+        .check-mark { cursor: pointer; font-size: 1.2rem; text-align: center; user-select: none; }
+        .check-mark:hover { transform: scale(1.25); }
+        .check-mark.checked { color: var(--success); }
+        .check-mark.unchecked { color: #CCC; }
+        .whatsapp-link { display: inline-flex; align-items: center; gap: 4px; color: #25D366; text-decoration: none; font-weight: 600; margin-left: 6px; font-size: 0.75rem; }
+
+        .group-link-control { display: inline-flex; align-items: center; gap: 4px; }
+        .group-link-control input { padding: 8px 14px; border-radius: 50px; border: 1px solid var(--input-border); font-size: 0.75rem; font-family: 'Inter', sans-serif; background: var(--input-bg); color: var(--text-primary); }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+        .modal-overlay.show { display: flex; }
+        .modal { background: var(--modal-bg); border-radius: var(--radius); padding: 24px 20px; width: 100%; max-width: 400px; color: var(--text-primary); }
+        .modal h3 { font-family: 'Playfair Display', serif; margin-bottom: 14px; }
+        .modal .form-group { margin-bottom: 10px; }
+        .modal .form-group label { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 4px; }
+        .modal .form-group input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--input-border); border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 0.85rem; background: var(--input-bg); color: var(--text-primary); }
+        .modal-buttons { display: flex; gap: 8px; margin-top: 14px; }
+        .modal-buttons button { flex: 1; padding: 12px; border-radius: 50px; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .btn-save { background: var(--gold-gradient); color: #0A0A0A; }
+        .btn-cancel { background: var(--surface); color: var(--text-secondary); border: 1px solid rgba(0,0,0,0.1); }
+
+        .toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
+        .toast { padding: 14px 20px; border-radius: 12px; color: #FFF; font-weight: 600; animation: slideUp 0.3s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--error); }
+        .toast.warning { background: var(--warning); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .empty-state { text-align: center; padding: 40px; color: var(--text-secondary); font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="app-container" id="appContainer">
+        <!-- Auth screen -->
+        <div class="auth-screen" id="authScreen">
+            <div class="logo">SPAC</div>
+            <h2>Admin Access</h2>
+            <p class="subtitle">EAGLES' CONVERGENCE '26</p>
+            <div class="auth-form" id="loginForm">
+                <input type="email" id="authEmail" placeholder="Email address" autocomplete="email" aria-label="Email">
+                <input type="password" id="authPassword" placeholder="Password (min 6 characters)" autocomplete="current-password" aria-label="Password">
+                <span class="auth-error" id="authError" role="alert"></span>
+                <span class="auth-success" id="authSuccess" role="status"></span>
+                <button class="btn-auth btn-primary" id="authBtn">Sign In</button>
+                <div class="auth-toggle">
+                    Don't have an account? <span id="toggleAuthLink">Create Account</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard" aria-hidden="true">
+            <div class="admin-header">
+                <button class="btn-logout" id="btnLogout">Logout</button>
+                <button class="btn-theme" id="btnThemeToggle">🌓</button>
+                <div class="admin-label">Admin Dashboard</div>
+                <h2>EAGLE CONVERGENCE '26</h2>
+                <div class="admin-email" id="adminEmail"></div>
+            </div>
+
+            <div class="day-selector" id="daySelector" role="tablist">
+                <button class="day-btn active" data-day="day1" role="tab" aria-selected="true"><span class="day-num">Day 1</span><span class="day-label">Thu 4th</span></button>
+                <button class="day-btn" data-day="day2" role="tab" aria-selected="false"><span class="day-num">Day 2</span><span class="day-label">Fri 5th</span></button>
+                <button class="day-btn" data-day="day3" role="tab" aria-selected="false"><span class="day-num">Day 3</span><span class="day-label">Sat 6th</span></button>
+            </div>
+
+            <div class="scanner-section">
+                <div class="scanner-box"><div id="reader"></div></div>
+                <div class="scan-status" id="scanStatus" role="status" aria-live="polite"></div>
+                <div class="scanner-controls">
+                    <button class="btn-scanner btn-start" id="btnStartScanner">📷 Start Scanner</button>
+                    <button class="btn-scanner btn-stop" id="btnStopScanner" disabled>⏹ Stop</button>
+                </div>
+                <div class="manual-scan">
+                    <input type="text" id="manualTicketInput" placeholder="Enter Ticket ID manually" aria-label="Manual ticket ID">
+                    <button class="btn-scanner btn-start" id="btnManualScan">Check</button>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card"><div class="stat-num" id="statRegistered">0</div><div class="stat-label">Total</div></div>
+                <div class="stat-card gold"><div class="stat-num" id="statPresent">0</div><div class="stat-label">Present</div></div>
+                <div class="stat-card"><div class="stat-num" id="statAbsent">0</div><div class="stat-label">Absent</div></div>
+            </div>
+
+            <div class="table-section">
+                <div class="table-header">
+                    <h3>Attendees</h3>
+                    <div class="table-controls">
+                        <div class="search-wrap">
+                            <input type="text" class="search-input" placeholder="🔍 Search..." id="searchInput" aria-label="Search attendees">
+                            <button class="search-clear" id="searchClear" aria-label="Clear search">✕</button>
+                        </div>
+                        <button class="btn-sm primary" id="btnWalkIn">+ Walk-In</button>
+                        <button class="btn-sm" id="btnExport">📥 Excel</button>
+                        <div class="group-link-control">
+                            <button class="btn-sm" id="btnGroupInvite" title="Open WhatsApp Group Invite">👥 Group</button>
+                            <input type="url" id="groupLinkInput" placeholder="Paste invite link..." style="display:none;" aria-label="WhatsApp group invite link">
+                            <button class="btn-sm" id="btnSaveGroupLink" style="display:none;">💾 Save</button>
+                            <button class="btn-sm" id="btnEditGroupLink">✏️ Set Link</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="attendee-table" id="attendeeTable">
+                        <thead>
+                            <tr>
+                                <th data-sort="fullName">Name <span class="sort-icon"></span></th>
+                                <th data-sort="ticketId">Ticket <span class="sort-icon"></span></th>
+                                <th data-sort="seatDay1">Seat D1 <span class="sort-icon"></span></th>
+                                <th data-sort="attendanceDay1">D1 <span class="sort-icon"></span></th>
+                                <th data-sort="attendanceDay2">D2 <span class="sort-icon"></span></th>
+                                <th data-sort="attendanceDay3">D3 <span class="sort-icon"></span></th>
+                                <th>Chat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                    <div id="emptyState" class="empty-state" style="display:none;">No attendees found.</div>
+                </div>
+            </div>
+
+            <!-- Walk‑in modal -->
+            <div class="modal-overlay" id="walkInModal">
+                <div class="modal">
+                    <h3>➕ Add Walk-In Attendee</h3>
+                    <div class="form-group"><label for="walkInName">Full Name</label><input type="text" id="walkInName" placeholder="Full name"></div>
+                    <div class="form-group"><label for="walkInWhatsapp">WhatsApp</label><input type="tel" id="walkInWhatsapp" placeholder="08012345678"></div>
+                    <div class="modal-buttons">
+                        <button class="btn-cancel" id="cancelWalkIn">Cancel</button>
+                        <button class="btn-save" id="saveWalkIn">Add Attendee</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirmation modal -->
+            <div class="modal-overlay" id="confirmModal">
+                <div class="modal">
+                    <h3 id="confirmTitle">Confirm Attendance Change</h3>
+                    <p id="confirmMessage"></p>
+                    <div class="modal-buttons">
+                        <button class="btn-cancel" id="confirmCancel">Cancel</button>
+                        <button class="btn-save" id="confirmOk">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <script type="module">
+        // ==================== FIREBASE ====================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc, getDoc, serverTimestamp, orderBy, onSnapshot, runTransaction, increment } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDvUeEnc2mtjw9Umhjh7qVls7tzTKgj2Pw",
+            authDomain: "eagle-ec67f.firebaseapp.com",
+            projectId: "eagle-ec67f",
+            storageBucket: "eagle-ec67f.firebasestorage.app",
+            messagingSenderId: "751509177511",
+            appId: "1:751509177511:web:91adcd50595210cb80c782"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // ==================== DOM ELEMENTS ====================
+        const authScreen = document.getElementById('authScreen');
+        const dashboard = document.getElementById('dashboard');
+        const authEmail = document.getElementById('authEmail');
+        const authPassword = document.getElementById('authPassword');
+        const authError = document.getElementById('authError');
+        const authSuccess = document.getElementById('authSuccess');
+        const authBtn = document.getElementById('authBtn');
+        const toggleAuthLink = document.getElementById('toggleAuthLink');
+        const adminEmailDisplay = document.getElementById('adminEmail');
+        const btnLogout = document.getElementById('btnLogout');
+        const btnThemeToggle = document.getElementById('btnThemeToggle');
+        const dayButtons = document.querySelectorAll('.day-btn');
+        const btnStartScanner = document.getElementById('btnStartScanner');
+        const btnStopScanner = document.getElementById('btnStopScanner');
+        const manualTicketInput = document.getElementById('manualTicketInput');
+        const btnManualScan = document.getElementById('btnManualScan');
+        const scanStatus = document.getElementById('scanStatus');
+        const statRegistered = document.getElementById('statRegistered');
+        const statPresent = document.getElementById('statPresent');
+        const statAbsent = document.getElementById('statAbsent');
+        const searchInput = document.getElementById('searchInput');
+        const searchClear = document.getElementById('searchClear');
+        const tableBody = document.getElementById('tableBody');
+        const emptyState = document.getElementById('emptyState');
+        const btnWalkIn = document.getElementById('btnWalkIn');
+        const walkInModal = document.getElementById('walkInModal');
+        const cancelWalkIn = document.getElementById('cancelWalkIn');
+        const saveWalkIn = document.getElementById('saveWalkIn');
+        const walkInName = document.getElementById('walkInName');
+        const walkInWhatsapp = document.getElementById('walkInWhatsapp');
+        const btnExport = document.getElementById('btnExport');
+        const btnGroupInvite = document.getElementById('btnGroupInvite');
+        const groupLinkInput = document.getElementById('groupLinkInput');
+        const btnSaveGroupLink = document.getElementById('btnSaveGroupLink');
+        const btnEditGroupLink = document.getElementById('btnEditGroupLink');
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmTitle = document.getElementById('confirmTitle');
+        const confirmMessage = document.getElementById('confirmMessage');
+        const confirmCancel = document.getElementById('confirmCancel');
+        const confirmOk = document.getElementById('confirmOk');
+        const toastContainer = document.getElementById('toastContainer');
+
+        let currentDay = 'day1';
+        let currentDayLabel = 'Day1';
+        let html5QrCode = null;
+        let allAttendees = [];
+        let isScannerRunning = false;
+        let isSignUpMode = false;
+        let lastScanAction = null;
+        let unsubscribe = null;
+        let sortColumn = null;
+        let sortDirection = 'asc';
+        let confirmCallback = null;
+        let groupInviteLink = '';
+
+        // ==================== WHATSAPP NUMBER FORMATTER ====================
+        function formatWhatsAppNumber(phone) {
+            if (!phone) return null;
+            const cleaned = phone.replace(/\D/g, '');
+            if (!cleaned) return null;
+            // Already with '+' prefix -> remove '+'
+            if (phone.startsWith('+')) return cleaned;
+            // Already international format (e.g. 234806...)
+            if (cleaned.startsWith('234') && cleaned.length >= 10) return cleaned;
+            // Nigerian local format (e.g. 0806...)
+            if (cleaned.startsWith('0') && cleaned.length >= 10) {
+                return '234' + cleaned.substring(1);
+            }
+            // Otherwise just return cleaned
+            return cleaned;
+        }
+
+        // ==================== TOAST ====================
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        // ==================== AUTH STATE ====================
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                authScreen.style.display = 'none';
+                dashboard.classList.add('show');
+                dashboard.setAttribute('aria-hidden', 'false');
+                adminEmailDisplay.textContent = user.email;
+                loadGroupLink();
+                startRealtimeListener();
+            } else {
+                authScreen.style.display = 'flex';
+                dashboard.classList.remove('show');
+                dashboard.setAttribute('aria-hidden', 'true');
+                if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+            }
+        });
+
+        toggleAuthLink.addEventListener('click', () => {
+            isSignUpMode = !isSignUpMode;
+            document.querySelector('.auth-screen h2').textContent = isSignUpMode ? 'Create Admin Account' : 'Admin Access';
+            document.querySelector('.auth-screen .subtitle').textContent = isSignUpMode ? 'Register as an admin' : "EAGLES' CONVERGENCE '26";
+            authBtn.textContent = isSignUpMode ? 'Create Account' : 'Sign In';
+            toggleAuthLink.textContent = isSignUpMode ? 'Already have an account? Sign In' : "Don't have an account? Create Account";
+            authError.classList.remove('show');
+            authSuccess.classList.remove('show');
+        });
+
+        authBtn.addEventListener('click', async () => {
+            const email = authEmail.value.trim();
+            const password = authPassword.value;
+            authError.classList.remove('show');
+            authSuccess.classList.remove('show');
+            if (!email || !password) { authError.textContent = 'Please fill in all fields'; authError.classList.add('show'); return; }
+            if (password.length < 6) { authError.textContent = 'Password must be at least 6 characters'; authError.classList.add('show'); return; }
+            authBtn.disabled = true;
+            authBtn.textContent = 'Processing...';
+            try {
+                if (isSignUpMode) {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    authSuccess.textContent = '✅ Account created successfully!';
+                    authSuccess.classList.add('show');
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+            } catch (error) {
+                let msg = error.message;
+                if (error.code === 'auth/email-already-in-use') msg = 'This email is already registered.';
+                if (error.code === 'auth/invalid-credential') msg = 'Invalid email or password.';
+                authError.textContent = msg;
+                authError.classList.add('show');
+            } finally {
+                authBtn.disabled = false;
+                authBtn.textContent = isSignUpMode ? 'Create Account' : 'Sign In';
+            }
+        });
+        authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
+        btnLogout.addEventListener('click', () => signOut(auth));
+
+        // ==================== DARK MODE ====================
+        function applyTheme(dark) {
+            document.documentElement.classList.toggle('dark-mode', dark);
+            btnThemeToggle.textContent = dark ? '☀️' : '🌓';
+            localStorage.setItem('theme', dark ? 'dark' : 'light');
+        }
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const savedTheme = localStorage.getItem('theme');
+        applyTheme(savedTheme === 'dark' || (!savedTheme && prefersDark));
+        btnThemeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            applyTheme(!isDark);
+        });
+
+        // ==================== DAY SELECTION ====================
+        dayButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentDay = btn.dataset.day;
+                currentDayLabel = 'Day' + currentDay.slice(-1);
+                dayButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (isScannerRunning) { stopScanner(); setTimeout(startScanner, 500); }
+                updateStats();
+            });
+        });
+
+        // ==================== SCANNER ====================
+        async function startScanner() {
+            if (isScannerRunning) return;
+            btnStartScanner.disabled = true;
+            btnStopScanner.disabled = false;
+            scanStatus.className = 'scan-status warning show';
+            scanStatus.textContent = '📷 Starting camera...';
+            try {
+                html5QrCode = new Html5Qrcode("reader");
+                await html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } }, onScanSuccess, () => {});
+                isScannerRunning = true;
+                scanStatus.textContent = '📷 Ready — point at ticket QR code';
+            } catch (err) {
+                scanStatus.className = 'scan-status error show';
+                scanStatus.textContent = '❌ Camera error: ' + (err.message || 'Permission denied.');
+                btnStartScanner.disabled = false;
+                btnStopScanner.disabled = true;
+            }
+        }
+        async function stopScanner() {
+            if (html5QrCode && isScannerRunning) { try { await html5QrCode.stop(); html5QrCode.clear(); } catch(e) {} isScannerRunning = false; }
+            btnStartScanner.disabled = false;
+            btnStopScanner.disabled = true;
+            scanStatus.className = 'scan-status';
+            scanStatus.innerHTML = '';
+            lastScanAction = null;
+        }
+        btnStartScanner.addEventListener('click', startScanner);
+        btnStopScanner.addEventListener('click', stopScanner);
+
+        btnManualScan.addEventListener('click', () => {
+            const ticketId = manualTicketInput.value.trim();
+            if (ticketId) { onScanSuccess(ticketId, true); manualTicketInput.value = ''; }
+        });
+        manualTicketInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') btnManualScan.click(); });
+
+        async function onScanSuccess(decodedText, isManual = false) {
+            const ticketId = decodedText.trim();
+            const attendanceField = 'attendance' + currentDayLabel;
+            const q = query(collection(db, 'attendees'), where('ticketId', '==', ticketId));
+            const snapshot = await getDocs(q);
+            if (snapshot.empty) {
+                scanStatus.className = 'scan-status error show';
+                scanStatus.innerHTML = `❌ Ticket "${ticketId}" not found`;
+                playBeep('error');
+                autoClearStatus(3000);
+                return;
+            }
+            const docData = snapshot.docs[0];
+            const data = docData.data();
+            if (data[attendanceField] === true) {
+                scanStatus.className = 'scan-status warning show';
+                scanStatus.innerHTML = `⚠️ ${data.fullName} already marked present`;
+                playBeep('warning');
+                autoClearStatus(3000);
+                return;
+            }
+            await updateDoc(docData.ref, { [attendanceField]: true, [`markedAt_${attendanceField}`]: serverTimestamp() });
+            lastScanAction = { docId: docData.id, field: attendanceField, name: data.fullName };
+            scanStatus.className = 'scan-status success show';
+            scanStatus.innerHTML = `✅ ${data.fullName} — PRESENT (Seat ${data['seat'+currentDayLabel] || 'N/A'}) <button class="undo-btn" id="undoScanBtn">Undo</button>`;
+            playBeep('success');
+            setTimeout(() => {
+                const undoBtn = document.getElementById('undoScanBtn');
+                if (undoBtn) undoBtn.addEventListener('click', async () => {
+                    if (lastScanAction) {
+                        await updateDoc(doc(db, 'attendees', lastScanAction.docId), { [lastScanAction.field]: false });
+                        showToast(`Attendance for ${lastScanAction.name} reverted.`, 'warning');
+                        lastScanAction = null;
+                        scanStatus.className = 'scan-status';
+                        scanStatus.innerHTML = '';
+                        loadAttendees();
+                    }
+                });
+            }, 100);
+            const timeoutId = setTimeout(() => {
+                if (lastScanAction && lastScanAction.docId === docData.id) { lastScanAction = null; scanStatus.className = 'scan-status'; scanStatus.innerHTML = ''; }
+            }, 5000);
+        }
+        function autoClearStatus(delay) { setTimeout(() => { if (!lastScanAction) { scanStatus.className = 'scan-status'; scanStatus.innerHTML = ''; } }, delay); }
+        function playBeep(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = ctx.createOscillator(), g = ctx.createGain();
+                o.connect(g); g.connect(ctx.destination);
+                g.gain.value = 0.06;
+                o.frequency.value = type === 'success' ? 880 : type === 'warning' ? 500 : 300;
+                o.start(); o.stop(ctx.currentTime + 0.15);
+            } catch(e) {}
+        }
+
+        // ==================== REALTIME LISTENER ====================
+        function startRealtimeListener() {
+            if (unsubscribe) unsubscribe();
+            const q = query(collection(db, 'attendees'), orderBy('registeredAt', 'desc'));
+            unsubscribe = onSnapshot(q, (snapshot) => {
+                allAttendees = [];
+                snapshot.forEach(doc => allAttendees.push({ id: doc.id, ...doc.data() }));
+                renderTable();
+                updateStats();
+            }, (error) => showToast('Error loading attendees', 'error'));
+        }
+        function loadAttendees() { startRealtimeListener(); }
+
+        // ==================== TABLE RENDERING ====================
+        function renderTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            let filtered = allAttendees.filter(a => !searchTerm || (a.fullName||'').toLowerCase().includes(searchTerm) || (a.ticketId||'').toLowerCase().includes(searchTerm));
+            if (sortColumn) {
+                filtered.sort((a,b) => {
+                    let va = a[sortColumn] ?? '', vb = b[sortColumn] ?? '';
+                    if (typeof va === 'string') va = va.toLowerCase();
+                    if (typeof vb === 'string') vb = vb.toLowerCase();
+                    return (va < vb ? -1 : va > vb ? 1 : 0) * (sortDirection === 'asc' ? 1 : -1);
+                });
+            }
+            if (filtered.length === 0) { tableBody.innerHTML = ''; emptyState.style.display = 'block'; }
+            else {
+                emptyState.style.display = 'none';
+                tableBody.innerHTML = filtered.map(a => {
+                    const seat = a['seat'+currentDayLabel] || '—';
+                    const wa = a.whatsapp || '';
+                    const formattedWa = formatWhatsAppNumber(wa);
+                    const waLink = formattedWa ? `<a class="whatsapp-link" href="https://wa.me/${formattedWa}" target="_blank" title="Chat on WhatsApp">💬</a>` : '';
+                    return `<tr>
+                        <td><strong>${a.fullName||'—'}</strong>${waLink}</td>
+                        <td>${a.ticketId||'—'}</td><td>${seat}</td>
+                        <td class="check-mark ${a.attendanceDay1?'checked':'unchecked'}" data-id="${a.id}" data-field="attendanceDay1">${a.attendanceDay1?'✅':'❌'}</td>
+                        <td class="check-mark ${a.attendanceDay2?'checked':'unchecked'}" data-id="${a.id}" data-field="attendanceDay2">${a.attendanceDay2?'✅':'❌'}</td>
+                        <td class="check-mark ${a.attendanceDay3?'checked':'unchecked'}" data-id="${a.id}" data-field="attendanceDay3">${a.attendanceDay3?'✅':'❌'}</td>
+                        <td>${formattedWa ? `<a href="https://wa.me/${formattedWa}" target="_blank" class="whatsapp-link">Chat</a>` : '—'}</td>
+                    </tr>`;
+                }).join('');
+            }
+            document.querySelectorAll('.check-mark').forEach(cell => {
+                cell.addEventListener('click', () => {
+                    const docId = cell.dataset.id, field = cell.dataset.field;
+                    const attendee = allAttendees.find(a => a.id === docId);
+                    if (!attendee) return;
+                    const newVal = !attendee[field];
+                    confirmTitle.textContent = 'Confirm Attendance Change';
+                    confirmMessage.textContent = `Are you sure you want to mark ${attendee.fullName} as ${newVal ? 'Present' : 'Absent'} for Day ${field.slice(-1)}?`;
+                    confirmCallback = async () => {
+                        await updateDoc(doc(db, 'attendees', docId), { [field]: newVal, [`markedAt_${field}`]: newVal ? serverTimestamp() : null });
+                        showToast(`${attendee.fullName} marked ${newVal ? 'Present' : 'Absent'}`, 'success');
+                    };
+                    confirmModal.classList.add('show');
+                });
+            });
+        }
+
+        document.querySelectorAll('.attendee-table th[data-sort]').forEach(th => {
+            th.addEventListener('click', () => {
+                const col = th.dataset.sort;
+                if (sortColumn === col) sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                else { sortColumn = col; sortDirection = 'asc'; }
+                document.querySelectorAll('.sort-icon').forEach(icon => icon.textContent = '');
+                th.querySelector('.sort-icon').textContent = sortDirection === 'asc' ? '▲' : '▼';
+                renderTable();
+            });
+        });
+
+        let debounceTimer;
+        searchInput.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = setTimeout(renderTable, 300); });
+        searchClear.addEventListener('click', () => { searchInput.value = ''; renderTable(); searchInput.focus(); });
+
+        function updateStats() {
+            const field = 'attendance' + currentDayLabel;
+            const total = allAttendees.length;
+            const present = allAttendees.filter(a => a[field] === true).length;
+            statRegistered.textContent = total;
+            statPresent.textContent = present;
+            statAbsent.textContent = total - present;
+        }
+
+        // ==================== WALK-IN ====================
+        btnWalkIn.addEventListener('click', () => { walkInModal.classList.add('show'); walkInName.focus(); });
+        cancelWalkIn.addEventListener('click', () => { walkInModal.classList.remove('show'); walkInName.value = ''; walkInWhatsapp.value = ''; });
+        saveWalkIn.addEventListener('click', async () => {
+            const name = walkInName.value.trim();
+            const wa = walkInWhatsapp.value.trim() || '';
+            if (!name) { showToast('Please enter a name', 'error'); return; }
+            try {
+                const ticketCounterRef = doc(db, 'counters', 'ticketCounter');
+                const newTicketNumber = await runTransaction(db, async (tx) => {
+                    const ticketDoc = await tx.get(ticketCounterRef);
+                    let n = (ticketDoc.exists() ? ticketDoc.data().value : 0) + 1;
+                    tx.set(ticketCounterRef, { value: n }, { merge: true });
+                    return n;
+                });
+                const seatCounterRef = doc(db, 'counters', 'seatCounters');
+                const seatSnap = await getDoc(seatCounterRef);
+                const seats = seatSnap.data() || { day1: 0, day2: 0, day3: 0 };
+                const s1 = (seats.day1||0)+1, s2 = (seats.day2||0)+1, s3 = (seats.day3||0)+1;
+                await setDoc(seatCounterRef, { day1: s1, day2: s2, day3: s3 }, { merge: true });
+                await addDoc(collection(db, 'attendees'), {
+                    fullName: name, whatsapp: wa, birthday: '',
+                    ticketId: `EAG-${String(newTicketNumber).padStart(4,'0')}`,
+                    seatDay1: String(s1).padStart(3,'0'), seatDay2: String(s2).padStart(3,'0'), seatDay3: String(s3).padStart(3,'0'),
+                    attendanceDay1: currentDay==='day1', attendanceDay2: currentDay==='day2', attendanceDay3: currentDay==='day3',
+                    programName: `EAGLES' CONVERGENCE`, church: 'SPAC CHURCH', hostPastor: 'Yomi Okewunmi',
+                    registeredAt: serverTimestamp(), isWalkIn: true
+                });
+                walkInModal.classList.remove('show');
+                walkInName.value = ''; walkInWhatsapp.value = '';
+                showToast(`Walk-in added! Ticket: EAG-${String(newTicketNumber).padStart(4,'0')}`, 'success');
+            } catch(e) { showToast('Error adding walk-in: '+e.message, 'error'); }
+        });
+
+        // ==================== GROUP LINK ====================
+        async function loadGroupLink() {
+            try {
+                const snap = await getDoc(doc(db, 'settings', 'groupInviteLink'));
+                if (snap.exists()) { groupInviteLink = snap.data().url || ''; groupLinkInput.value = groupInviteLink; }
+            } catch(e) { showToast('Could not load group link', 'error'); }
+        }
+        btnEditGroupLink.addEventListener('click', () => {
+            groupLinkInput.style.display = 'inline-block'; btnSaveGroupLink.style.display = 'inline-block';
+            btnEditGroupLink.style.display = 'none'; groupLinkInput.focus();
+        });
+        btnSaveGroupLink.addEventListener('click', async () => {
+            const url = groupLinkInput.value.trim();
+            if (!url) { showToast('Please enter a valid link', 'warning'); return; }
+            await setDoc(doc(db, 'settings', 'groupInviteLink'), { url }, { merge: true });
+            groupInviteLink = url;
+            showToast('Group link saved!', 'success');
+            groupLinkInput.style.display = 'none'; btnSaveGroupLink.style.display = 'none'; btnEditGroupLink.style.display = 'inline-block';
+        });
+        btnGroupInvite.addEventListener('click', () => {
+            if (groupInviteLink) window.open(groupInviteLink, '_blank');
+            else showToast('No group link set. Click ✏️ Set Link to add one.', 'warning');
+        });
+
+        // ==================== CONFIRMATION MODAL ====================
+        confirmCancel.addEventListener('click', () => { confirmModal.classList.remove('show'); confirmCallback = null; });
+        confirmOk.addEventListener('click', async () => { if (confirmCallback) await confirmCallback(); confirmModal.classList.remove('show'); confirmCallback = null; });
+
+        // ==================== EXPORT ====================
+        btnExport.addEventListener('click', () => {
+            const data = allAttendees.map(a => ({
+                Name: a.fullName || '', Phone: a.whatsapp || '', 'Ticket ID': a.ticketId || '',
+                'Seat D1': a.seatDay1||'', 'Seat D2': a.seatDay2||'', 'Seat D3': a.seatDay3||'',
+                Day1: a.attendanceDay1?'Present':'Absent', Day2: a.attendanceDay2?'Present':'Absent', Day3: a.attendanceDay3?'Present':'Absent'
+            }));
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
+            XLSX.writeFile(wb, `eagles-convergence-${currentDayLabel.toLowerCase()}.xlsx`);
+            showToast('Excel downloaded', 'success');
+        });
+    </script>
+
+    <!-- ==================== PWA: INLINE MANIFEST & SERVICE WORKER ==================== -->
+    <script>
+        const manifest = {
+            name: "Eagles' Convergence 2026 Admin",
+            short_name: "EC26 Admin",
+            start_url: location.href,
+            display: "standalone",
+            background_color: "#0A0A0A",
+            theme_color: "#D4AF37",
+            icons: [
+                { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Ccircle cx='96' cy='96' r='96' fill='%230A0A0A'/%3E%3Ccircle cx='96' cy='96' r='84' fill='none' stroke='%23D4AF37' stroke-width='8'/%3E%3Ctext x='96' y='112' font-size='72' font-weight='bold' text-anchor='middle' fill='%23D4AF37' font-family='serif'%3EEC%3C/text%3E%3C/svg%3E",
+                  sizes: "192x192", type: "image/svg+xml" }
+            ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+        const manifestUrl = URL.createObjectURL(manifestBlob);
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = manifestUrl;
+        document.head.appendChild(link);
+
+        const swCode = `
+            const CACHE = 'ec26-v1';
+            const SHELL = [self.location.href];
+            self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))));
+            self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k!==CACHE).map(k => caches.delete(k))))));
+            self.addEventListener('fetch', e => {
+                const url = new URL(e.request.url);
+                if (url.hostname.includes('firestore') || url.hostname.includes('firebaseauth') || url.hostname.includes('identitytoolkit')) return;
+                e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+            });
+        `;
+        const swBlob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(swBlob);
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register(swUrl).catch(err => console.log('SW reg failed', err));
+            });
+        }
+    </script>
+</body>
+</html>
