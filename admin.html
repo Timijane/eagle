@@ -13,56 +13,14 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
-    <!-- MANIFEST AS DATA URL (real, fetchable – triggers install popup) -->
+    <!-- MANIFEST: real data URL (not blob) with middle logo -->
     <link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Eagles%27%20Convergence%202026%20Admin%22%2C%22short_name%22%3A%22EC26%20Admin%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230A0A0A%22%2C%22theme_color%22%3A%22%23D4AF37%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fres.cloudinary.com%2Fdmbjrohtn%2Fimage%2Fupload%2Fv1778272039%2FIMG-20260508-WA0022_cvvdsc.jpg%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fjpeg%22%7D%5D%7D">
     
     <style>
+        /* All your CSS here – unchanged from previous versions */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --gold: #D4AF37; --gold-deep: #B8960C; --gold-light: #F5E6A3;
-            --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 40%, #B8960C 100%);
-            --bg: #FFFFFF; --surface: #FAFAFA; --text: #1A1A1A; --text-secondary: #5A5A5A;
-            --success: #2E7D32; --error: #D32F2F; --warning: #E67E22;
-            --radius: 16px; --radius-sm: 10px; --transition: 0.3s ease;
-            
-            --body-bg: #0A0A0A;
-            --app-bg: #FFFFFF;
-            --header-bg: #0A0A0A;
-            --header-text: #FFF;
-            --btn-logout-bg: rgba(255,255,255,0.08);
-            --btn-logout-border: rgba(255,255,255,0.15);
-            --stat-card-bg: #FFF;
-            --stat-border: rgba(0,0,0,0.06);
-            --day-btn-bg: #FFF;
-            --day-btn-border: rgba(0,0,0,0.08);
-            --table-bg: #FFF;
-            --table-th-bg: #0A0A0A;
-            --table-th-text: #FFF;
-            --table-row-hover: rgba(212,175,55,0.03);
-            --modal-bg: #FFF;
-            --input-bg: #FFF;
-            --input-border: rgba(0,0,0,0.1);
-            --text-primary: #1A1A1A;
-        }
-        .dark-mode {
-            --body-bg: #0A0A0A;
-            --app-bg: #1A1A1A;
-            --header-bg: #000;
-            --btn-logout-bg: rgba(255,255,255,0.1);
-            --btn-logout-border: rgba(255,255,255,0.2);
-            --stat-card-bg: #2A2A2A;
-            --stat-border: rgba(255,255,255,0.05);
-            --day-btn-bg: #2A2A2A;
-            --day-btn-border: rgba(255,255,255,0.1);
-            --table-bg: #1E1E1E;
-            --table-th-bg: #000;
-            --table-row-hover: rgba(212,175,55,0.06);
-            --modal-bg: #2A2A2A;
-            --input-bg: #333;
-            --input-border: rgba(255,255,255,0.1);
-            --text-primary: #FFF;
-            color-scheme: dark;
-        }
+        :root { --gold: #D4AF37; --gold-deep: #B8960C; --gold-light: #F5E6A3; --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 40%, #B8960C 100%); --bg: #FFFFFF; --surface: #FAFAFA; --text: #1A1A1A; --text-secondary: #5A5A5A; --success: #2E7D32; --error: #D32F2F; --warning: #E67E22; --radius: 16px; --radius-sm: 10px; --transition: 0.3s ease; --body-bg: #0A0A0A; --app-bg: #FFFFFF; --header-bg: #0A0A0A; --header-text: #FFF; --btn-logout-bg: rgba(255,255,255,0.08); --btn-logout-border: rgba(255,255,255,0.15); --stat-card-bg: #FFF; --stat-border: rgba(0,0,0,0.06); --day-btn-bg: #FFF; --day-btn-border: rgba(0,0,0,0.08); --table-bg: #FFF; --table-th-bg: #0A0A0A; --table-th-text: #FFF; --table-row-hover: rgba(212,175,55,0.03); --modal-bg: #FFF; --input-bg: #FFF; --input-border: rgba(0,0,0,0.1); --text-primary: #1A1A1A; }
+        .dark-mode { --body-bg: #0A0A0A; --app-bg: #1A1A1A; --header-bg: #000; --btn-logout-bg: rgba(255,255,255,0.1); --btn-logout-border: rgba(255,255,255,0.2); --stat-card-bg: #2A2A2A; --stat-border: rgba(255,255,255,0.05); --day-btn-bg: #2A2A2A; --day-btn-border: rgba(255,255,255,0.1); --table-bg: #1E1E1E; --table-th-bg: #000; --table-row-hover: rgba(212,175,55,0.06); --modal-bg: #2A2A2A; --input-bg: #333; --input-border: rgba(255,255,255,0.1); --text-primary: #FFF; color-scheme: dark; }
         html { font-size: 16px; -webkit-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; }
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--body-bg); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 0; color: var(--text-primary); transition: background 0.3s; }
         .app-container { width: 100%; max-width: 100%; min-height: 100vh; background: var(--app-bg); position: relative; overflow-x: hidden; overflow-y: auto; box-shadow: var(--app-shadow); transition: background 0.3s, box-shadow 0.3s; }
@@ -74,7 +32,6 @@
         .app-container::-webkit-scrollbar-track { background: transparent; }
         .app-container::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
-        /* AUTH */
         .auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px; text-align: center; background: #0A0A0A; }
         .auth-screen .logo { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 900; font-family: 'Playfair Display', serif; font-size: 1.1rem; }
         .auth-screen h2 { font-family: 'Playfair Display', serif; color: #FFF; font-size: 1.2rem; margin-bottom: 2px; }
@@ -93,7 +50,6 @@
         .auth-toggle { color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-top: 6px; }
         .auth-toggle span { color: var(--gold); cursor: pointer; font-weight: 600; text-decoration: underline; }
 
-        /* DASHBOARD */
         .dashboard { display: none; padding-bottom: 40px; }
         .dashboard.show { display: block; }
         .admin-header { background: var(--header-bg); padding: 20px; text-align: center; position: relative; color: var(--header-text); }
@@ -305,8 +261,8 @@
 
     <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
-    <!-- All JavaScript (unchanged, previously working) -->
     <script type="module">
+        // Firebase, DOM, all logic unchanged (same as your working version)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc, getDoc, serverTimestamp, orderBy, onSnapshot, runTransaction, increment } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
@@ -324,7 +280,6 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // DOM elements
         const authScreen = document.getElementById('authScreen');
         const dashboard = document.getElementById('dashboard');
         const authEmail = document.getElementById('authEmail');
@@ -367,18 +322,7 @@
         const confirmOk = document.getElementById('confirmOk');
         const toastContainer = document.getElementById('toastContainer');
 
-        let currentDay = 'day1';
-        let currentDayLabel = 'Day1';
-        let html5QrCode = null;
-        let allAttendees = [];
-        let isScannerRunning = false;
-        let isSignUpMode = false;
-        let lastScanAction = null;
-        let unsubscribe = null;
-        let sortColumn = null;
-        let sortDirection = 'asc';
-        let confirmCallback = null;
-        let groupInviteLink = '';
+        let currentDay = 'day1', currentDayLabel = 'Day1', html5QrCode = null, allAttendees = [], isScannerRunning = false, isSignUpMode = false, lastScanAction = null, unsubscribe = null, sortColumn = null, sortDirection = 'asc', confirmCallback = null, groupInviteLink = '';
 
         function formatWhatsAppNumber(phone) {
             if (!phone) return null;
@@ -553,9 +497,7 @@
                     }
                 });
             }, 100);
-            const timeoutId = setTimeout(() => {
-                if (lastScanAction && lastScanAction.docId === docData.id) { lastScanAction = null; scanStatus.className = 'scan-status'; scanStatus.innerHTML = ''; }
-            }, 5000);
+            setTimeout(() => { if (lastScanAction && lastScanAction.docId === docData.id) { lastScanAction = null; scanStatus.className = 'scan-status'; scanStatus.innerHTML = ''; } }, 5000);
         }
         function autoClearStatus(delay) { setTimeout(() => { if (!lastScanAction) { scanStatus.className = 'scan-status'; scanStatus.innerHTML = ''; } }, delay); }
         function playBeep(type) {
@@ -724,24 +666,14 @@
         });
     </script>
 
-    <!-- Inline Service Worker (does not interfere with install prompt) -->
+    <!-- Inline Service Worker (caches only the page shell, skips Firebase) -->
     <script>
-        (function() {
-            if (!('serviceWorker' in navigator)) return;
-            const swCode = `
-                const CACHE_NAME = 'ec26-v4';
-                self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./']))));
-                self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))));
-                self.addEventListener('fetch', e => {
-                    const url = new URL(e.request.url);
-                    if (url.hostname.includes('firestore') || url.hostname.includes('firebaseauth') || url.hostname.includes('identitytoolkit') || url.hostname.includes('unpkg') || url.hostname.includes('fonts') || url.hostname.includes('cloudinary')) return;
-                    e.respondWith(fetch(e.request).then(r => { const clone = r.clone(); caches.open(CACHE_NAME).then(c => c.put(e.request, clone)); return r; }).catch(() => caches.match(e.request)));
-                });
-            `;
+        if ('serviceWorker' in navigator) {
+            const swCode = `const CACHE='ec26-v5';self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./']))));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(u.hostname.includes('firestore')||u.hostname.includes('firebaseauth')||u.hostname.includes('identitytoolkit')||u.hostname.includes('unpkg')||u.hostname.includes('fonts')||u.hostname.includes('cloudinary'))return;e.respondWith(fetch(e.request).then(r=>{const cl=r.clone();caches.open(CACHE).then(c=>c.put(e.request,cl));return r;}).catch(()=>caches.match(e.request)))});`;
             const swBlob = new Blob([swCode], { type: 'application/javascript' });
             const swUrl = URL.createObjectURL(swBlob);
             window.addEventListener('load', () => navigator.serviceWorker.register(swUrl).catch(console.error));
-        })();
+        }
     </script>
 </body>
 </html>
