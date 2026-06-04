@@ -13,6 +13,9 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
+    <!-- REAL MANIFEST FILE – standard, works for install prompt -->
+    <link rel="manifest" href="manifest.json">
+    
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -382,15 +385,11 @@
             if (!phone) return null;
             const cleaned = phone.replace(/\D/g, '');
             if (!cleaned) return null;
-            // Already with '+' prefix -> remove '+'
             if (phone.startsWith('+')) return cleaned;
-            // Already international format (e.g. 234806...)
             if (cleaned.startsWith('234') && cleaned.length >= 10) return cleaned;
-            // Nigerian local format (e.g. 0806...)
             if (cleaned.startsWith('0') && cleaned.length >= 10) {
                 return '234' + cleaned.substring(1);
             }
-            // Otherwise just return cleaned
             return cleaned;
         }
 
@@ -739,43 +738,13 @@
         });
     </script>
 
-    <!-- ==================== PWA: INLINE MANIFEST & SERVICE WORKER ==================== -->
+    <!-- REAL SERVICE WORKER REGISTRATION (separate file) -->
     <script>
-        const manifest = {
-            name: "Eagles' Convergence 2026 Admin",
-            short_name: "EC26 Admin",
-            start_url: location.href,
-            display: "standalone",
-            background_color: "#0A0A0A",
-            theme_color: "#D4AF37",
-            icons: [
-                { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Ccircle cx='96' cy='96' r='96' fill='%230A0A0A'/%3E%3Ccircle cx='96' cy='96' r='84' fill='none' stroke='%23D4AF37' stroke-width='8'/%3E%3Ctext x='96' y='112' font-size='72' font-weight='bold' text-anchor='middle' fill='%23D4AF37' font-family='serif'%3EEC%3C/text%3E%3C/svg%3E",
-                  sizes: "192x192", type: "image/svg+xml" }
-            ]
-        };
-        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-        const manifestUrl = URL.createObjectURL(manifestBlob);
-        const link = document.createElement('link');
-        link.rel = 'manifest';
-        link.href = manifestUrl;
-        document.head.appendChild(link);
-
-        const swCode = `
-            const CACHE = 'ec26-v1';
-            const SHELL = [self.location.href];
-            self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))));
-            self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k!==CACHE).map(k => caches.delete(k))))));
-            self.addEventListener('fetch', e => {
-                const url = new URL(e.request.url);
-                if (url.hostname.includes('firestore') || url.hostname.includes('firebaseauth') || url.hostname.includes('identitytoolkit')) return;
-                e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-            });
-        `;
-        const swBlob = new Blob([swCode], { type: 'application/javascript' });
-        const swUrl = URL.createObjectURL(swBlob);
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register(swUrl).catch(err => console.log('SW reg failed', err));
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registered successfully!', reg.scope))
+                    .catch(err => console.error('Service Worker registration failed:', err));
             });
         }
     </script>
