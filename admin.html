@@ -103,7 +103,7 @@
         .btn-theme { left: 16px; background: transparent; border-color: var(--gold); color: var(--gold); }
         .btn-logout:hover { background: rgba(211,47,47,0.2); border-color: var(--error); }
 
-        /* VIEW TABS (Attendees / Audit Log) */
+        /* VIEW TABS */
         .view-tabs { display: flex; gap: 8px; padding: 12px 20px; background: var(--surface); border-bottom: 1px solid rgba(0,0,0,0.05); }
         .view-tab { flex: 1; padding: 10px 8px; border: 2px solid var(--day-btn-border); border-radius: var(--radius-sm); background: var(--day-btn-bg); font-weight: 700; font-size: 0.78rem; cursor: pointer; text-align: center; color: var(--text-primary); }
         .view-tab.active { border-color: var(--gold); background: rgba(212,175,55,0.06); color: var(--gold-deep); }
@@ -113,6 +113,9 @@
         .day-btn.active { border-color: var(--gold); background: rgba(212,175,55,0.06); color: var(--gold-deep); box-shadow: 0 4px 20px rgba(212,175,55,0.15); }
         .day-btn .day-num { font-size: 1.2rem; display: block; }
         .day-btn .day-label { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
+
+        .category-filter { padding: 6px 12px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.1); background: #FFF; font-size: 0.7rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .category-filter.active { background: var(--gold-gradient); color: #0A0A0A; border-color: transparent; }
 
         .scanner-section { padding: 16px 20px; width: 100%; max-width: 100%; margin: 0 auto; }
         .scanner-box { border-radius: var(--radius); overflow: hidden; border: 2px solid rgba(0,0,0,0.08); background: #0A0A0A; }
@@ -257,6 +260,9 @@
                                 <input type="text" class="search-input" placeholder="🔍 Search..." id="searchInput" aria-label="Search attendees">
                                 <button class="search-clear" id="searchClear" aria-label="Clear search">✕</button>
                             </div>
+                            <button class="btn-sm category-filter active" data-cat="all">All</button>
+                            <button class="btn-sm category-filter" data-cat="walkin">🚶 Walk‑in</button>
+                            <button class="btn-sm category-filter" data-cat="online">🌐 Online</button>
                             <button class="btn-sm primary" id="btnWalkIn">+ Walk-In</button>
                             <button class="btn-sm" id="btnExport">📥 Excel</button>
                             <div class="group-link-control">
@@ -288,7 +294,7 @@
                 </div>
             </div>
 
-            <!-- Audit view (hidden by default) -->
+            <!-- Audit view -->
             <div id="auditView" style="display:none;">
                 <div class="table-section" style="margin-top: 16px;">
                     <div class="table-header">
@@ -411,7 +417,7 @@
 
         let currentDay = 'day1';
         let currentDayLabel = 'Day1';
-        let currentView = 'attendees'; // 'attendees' or 'audit'
+        let currentView = 'attendees';
         let html5QrCode = null;
         let allAttendees = [];
         let isScannerRunning = false;
@@ -424,7 +430,7 @@
         let confirmCallback = null;
         let groupInviteLink = '';
 
-        // ==================== AUDIT LOG HELPER ====================
+        // ==================== AUDIT LOG ====================
         async function addAuditLog(action, attendeeName, details = '') {
             const user = auth.currentUser;
             if (!user) return;
@@ -569,7 +575,6 @@
             if (!tab) return;
             const view = tab.dataset.view;
             if (view === currentView) return;
-            // Update active tab
             viewTabs.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             currentView = view;
@@ -580,6 +585,7 @@
                 attendeeView.style.display = 'none';
                 auditView.style.display = 'block';
                 if (isScannerRunning) stopScanner();
+                loadAuditLog(); // ensure fresh data when tab opens
             }
         });
 
@@ -592,6 +598,15 @@
                 btn.classList.add('active');
                 if (isScannerRunning) { stopScanner(); setTimeout(startScanner, 500); }
                 updateStats();
+            });
+        });
+
+        // ==================== CATEGORY FILTERS ====================
+        document.querySelectorAll('.category-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderTable();
             });
         });
 
@@ -657,7 +672,6 @@
             scanStatus.className = 'scan-status success show';
             scanStatus.innerHTML = `✅ ${data.fullName} — PRESENT (Seat ${data['seat'+currentDayLabel] || 'N/A'}) <button class="undo-btn" id="undoScanBtn">Undo</button>`;
             playBeep('success');
-            // Audit log for scan
             await addAuditLog('Marked Present (Scan)', data.fullName, `Ticket: ${ticketId}, Day: ${currentDayLabel}`);
             setTimeout(() => {
                 const undoBtn = document.getElementById('undoScanBtn');
@@ -665,7 +679,6 @@
                     if (lastScanAction) {
                         await updateDoc(doc(db, 'attendees', lastScanAction.docId), { [lastScanAction.field]: false });
                         showToast(`Attendance for ${lastScanAction.name} reverted.`, 'warning');
-                        // Audit log for undo
                         await addAuditLog('Undid Attendance (Scan)', lastScanAction.name, `Day: ${currentDayLabel}`);
                         lastScanAction = null;
                         scanStatus.className = 'scan-status';
@@ -703,15 +716,28 @@
         }
         function loadAttendees() { startRealtimeListener(); }
 
-        // ==================== TABLE RENDERING ====================
+        // ==================== CATEGORY HELPER ====================
         function getCategory(attendee) {
-            // If no birthday or empty string -> Walk-in, else Online
+            // Walk-in if birthday is missing or empty
             return (attendee.birthday && attendee.birthday.trim() !== '') ? 'Online' : 'Walk-in';
         }
 
+        // ==================== TABLE RENDERING ====================
         function renderTable() {
             const searchTerm = searchInput.value.toLowerCase();
-            let filtered = allAttendees.filter(a => !searchTerm || (a.fullName||'').toLowerCase().includes(searchTerm) || (a.ticketId||'').toLowerCase().includes(searchTerm));
+            const activeCat = document.querySelector('.category-filter.active')?.dataset.cat || 'all';
+
+            let filtered = allAttendees.filter(a => {
+                const matchesSearch = !searchTerm || 
+                    (a.fullName||'').toLowerCase().includes(searchTerm) || 
+                    (a.ticketId||'').toLowerCase().includes(searchTerm);
+                const cat = getCategory(a);
+                const matchesCat = activeCat === 'all' ||
+                    (activeCat === 'walkin' && cat === 'Walk-in') ||
+                    (activeCat === 'online' && cat === 'Online');
+                return matchesSearch && matchesCat;
+            });
+
             if (sortColumn) {
                 filtered.sort((a,b) => {
                     let va = a[sortColumn] ?? '', vb = b[sortColumn] ?? '';
@@ -720,6 +746,7 @@
                     return (va < vb ? -1 : va > vb ? 1 : 0) * (sortDirection === 'asc' ? 1 : -1);
                 });
             }
+
             if (filtered.length === 0) { tableBody.innerHTML = ''; emptyState.style.display = 'block'; }
             else {
                 emptyState.style.display = 'none';
@@ -741,6 +768,8 @@
                     </tr>`;
                 }).join('');
             }
+
+            // re-attach toggle events
             document.querySelectorAll('.check-mark').forEach(cell => {
                 cell.addEventListener('click', () => {
                     const docId = cell.dataset.id, field = cell.dataset.field;
@@ -752,7 +781,6 @@
                     confirmCallback = async () => {
                         await updateDoc(doc(db, 'attendees', docId), { [field]: newVal, [`markedAt_${field}`]: newVal ? serverTimestamp() : null });
                         showToast(`${attendee.fullName} marked ${newVal ? 'Present' : 'Absent'}`, 'success');
-                        // Audit log
                         await addAuditLog(
                             newVal ? 'Marked Present (Manual)' : 'Marked Absent (Manual)',
                             attendee.fullName,
@@ -809,7 +837,7 @@
                 const s1 = (seats.day1||0)+1, s2 = (seats.day2||0)+1, s3 = (seats.day3||0)+1;
                 await setDoc(seatCounterRef, { day1: s1, day2: s2, day3: s3 }, { merge: true });
                 await addDoc(collection(db, 'attendees'), {
-                    fullName: name, whatsapp: wa, birthday: '',   // Walk-in: empty birthday
+                    fullName: name, whatsapp: wa, birthday: '',
                     ticketId: `EAG-${String(newTicketNumber).padStart(4,'0')}`,
                     seatDay1: String(s1).padStart(3,'0'), seatDay2: String(s2).padStart(3,'0'), seatDay3: String(s3).padStart(3,'0'),
                     attendanceDay1: currentDay==='day1', attendanceDay2: currentDay==='day2', attendanceDay3: currentDay==='day3',
@@ -819,7 +847,6 @@
                 walkInModal.classList.remove('show');
                 walkInName.value = ''; walkInWhatsapp.value = '';
                 showToast(`Walk-in added! Ticket: EAG-${String(newTicketNumber).padStart(4,'0')}`, 'success');
-                // Audit log
                 await addAuditLog('Added Walk-In', name, `Ticket: EAG-${String(newTicketNumber).padStart(4,'0')}`);
             } catch(e) { showToast('Error adding walk-in: '+e.message, 'error'); }
         });
@@ -867,7 +894,6 @@
             showToast('Excel downloaded', 'success');
         });
 
-        // Export audit log
         btnExportAudit.addEventListener('click', async () => {
             const snap = await getDocs(query(collection(db, 'auditLog'), orderBy('timestamp', 'desc')));
             const data = [];
