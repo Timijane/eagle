@@ -6,12 +6,10 @@
     <meta name="theme-color" content="#0A0A0A">
     <title>Admin | EAGLES' CONVERGENCE '26</title>
     
-    <!-- Preconnect for fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Libraries -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
@@ -105,6 +103,11 @@
         .btn-theme { left: 16px; background: transparent; border-color: var(--gold); color: var(--gold); }
         .btn-logout:hover { background: rgba(211,47,47,0.2); border-color: var(--error); }
 
+        /* VIEW TABS (Attendees / Audit Log) */
+        .view-tabs { display: flex; gap: 8px; padding: 12px 20px; background: var(--surface); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .view-tab { flex: 1; padding: 10px 8px; border: 2px solid var(--day-btn-border); border-radius: var(--radius-sm); background: var(--day-btn-bg); font-weight: 700; font-size: 0.78rem; cursor: pointer; text-align: center; color: var(--text-primary); }
+        .view-tab.active { border-color: var(--gold); background: rgba(212,175,55,0.06); color: var(--gold-deep); }
+
         .day-selector { display: flex; gap: 8px; padding: 16px 20px; background: var(--surface); border-bottom: 1px solid rgba(0,0,0,0.05); }
         .day-btn { flex: 1; padding: 12px 8px; border: 2px solid var(--day-btn-border); border-radius: var(--radius-sm); background: var(--day-btn-bg); font-weight: 700; font-size: 0.78rem; cursor: pointer; transition: var(--transition); text-align: center; font-family: 'Inter', sans-serif; color: var(--text-primary); }
         .day-btn.active { border-color: var(--gold); background: rgba(212,175,55,0.06); color: var(--gold-deep); box-shadow: 0 4px 20px rgba(212,175,55,0.15); }
@@ -147,7 +150,7 @@
         .search-input:focus { border-color: var(--gold); }
         .search-clear { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 0.9rem; color: var(--text-secondary); }
         .table-wrap { overflow-x: auto; border-radius: var(--radius-sm); }
-        .attendee-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; background: var(--table-bg); min-width: 600px; }
+        .attendee-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; background: var(--table-bg); min-width: 700px; }
         .attendee-table th { background: var(--table-th-bg); color: var(--table-th-text); padding: 10px 8px; text-align: left; font-size: 0.62rem; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; cursor: pointer; user-select: none; }
         .attendee-table th:hover { background: #222; }
         .sort-icon { margin-left: 4px; font-size: 0.7rem; }
@@ -213,65 +216,100 @@
                 <div class="admin-email" id="adminEmail"></div>
             </div>
 
-            <div class="day-selector" id="daySelector" role="tablist">
-                <button class="day-btn active" data-day="day1" role="tab" aria-selected="true"><span class="day-num">Day 1</span><span class="day-label">Thu 4th</span></button>
-                <button class="day-btn" data-day="day2" role="tab" aria-selected="false"><span class="day-num">Day 2</span><span class="day-label">Fri 5th</span></button>
-                <button class="day-btn" data-day="day3" role="tab" aria-selected="false"><span class="day-num">Day 3</span><span class="day-label">Sat 6th</span></button>
+            <!-- View tabs -->
+            <div class="view-tabs" id="viewTabs">
+                <button class="view-tab active" data-view="attendees">👥 Attendees</button>
+                <button class="view-tab" data-view="audit">📋 Audit Log</button>
             </div>
 
-            <div class="scanner-section">
-                <div class="scanner-box"><div id="reader"></div></div>
-                <div class="scan-status" id="scanStatus" role="status" aria-live="polite"></div>
-                <div class="scanner-controls">
-                    <button class="btn-scanner btn-start" id="btnStartScanner">📷 Start Scanner</button>
-                    <button class="btn-scanner btn-stop" id="btnStopScanner" disabled>⏹ Stop</button>
+            <!-- Attendee view -->
+            <div id="attendeeView">
+                <div class="day-selector" id="daySelector" role="tablist">
+                    <button class="day-btn active" data-day="day1" role="tab" aria-selected="true"><span class="day-num">Day 1</span><span class="day-label">Thu 4th</span></button>
+                    <button class="day-btn" data-day="day2" role="tab" aria-selected="false"><span class="day-num">Day 2</span><span class="day-label">Fri 5th</span></button>
+                    <button class="day-btn" data-day="day3" role="tab" aria-selected="false"><span class="day-num">Day 3</span><span class="day-label">Sat 6th</span></button>
                 </div>
-                <div class="manual-scan">
-                    <input type="text" id="manualTicketInput" placeholder="Enter Ticket ID manually" aria-label="Manual ticket ID">
-                    <button class="btn-scanner btn-start" id="btnManualScan">Check</button>
-                </div>
-            </div>
 
-            <div class="stats-row">
-                <div class="stat-card"><div class="stat-num" id="statRegistered">0</div><div class="stat-label">Total</div></div>
-                <div class="stat-card gold"><div class="stat-num" id="statPresent">0</div><div class="stat-label">Present</div></div>
-                <div class="stat-card"><div class="stat-num" id="statAbsent">0</div><div class="stat-label">Absent</div></div>
-            </div>
-
-            <div class="table-section">
-                <div class="table-header">
-                    <h3>Attendees</h3>
-                    <div class="table-controls">
-                        <div class="search-wrap">
-                            <input type="text" class="search-input" placeholder="🔍 Search..." id="searchInput" aria-label="Search attendees">
-                            <button class="search-clear" id="searchClear" aria-label="Clear search">✕</button>
-                        </div>
-                        <button class="btn-sm primary" id="btnWalkIn">+ Walk-In</button>
-                        <button class="btn-sm" id="btnExport">📥 Excel</button>
-                        <div class="group-link-control">
-                            <button class="btn-sm" id="btnGroupInvite" title="Open WhatsApp Group Invite">👥 Group</button>
-                            <input type="url" id="groupLinkInput" placeholder="Paste invite link..." style="display:none;" aria-label="WhatsApp group invite link">
-                            <button class="btn-sm" id="btnSaveGroupLink" style="display:none;">💾 Save</button>
-                            <button class="btn-sm" id="btnEditGroupLink">✏️ Set Link</button>
-                        </div>
+                <div class="scanner-section">
+                    <div class="scanner-box"><div id="reader"></div></div>
+                    <div class="scan-status" id="scanStatus" role="status" aria-live="polite"></div>
+                    <div class="scanner-controls">
+                        <button class="btn-scanner btn-start" id="btnStartScanner">📷 Start Scanner</button>
+                        <button class="btn-scanner btn-stop" id="btnStopScanner" disabled>⏹ Stop</button>
+                    </div>
+                    <div class="manual-scan">
+                        <input type="text" id="manualTicketInput" placeholder="Enter Ticket ID manually" aria-label="Manual ticket ID">
+                        <button class="btn-scanner btn-start" id="btnManualScan">Check</button>
                     </div>
                 </div>
-                <div class="table-wrap">
-                    <table class="attendee-table" id="attendeeTable">
-                        <thead>
-                            <tr>
-                                <th data-sort="fullName">Name <span class="sort-icon"></span></th>
-                                <th data-sort="ticketId">Ticket <span class="sort-icon"></span></th>
-                                <th data-sort="seatDay1">Seat D1 <span class="sort-icon"></span></th>
-                                <th data-sort="attendanceDay1">D1 <span class="sort-icon"></span></th>
-                                <th data-sort="attendanceDay2">D2 <span class="sort-icon"></span></th>
-                                <th data-sort="attendanceDay3">D3 <span class="sort-icon"></span></th>
-                                <th>Chat</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
-                    <div id="emptyState" class="empty-state" style="display:none;">No attendees found.</div>
+
+                <div class="stats-row">
+                    <div class="stat-card"><div class="stat-num" id="statRegistered">0</div><div class="stat-label">Total</div></div>
+                    <div class="stat-card gold"><div class="stat-num" id="statPresent">0</div><div class="stat-label">Present</div></div>
+                    <div class="stat-card"><div class="stat-num" id="statAbsent">0</div><div class="stat-label">Absent</div></div>
+                </div>
+
+                <div class="table-section">
+                    <div class="table-header">
+                        <h3>Attendees</h3>
+                        <div class="table-controls">
+                            <div class="search-wrap">
+                                <input type="text" class="search-input" placeholder="🔍 Search..." id="searchInput" aria-label="Search attendees">
+                                <button class="search-clear" id="searchClear" aria-label="Clear search">✕</button>
+                            </div>
+                            <button class="btn-sm primary" id="btnWalkIn">+ Walk-In</button>
+                            <button class="btn-sm" id="btnExport">📥 Excel</button>
+                            <div class="group-link-control">
+                                <button class="btn-sm" id="btnGroupInvite" title="Open WhatsApp Group Invite">👥 Group</button>
+                                <input type="url" id="groupLinkInput" placeholder="Paste invite link..." style="display:none;" aria-label="WhatsApp group invite link">
+                                <button class="btn-sm" id="btnSaveGroupLink" style="display:none;">💾 Save</button>
+                                <button class="btn-sm" id="btnEditGroupLink">✏️ Set Link</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="attendee-table" id="attendeeTable">
+                            <thead>
+                                <tr>
+                                    <th data-sort="fullName">Name <span class="sort-icon"></span></th>
+                                    <th data-sort="ticketId">Ticket <span class="sort-icon"></span></th>
+                                    <th data-sort="seatDay1">Seat D1 <span class="sort-icon"></span></th>
+                                    <th>Category</th>
+                                    <th data-sort="attendanceDay1">D1 <span class="sort-icon"></span></th>
+                                    <th data-sort="attendanceDay2">D2 <span class="sort-icon"></span></th>
+                                    <th data-sort="attendanceDay3">D3 <span class="sort-icon"></span></th>
+                                    <th>Chat</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                        <div id="emptyState" class="empty-state" style="display:none;">No attendees found.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audit view (hidden by default) -->
+            <div id="auditView" style="display:none;">
+                <div class="table-section" style="margin-top: 16px;">
+                    <div class="table-header">
+                        <h3>Audit Log</h3>
+                        <button class="btn-sm" id="btnExportAudit">📥 Export Audit</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="attendee-table" id="auditTable">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Admin</th>
+                                    <th>Action</th>
+                                    <th>Attendee</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditBody"></tbody>
+                        </table>
+                        <div id="auditEmpty" class="empty-state" style="display:none;">No audit records yet.</div>
+                    </div>
                 </div>
             </div>
 
@@ -302,11 +340,9 @@
         </div>
     </div>
 
-    <!-- Toast container -->
     <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
     <script type="module">
-        // ==================== FIREBASE ====================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc, getDoc, serverTimestamp, orderBy, onSnapshot, runTransaction, increment } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
@@ -336,6 +372,12 @@
         const adminEmailDisplay = document.getElementById('adminEmail');
         const btnLogout = document.getElementById('btnLogout');
         const btnThemeToggle = document.getElementById('btnThemeToggle');
+        const viewTabs = document.getElementById('viewTabs');
+        const attendeeView = document.getElementById('attendeeView');
+        const auditView = document.getElementById('auditView');
+        const auditBody = document.getElementById('auditBody');
+        const auditEmpty = document.getElementById('auditEmpty');
+        const btnExportAudit = document.getElementById('btnExportAudit');
         const dayButtons = document.querySelectorAll('.day-btn');
         const btnStartScanner = document.getElementById('btnStartScanner');
         const btnStopScanner = document.getElementById('btnStopScanner');
@@ -369,16 +411,74 @@
 
         let currentDay = 'day1';
         let currentDayLabel = 'Day1';
+        let currentView = 'attendees'; // 'attendees' or 'audit'
         let html5QrCode = null;
         let allAttendees = [];
         let isScannerRunning = false;
         let isSignUpMode = false;
         let lastScanAction = null;
         let unsubscribe = null;
+        let auditUnsubscribe = null;
         let sortColumn = null;
         let sortDirection = 'asc';
         let confirmCallback = null;
         let groupInviteLink = '';
+
+        // ==================== AUDIT LOG HELPER ====================
+        async function addAuditLog(action, attendeeName, details = '') {
+            const user = auth.currentUser;
+            if (!user) return;
+            try {
+                await addDoc(collection(db, 'auditLog'), {
+                    adminEmail: user.email,
+                    action: action,
+                    attendeeName: attendeeName || '',
+                    details: details,
+                    timestamp: serverTimestamp()
+                });
+            } catch (e) {
+                console.error('Audit log error:', e);
+            }
+        }
+
+        function loadAuditLog() {
+            if (auditUnsubscribe) auditUnsubscribe();
+            const q = query(collection(db, 'auditLog'), orderBy('timestamp', 'desc'));
+            auditUnsubscribe = onSnapshot(q, (snapshot) => {
+                auditBody.innerHTML = '';
+                if (snapshot.empty) {
+                    auditEmpty.style.display = 'block';
+                } else {
+                    auditEmpty.style.display = 'none';
+                    snapshot.forEach(doc => {
+                        const d = doc.data();
+                        const time = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString() : '';
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${time}</td>
+                            <td>${d.adminEmail}</td>
+                            <td>${d.action}</td>
+                            <td>${d.attendeeName}</td>
+                            <td>${d.details}</td>
+                        `;
+                        auditBody.appendChild(tr);
+                    });
+                }
+            });
+        }
+
+        // ==================== WHATSAPP NUMBER FORMATTER ====================
+        function formatWhatsAppNumber(phone) {
+            if (!phone) return null;
+            const cleaned = phone.replace(/\D/g, '');
+            if (!cleaned) return null;
+            if (phone.startsWith('+')) return cleaned;
+            if (cleaned.startsWith('234') && cleaned.length >= 10) return cleaned;
+            if (cleaned.startsWith('0') && cleaned.length >= 10) {
+                return '234' + cleaned.substring(1);
+            }
+            return cleaned;
+        }
 
         // ==================== TOAST ====================
         function showToast(message, type = 'info') {
@@ -398,11 +498,13 @@
                 adminEmailDisplay.textContent = user.email;
                 loadGroupLink();
                 startRealtimeListener();
+                loadAuditLog();
             } else {
                 authScreen.style.display = 'flex';
                 dashboard.classList.remove('show');
                 dashboard.setAttribute('aria-hidden', 'true');
                 if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+                if (auditUnsubscribe) { auditUnsubscribe(); auditUnsubscribe = null; }
             }
         });
 
@@ -459,6 +561,26 @@
         btnThemeToggle.addEventListener('click', () => {
             const isDark = document.documentElement.classList.contains('dark-mode');
             applyTheme(!isDark);
+        });
+
+        // ==================== VIEW SWITCHING ====================
+        viewTabs.addEventListener('click', (e) => {
+            const tab = e.target.closest('.view-tab');
+            if (!tab) return;
+            const view = tab.dataset.view;
+            if (view === currentView) return;
+            // Update active tab
+            viewTabs.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentView = view;
+            if (view === 'attendees') {
+                attendeeView.style.display = 'block';
+                auditView.style.display = 'none';
+            } else {
+                attendeeView.style.display = 'none';
+                auditView.style.display = 'block';
+                if (isScannerRunning) stopScanner();
+            }
         });
 
         // ==================== DAY SELECTION ====================
@@ -535,12 +657,16 @@
             scanStatus.className = 'scan-status success show';
             scanStatus.innerHTML = `✅ ${data.fullName} — PRESENT (Seat ${data['seat'+currentDayLabel] || 'N/A'}) <button class="undo-btn" id="undoScanBtn">Undo</button>`;
             playBeep('success');
+            // Audit log for scan
+            await addAuditLog('Marked Present (Scan)', data.fullName, `Ticket: ${ticketId}, Day: ${currentDayLabel}`);
             setTimeout(() => {
                 const undoBtn = document.getElementById('undoScanBtn');
                 if (undoBtn) undoBtn.addEventListener('click', async () => {
                     if (lastScanAction) {
                         await updateDoc(doc(db, 'attendees', lastScanAction.docId), { [lastScanAction.field]: false });
                         showToast(`Attendance for ${lastScanAction.name} reverted.`, 'warning');
+                        // Audit log for undo
+                        await addAuditLog('Undid Attendance (Scan)', lastScanAction.name, `Day: ${currentDayLabel}`);
                         lastScanAction = null;
                         scanStatus.className = 'scan-status';
                         scanStatus.innerHTML = '';
@@ -548,7 +674,7 @@
                     }
                 });
             }, 100);
-            const timeoutId = setTimeout(() => {
+            setTimeout(() => {
                 if (lastScanAction && lastScanAction.docId === docData.id) { lastScanAction = null; scanStatus.className = 'scan-status'; scanStatus.innerHTML = ''; }
             }, 5000);
         }
@@ -578,6 +704,11 @@
         function loadAttendees() { startRealtimeListener(); }
 
         // ==================== TABLE RENDERING ====================
+        function getCategory(attendee) {
+            // If no birthday or empty string -> Walk-in, else Online
+            return (attendee.birthday && attendee.birthday.trim() !== '') ? 'Online' : 'Walk-in';
+        }
+
         function renderTable() {
             const searchTerm = searchInput.value.toLowerCase();
             let filtered = allAttendees.filter(a => !searchTerm || (a.fullName||'').toLowerCase().includes(searchTerm) || (a.ticketId||'').toLowerCase().includes(searchTerm));
@@ -595,14 +726,18 @@
                 tableBody.innerHTML = filtered.map(a => {
                     const seat = a['seat'+currentDayLabel] || '—';
                     const wa = a.whatsapp || '';
-                    const waLink = wa ? `<a class="whatsapp-link" href="https://wa.me/${wa.replace(/\D/g,'')}" target="_blank" title="Chat on WhatsApp">💬</a>` : '';
+                    const formattedWa = formatWhatsAppNumber(wa);
+                    const waLink = formattedWa ? `<a class="whatsapp-link" href="https://wa.me/${formattedWa}" target="_blank" title="Chat on WhatsApp">💬</a>` : '';
+                    const category = getCategory(a);
                     return `<tr>
                         <td><strong>${a.fullName||'—'}</strong>${waLink}</td>
-                        <td>${a.ticketId||'—'}</td><td>${seat}</td>
+                        <td>${a.ticketId||'—'}</td>
+                        <td>${seat}</td>
+                        <td>${category}</td>
                         <td class="check-mark ${a.attendanceDay1?'checked':'unchecked'}" data-id="${a.id}" data-field="attendanceDay1">${a.attendanceDay1?'✅':'❌'}</td>
                         <td class="check-mark ${a.attendanceDay2?'checked':'unchecked'}" data-id="${a.id}" data-field="attendanceDay2">${a.attendanceDay2?'✅':'❌'}</td>
                         <td class="check-mark ${a.attendanceDay3?'checked':'unchecked'}" data-id="${a.id}" data-field="attendanceDay3">${a.attendanceDay3?'✅':'❌'}</td>
-                        <td>${wa ? `<a href="https://wa.me/${wa.replace(/\D/g,'')}" target="_blank" class="whatsapp-link">Chat</a>` : '—'}</td>
+                        <td>${formattedWa ? `<a href="https://wa.me/${formattedWa}" target="_blank" class="whatsapp-link">Chat</a>` : '—'}</td>
                     </tr>`;
                 }).join('');
             }
@@ -617,6 +752,12 @@
                     confirmCallback = async () => {
                         await updateDoc(doc(db, 'attendees', docId), { [field]: newVal, [`markedAt_${field}`]: newVal ? serverTimestamp() : null });
                         showToast(`${attendee.fullName} marked ${newVal ? 'Present' : 'Absent'}`, 'success');
+                        // Audit log
+                        await addAuditLog(
+                            newVal ? 'Marked Present (Manual)' : 'Marked Absent (Manual)',
+                            attendee.fullName,
+                            `Day: ${field.slice(-1)}`
+                        );
                     };
                     confirmModal.classList.add('show');
                 });
@@ -668,7 +809,7 @@
                 const s1 = (seats.day1||0)+1, s2 = (seats.day2||0)+1, s3 = (seats.day3||0)+1;
                 await setDoc(seatCounterRef, { day1: s1, day2: s2, day3: s3 }, { merge: true });
                 await addDoc(collection(db, 'attendees'), {
-                    fullName: name, whatsapp: wa, birthday: '',
+                    fullName: name, whatsapp: wa, birthday: '',   // Walk-in: empty birthday
                     ticketId: `EAG-${String(newTicketNumber).padStart(4,'0')}`,
                     seatDay1: String(s1).padStart(3,'0'), seatDay2: String(s2).padStart(3,'0'), seatDay3: String(s3).padStart(3,'0'),
                     attendanceDay1: currentDay==='day1', attendanceDay2: currentDay==='day2', attendanceDay3: currentDay==='day3',
@@ -678,6 +819,8 @@
                 walkInModal.classList.remove('show');
                 walkInName.value = ''; walkInWhatsapp.value = '';
                 showToast(`Walk-in added! Ticket: EAG-${String(newTicketNumber).padStart(4,'0')}`, 'success');
+                // Audit log
+                await addAuditLog('Added Walk-In', name, `Ticket: EAG-${String(newTicketNumber).padStart(4,'0')}`);
             } catch(e) { showToast('Error adding walk-in: '+e.message, 'error'); }
         });
 
@@ -714,6 +857,7 @@
             const data = allAttendees.map(a => ({
                 Name: a.fullName || '', Phone: a.whatsapp || '', 'Ticket ID': a.ticketId || '',
                 'Seat D1': a.seatDay1||'', 'Seat D2': a.seatDay2||'', 'Seat D3': a.seatDay3||'',
+                Category: getCategory(a),
                 Day1: a.attendanceDay1?'Present':'Absent', Day2: a.attendanceDay2?'Present':'Absent', Day3: a.attendanceDay3?'Present':'Absent'
             }));
             const ws = XLSX.utils.json_to_sheet(data);
@@ -722,11 +866,31 @@
             XLSX.writeFile(wb, `eagles-convergence-${currentDayLabel.toLowerCase()}.xlsx`);
             showToast('Excel downloaded', 'success');
         });
+
+        // Export audit log
+        btnExportAudit.addEventListener('click', async () => {
+            const snap = await getDocs(query(collection(db, 'auditLog'), orderBy('timestamp', 'desc')));
+            const data = [];
+            snap.forEach(doc => {
+                const d = doc.data();
+                data.push({
+                    Time: d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleString() : '',
+                    Admin: d.adminEmail,
+                    Action: d.action,
+                    Attendee: d.attendeeName,
+                    Details: d.details
+                });
+            });
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Audit Log');
+            XLSX.writeFile(wb, 'eagles-audit-log.xlsx');
+            showToast('Audit log exported', 'success');
+        });
     </script>
 
     <!-- ==================== PWA: INLINE MANIFEST & SERVICE WORKER ==================== -->
     <script>
-        // Inline manifest via blob URL
         const manifest = {
             name: "Eagles' Convergence 2026 Admin",
             short_name: "EC26 Admin",
@@ -746,10 +910,9 @@
         link.href = manifestUrl;
         document.head.appendChild(link);
 
-        // Inline service worker via blob URL
         const swCode = `
             const CACHE = 'ec26-v1';
-            const SHELL = [self.location.href]; // cache this HTML
+            const SHELL = [self.location.href];
             self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))));
             self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k!==CACHE).map(k => caches.delete(k))))));
             self.addEventListener('fetch', e => {
