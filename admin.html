@@ -299,7 +299,10 @@
                 <div class="table-section" style="margin-top: 16px;">
                     <div class="table-header">
                         <h3>Audit Log</h3>
-                        <button class="btn-sm" id="btnExportAudit">📥 Export Audit</button>
+                        <div>
+                            <button class="btn-sm" id="btnExportAudit">📥 Export Audit</button>
+                            <button class="btn-sm" id="btnTestAudit">🧪 Test Audit Write</button>
+                        </div>
                     </div>
                     <div class="table-wrap">
                         <table class="attendee-table" id="auditTable">
@@ -384,6 +387,7 @@
         const auditBody = document.getElementById('auditBody');
         const auditEmpty = document.getElementById('auditEmpty');
         const btnExportAudit = document.getElementById('btnExportAudit');
+        const btnTestAudit = document.getElementById('btnTestAudit');
         const dayButtons = document.querySelectorAll('.day-btn');
         const btnStartScanner = document.getElementById('btnStartScanner');
         const btnStopScanner = document.getElementById('btnStopScanner');
@@ -430,10 +434,13 @@
         let confirmCallback = null;
         let groupInviteLink = '';
 
-        // ==================== AUDIT LOG ====================
+        // ==================== AUDIT LOG (with debug toasts) ====================
         async function addAuditLog(action, attendeeName, details = '') {
             const user = auth.currentUser;
-            if (!user) return;
+            if (!user) {
+                showToast('Audit skipped: not logged in', 'warning');
+                return;
+            }
             try {
                 await addDoc(collection(db, 'auditLog'), {
                     adminEmail: user.email,
@@ -442,8 +449,10 @@
                     details: details,
                     timestamp: serverTimestamp()
                 });
+                showToast(`Audit logged: ${action}`, 'success');
             } catch (e) {
                 console.error('Audit log error:', e);
+                showToast(`Audit failed: ${e.message}`, 'error');
             }
         }
 
@@ -472,6 +481,22 @@
                 }
             });
         }
+
+        // Test button writes a dummy entry
+        btnTestAudit.addEventListener('click', async () => {
+            try {
+                await addDoc(collection(db, 'auditLog'), {
+                    adminEmail: auth.currentUser?.email || 'unknown',
+                    action: 'Test Entry',
+                    attendeeName: 'Debug Test',
+                    details: 'Manual test from phone',
+                    timestamp: serverTimestamp()
+                });
+                showToast('Test audit entry written successfully!', 'success');
+            } catch (e) {
+                showToast(`Test audit failed: ${e.message}`, 'error');
+            }
+        });
 
         // ==================== WHATSAPP NUMBER FORMATTER ====================
         function formatWhatsAppNumber(phone) {
@@ -585,7 +610,7 @@
                 attendeeView.style.display = 'none';
                 auditView.style.display = 'block';
                 if (isScannerRunning) stopScanner();
-                loadAuditLog(); // ensure fresh data when tab opens
+                loadAuditLog();
             }
         });
 
@@ -718,7 +743,6 @@
 
         // ==================== CATEGORY HELPER ====================
         function getCategory(attendee) {
-            // Walk-in if birthday is missing or empty
             return (attendee.birthday && attendee.birthday.trim() !== '') ? 'Online' : 'Walk-in';
         }
 
@@ -769,7 +793,6 @@
                 }).join('');
             }
 
-            // re-attach toggle events
             document.querySelectorAll('.check-mark').forEach(cell => {
                 cell.addEventListener('click', () => {
                     const docId = cell.dataset.id, field = cell.dataset.field;
