@@ -188,6 +188,12 @@
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .empty-state { text-align: center; padding: 40px; color: var(--text-secondary); font-style: italic; }
+
+        /* NEW: Extract numbers button */
+        .btn-extract { background: #25D366; color: #fff; border: none; }
+        .btn-extract:hover { background: #1da851; }
+        .extract-result { font-size: 0.7rem; background: var(--surface); padding: 8px 12px; border-radius: var(--radius-sm); margin-top: 6px; word-break: break-all; display: none; }
+        .extract-result.show { display: block; }
     </style>
 </head>
 <body>
@@ -265,6 +271,8 @@
                             <button class="btn-sm category-filter" data-cat="online">🌐 Online</button>
                             <button class="btn-sm primary" id="btnWalkIn">+ Walk-In</button>
                             <button class="btn-sm" id="btnExport">📥 Excel</button>
+                            <!-- NEW: Extract all numbers button -->
+                            <button class="btn-sm btn-extract" id="btnExtractNumbers">📱 Extract Numbers</button>
                             <div class="group-link-control">
                                 <button class="btn-sm" id="btnGroupInvite" title="Open WhatsApp Group Invite">👥 Group</button>
                                 <input type="url" id="groupLinkInput" placeholder="Paste invite link..." style="display:none;" aria-label="WhatsApp group invite link">
@@ -273,6 +281,8 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Extract result area -->
+                    <div id="extractResult" class="extract-result"></div>
                     <div class="table-wrap">
                         <table class="attendee-table" id="attendeeTable">
                             <thead>
@@ -418,6 +428,9 @@
         const confirmCancel = document.getElementById('confirmCancel');
         const confirmOk = document.getElementById('confirmOk');
         const toastContainer = document.getElementById('toastContainer');
+        // NEW: Extract button & result div
+        const btnExtractNumbers = document.getElementById('btnExtractNumbers');
+        const extractResult = document.getElementById('extractResult');
 
         let currentDay = 'day1';
         let currentDayLabel = 'Day1';
@@ -935,6 +948,69 @@
             XLSX.utils.book_append_sheet(wb, ws, 'Audit Log');
             XLSX.writeFile(wb, 'eagles-audit-log.xlsx');
             showToast('Audit log exported', 'success');
+        });
+
+        // ==================== EXTRACT NUMBERS (NEW) ====================
+        btnExtractNumbers.addEventListener('click', () => {
+            const numbers = allAttendees
+                .map(a => a.whatsapp ? formatWhatsAppNumber(a.whatsapp) : null)
+                .filter(n => n !== null && n.length > 0);
+
+            // Remove duplicates
+            const unique = [...new Set(numbers)];
+
+            // Prepend +234 to each number if not already present
+            const formatted = unique.map(n => {
+                if (n.startsWith('234')) return '+' + n;
+                if (n.startsWith('+')) return n;
+                return '+234' + n;
+            });
+
+            // Build a WhatsApp link with all numbers (max ~20 per link to avoid URL length issues)
+            // For better UX, we show the list and also provide a "Send All" link (group chat invite)
+            const count = formatted.length;
+            if (count === 0) {
+                extractResult.textContent = 'No phone numbers found.';
+                extractResult.className = 'extract-result show';
+                return;
+            }
+
+            // Show numbers in a readable format
+            const numberList = formatted.join(', ');
+            // Build a WhatsApp group invite link? We use the first 20 numbers to create a chat.
+            // But WhatsApp only allows up to 5 numbers in a link? Actually, you can't bulk invite via URL.
+            // Instead, we show the list and a button to copy.
+            const copyHtml = `<button class="btn-sm" id="copyNumbersBtn" style="margin-top:6px;">📋 Copy All Numbers</button>`;
+            const waLink = `https://wa.me/${formatted[0]}`; // just first for quick chat
+            extractResult.innerHTML = `
+                <strong>${count} numbers extracted (with +234):</strong><br>
+                <span style="font-size:0.7rem;word-break:break-all;">${numberList}</span>
+                <br>
+                <a href="${waLink}" target="_blank" class="whatsapp-link" style="margin-top:6px;display:inline-block;">💬 Chat first number</a>
+                ${copyHtml}
+            `;
+            extractResult.className = 'extract-result show';
+
+            // Attach copy handler
+            setTimeout(() => {
+                const copyBtn = document.getElementById('copyNumbersBtn');
+                if (copyBtn) {
+                    copyBtn.addEventListener('click', () => {
+                        navigator.clipboard.writeText(numberList).then(() => {
+                            showToast('Numbers copied to clipboard!', 'success');
+                        }).catch(() => {
+                            // fallback
+                            const ta = document.createElement('textarea');
+                            ta.value = numberList;
+                            document.body.appendChild(ta);
+                            ta.select();
+                            document.execCommand('copy');
+                            ta.remove();
+                            showToast('Numbers copied!', 'success');
+                        });
+                    });
+                }
+            }, 100);
         });
     </script>
 
